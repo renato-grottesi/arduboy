@@ -1,15 +1,7 @@
 #include "onychophora.h"
 
-Onychophora onychophora;
+Onychophora game;
 
-void setup()
-{
-	onychophora.init();
-}
+void setup() { game.init(); }
 
-void loop()
-{
-	onychophora.update();
-	onychophora.render();
-}
-
+void loop() { game.loop(); }
