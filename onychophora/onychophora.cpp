@@ -20,6 +20,8 @@ void Onychophora::init() {
     EEPROM.write(2, 'y');
     EEPROM.write(3, 0);
   }
+
+  level.init(0);
 }
 
 void Onychophora::loop() {
@@ -31,8 +33,7 @@ void Onychophora::loop() {
   render();
 }
 
-void Onychophora::update() {
-}
+void Onychophora::update() {}
 
 void Onychophora::render() {
   // clear the screen to black
@@ -41,6 +42,9 @@ void Onychophora::render() {
   // print text at a position
   arduboy.setCursor(4, 9);
   arduboy.print(F("Hello, world!"));
+
+  level.render();
+  worm.render();
 
   // tell the arduboy to swap buffers
   arduboy.display();
