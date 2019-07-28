@@ -2,7 +2,6 @@
 
 #include "level.h"
 #include "utility.h"
-#include "worm.h"
 
 class Onychophora {
 public:
@@ -17,6 +16,5 @@ private:
 private:
   Arduboy2 arduboy;
   uint8_t lastLevel = 0;
-  Worm worm;
   Level level;
 };

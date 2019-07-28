@@ -44,7 +44,6 @@ void Onychophora::render() {
   arduboy.print(F("Hello, world!"));
 
   level.render();
-  worm.render();
 
   // tell the arduboy to swap buffers
   arduboy.display();

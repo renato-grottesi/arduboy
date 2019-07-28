@@ -5,12 +5,14 @@
 /* Class that implements the worm. */
 class Worm {
 public:
-  Worm() = default;
+  Worm(Arduboy2 &arduboy) : arduboy(arduboy) {}
   bool isStuck();
   bool moveTo(direction dir, bool enlarge, bool shorten);
   void render();
 
 private:
+  Arduboy2 &arduboy;
+
   class Cell {
   public:
     uint8_t x : 4;
