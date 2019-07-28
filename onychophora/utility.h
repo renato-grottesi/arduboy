@@ -15,3 +15,13 @@ extern "C" {
 }
 
 enum direction { left, right, up, down };
+
+class Cell {
+public:
+  uint8_t x : 4;
+  uint8_t y : 4;
+  void set(uint8_t _x, uint8_t _y) {
+    x = _x;
+    y = _y;
+  }
+};

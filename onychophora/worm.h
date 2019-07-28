@@ -6,19 +6,14 @@
 class Worm {
 public:
   Worm(Arduboy2 &arduboy) : arduboy(arduboy) {}
-  bool isStuck();
   bool moveTo(direction dir, bool enlarge, bool shorten);
   void render();
+  void addPiece(uint8_t x, uint8_t y);
 
 private:
   Arduboy2 &arduboy;
 
-  class Cell {
-  public:
-    uint8_t x : 4;
-    uint8_t y : 4;
-  };
-  /* The body can be at most 16 cells long.  */
+  /* The body can be at most 16 cells long. First cell is the head. */
   Cell cells[16] = {};
   uint8_t count = 0;
 };

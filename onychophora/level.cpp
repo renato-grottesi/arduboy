@@ -38,6 +38,11 @@ void Level::init(uint8_t level) {
     soil[row] = level_001_soil[row];
     food[row] = level_001_food[row];
   }
+
+  worm.addPiece(3, 3);
+  worm.addPiece(3, 2);
+
+  goal.set(6, 14);
 }
 
 void Level::update() {}
@@ -57,4 +62,5 @@ void Level::render() {
     }
   }
   worm.render();
+  arduboy.drawBitmap(goal.y * 8, goal.x * 8, bmp_goal, 8, 8);
 }

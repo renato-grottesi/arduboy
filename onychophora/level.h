@@ -20,4 +20,6 @@ private:
   uint16_t rock[8];
   uint16_t soil[8];
   uint16_t food[8];
+
+  Cell goal;
 };
