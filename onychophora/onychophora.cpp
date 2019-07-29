@@ -122,9 +122,9 @@ void Onychophora::render() {
     arduboy.setCursor(20, 15);
     arduboy.print(F("Play"));
     arduboy.setCursor(20, 30);
-    arduboy.print(F("Help"));
-    arduboy.setCursor(20, 45);
     arduboy.print(F("Credits"));
+    arduboy.setCursor(20, 45);
+    arduboy.print(F("Help"));
     switch (currentMainSelection) {
     case MainSelections::play:
       arduboy.drawBitmap(10, 15, bmp_food, 8, 8);
@@ -141,12 +141,24 @@ void Onychophora::render() {
     level.render();
     break;
   case Menus::credits:
-    arduboy.setCursor(4, 9);
-    arduboy.print(F("Made by Renato!"));
+    arduboy.setCursor(2, 10);
+    arduboy.print(F("Onychophora was made"));
+    arduboy.setCursor(2, 20);
+    arduboy.print(F("by Renato Grottesi"));
     break;
   case Menus::help:
-    arduboy.setCursor(4, 9);
-    arduboy.print(F("Use intuition!"));
+    tinyfont.setCursor(2, 0);
+    tinyfont.print("Use arrows to move the\n"    /**/
+                   "worm to reach the exit.\n"   /**/
+                   "Eat food to get longer.\n"   /**/
+                   "Poison makes you shorter.\n" /**/
+                   "Rocks can't be eaten.\n"     /**/
+                   "Soil can be eaten.\n"        /**/
+                   "Soil not connectec to\n"     /**/
+                   "rocks will fall down.\n"     /**/
+                   "Don't get buried!.\n"        /**/
+                   "Press A to restart.\n"       /**/
+    );
     break;
   }
 

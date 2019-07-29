@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Tinyfont.h"
 #include <Arduboy2.h>
 #include <Arduboy2Audio.h>
 #include <Arduboy2Beep.h>
