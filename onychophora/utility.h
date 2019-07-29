@@ -14,7 +14,7 @@ extern "C" {
 #include <stdint.h>
 }
 
-enum direction { left, right, up, down };
+enum class Direction : uint8_t { left, right, up, down };
 
 class Cell {
 public:

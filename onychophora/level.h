@@ -9,7 +9,7 @@ public:
 
   void init(uint8_t level);
 
-  void update();
+  void update(Direction dir);
   void render();
 
 private:

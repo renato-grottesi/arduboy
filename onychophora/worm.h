@@ -6,7 +6,7 @@
 class Worm {
 public:
   Worm(Arduboy2 &arduboy) : arduboy(arduboy) {}
-  bool moveTo(direction dir, bool enlarge, bool shorten);
+  bool moveTo(Direction dir, bool enlarge, bool shorten);
   void render();
   void addPiece(uint8_t x, uint8_t y);
 

@@ -14,7 +14,12 @@ private:
   void render();
 
 private:
+  enum class Menus : uint8_t { main, game, credits, help };
+  enum class MainSelections : uint8_t { play, credits, help };
+
   Arduboy2 arduboy;
   uint8_t lastLevel = 0;
   Level level;
+  Menus currentMenu = Menus::main;
+  MainSelections currentMainSelection = MainSelections::play;
 };

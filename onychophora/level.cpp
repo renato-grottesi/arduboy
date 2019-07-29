@@ -41,11 +41,12 @@ void Level::init(uint8_t level) {
 
   worm.addPiece(3, 3);
   worm.addPiece(3, 2);
+  worm.addPiece(3, 1);
 
   goal.set(6, 14);
 }
 
-void Level::update() {}
+void Level::update(Direction dir) { worm.moveTo(dir, false, false); }
 
 void Level::render() {
   for (uint8_t row = 0; row < 8; row++) {
