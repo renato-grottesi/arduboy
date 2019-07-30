@@ -9,10 +9,13 @@ public:
 
   void init(uint8_t level);
 
-  void update(Direction dir);
+  void update();
+  void onInput(Direction dir);
   void render();
 
 private:
+  void updateWorm(Cell newHead);
+
   Arduboy2 &arduboy;
   Worm worm;
 
@@ -22,4 +25,12 @@ private:
   uint16_t food[8];
 
   Cell goal;
+
+  struct {
+    bool moving : 1;
+    bool falling : 1;
+  } is = {
+      false, /* the worm is not moving */
+      false  /* nothing is falling */
+  };
 };

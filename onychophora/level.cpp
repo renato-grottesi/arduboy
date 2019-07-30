@@ -39,14 +39,61 @@ void Level::init(uint8_t level) {
     food[row] = level_001_food[row];
   }
 
-  worm.addPiece(3, 3);
+  worm.reset(3, 3);
   worm.addPiece(3, 2);
   worm.addPiece(3, 1);
 
   goal.set(6, 14);
 }
 
-void Level::update(Direction dir) { worm.moveTo(dir, false, false); }
+void Level::onInput(Direction dir) {
+  if ((!is.moving) && (!is.falling)) {
+
+    Cell newHead = worm.getHead();
+
+    switch (dir) {
+    case Direction::up:
+      newHead.x--;
+      break;
+    case Direction::down:
+      newHead.x++;
+      break;
+    case Direction::left:
+      newHead.y--;
+      break;
+    case Direction::right:
+      newHead.y++;
+      break;
+    }
+
+    updateWorm(newHead);
+  }
+}
+
+void Level::updateWorm(Cell newHead) {
+  if (rock[newHead.x] & (1 << (15 - newHead.y))) {
+    return;
+  }
+
+  bool enlarge = false;
+
+  if (food[newHead.x] & (1 << (15 - newHead.y))) {
+    food[newHead.x] &= ~(1 << (15 - newHead.y));
+    enlarge = true;
+  }
+
+  worm.moveTo(newHead, enlarge, false);
+
+  if (soil[newHead.x] & (1 << (15 - newHead.y))) {
+    soil[newHead.x] &= ~(1 << (15 - newHead.y));
+  }
+}
+
+void Level::update() {
+  if (worm.fall(rock, soil)) {
+    updateWorm(worm.getHead());
+  }
+}
 
 void Level::render() {
   for (uint8_t row = 0; row < 8; row++) {

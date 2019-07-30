@@ -1,22 +1,18 @@
 #include "worm.h"
 #include "bitmaps.h"
 
-bool Worm::moveTo(Direction dir, bool enlarge, bool shorten) {
-  Cell newHead = cells[0];
+bool Worm::moveTo(Cell newHead, bool enlarge, bool shorten) {
+  if (enlarge) {
+    count++;
+  }
+  if (shorten) {
+    count--;
+  }
 
-  switch (dir) {
-  case Direction::up:
-    newHead.x--;
-    break;
-  case Direction::down:
-    newHead.x++;
-    break;
-  case Direction::left:
-    newHead.y--;
-    break;
-  case Direction::right:
-    newHead.y++;
-    break;
+  for (uint8_t i = 0; i < count; i++) {
+    if ((cells[i].x == newHead.x) && (cells[i].y == newHead.y)) {
+      return false;
+    }
   }
 
   for (uint8_t i = count - 1; i > 0; i--) {
@@ -36,8 +32,33 @@ void Worm::render() {
   }
 }
 
+void Worm::reset(uint8_t x, uint8_t y) {
+  count = 0;
+  addPiece(x, y);
+}
+
 void Worm::addPiece(uint8_t x, uint8_t y) {
   cells[count].x = x;
   cells[count].y = y;
   count++;
+}
+
+bool Worm::fall(uint16_t rock[8], uint16_t soil[8]) {
+  for (uint8_t i = 0; i < count; i++) {
+    if (cells[i].x == 7) {
+      return false;
+    }
+    if (rock[cells[i].x + 1] & (1 << (15 - cells[i].y))) {
+      return false;
+    }
+    if (soil[cells[i].x + 1] & (1 << (15 - cells[i].y))) {
+      return false;
+    }
+  }
+
+  for (uint8_t i = 0; i < count; i++) {
+    cells[i].x++;
+  }
+  fall(rock, soil);
+  return true;
 }

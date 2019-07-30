@@ -21,8 +21,6 @@ void Onychophora::init() {
     EEPROM.write(EEPROM_STORAGE_SPACE_START + 2, 'y');
     EEPROM.write(EEPROM_STORAGE_SPACE_START + 3, 0);
   }
-
-  level.init(0);
 }
 
 void Onychophora::loop() {
@@ -68,6 +66,7 @@ void Onychophora::update() {
     if (arduboy.justPressed(A_BUTTON)) {
       switch (currentMainSelection) {
       case MainSelections::play:
+        level.init(lastLevel);
         currentMenu = Menus::game;
         break;
       case MainSelections::credits:
@@ -81,20 +80,21 @@ void Onychophora::update() {
 
     break;
   case Menus::game:
+    level.update();
     if (arduboy.justPressed(UP_BUTTON)) {
-      level.update(Direction::up);
+      level.onInput(Direction::up);
     }
     if (arduboy.justPressed(DOWN_BUTTON)) {
-      level.update(Direction::down);
+      level.onInput(Direction::down);
     }
     if (arduboy.justPressed(RIGHT_BUTTON)) {
-      level.update(Direction::right);
+      level.onInput(Direction::right);
     }
     if (arduboy.justPressed(LEFT_BUTTON)) {
-      level.update(Direction::left);
+      level.onInput(Direction::left);
     }
     if (arduboy.justPressed(A_BUTTON)) {
-      /* Reserved for reset level, maybe... */
+      level.init(lastLevel);
     }
     if (arduboy.justPressed(B_BUTTON)) {
       currentMenu = Menus::main;
@@ -148,16 +148,17 @@ void Onychophora::render() {
     break;
   case Menus::help:
     tinyfont.setCursor(2, 0);
-    tinyfont.print("Use arrows to move the\n"    /**/
-                   "worm to reach the exit.\n"   /**/
-                   "Eat food to get longer.\n"   /**/
-                   "Poison makes you shorter.\n" /**/
-                   "Rocks can't be eaten.\n"     /**/
-                   "Soil can be eaten.\n"        /**/
-                   "Soil not connectec to\n"     /**/
-                   "rocks will fall down.\n"     /**/
-                   "Don't get buried!.\n"        /**/
-                   "Press A to restart.\n"       /**/
+    tinyfont.print("USE ARROWS TO MOVE THE\n"    /**/
+                   "WORM TO REACH THE EXIT.\n"   /**/
+                   "EAT FOOD TO GET LONGER.\n"   /**/
+                   "POISON MAKES YOU SHORTER.\n" /**/
+                   "ROCKS CAN'T BE EATEN.\n"     /**/
+                   "SOIL CAN BE EATEN.\n"        /**/
+                   "SOIL NOT CONNECTEC TO\n"     /**/
+                   "ROCKS WILL FALL DOWN.\n"     /**/
+                   "DON'T GET BURIED!\n"         /**/
+                   "PRESS (A) TO RESTART.\n"     /**/
+                   "\nGOOD LUCK!\n"              /**/
     );
     break;
   }
