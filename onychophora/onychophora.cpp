@@ -154,7 +154,7 @@ void Onychophora::render() {
                    "POISON MAKES YOU SHORTER.\n" /**/
                    "ROCKS CAN'T BE EATEN.\n"     /**/
                    "SOIL CAN BE EATEN.\n"        /**/
-                   "SOIL NOT CONNECTEC TO\n"     /**/
+                   "SOIL NOT CONNECTED TO\n"     /**/
                    "ROCKS WILL FALL DOWN.\n"     /**/
                    "DON'T GET BURIED!\n"         /**/
                    "PRESS (A) TO RESTART.\n"     /**/
