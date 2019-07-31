@@ -94,7 +94,7 @@ void Onychophora::update() {
       level.onInput(Direction::left);
     }
     if (arduboy.justPressed(A_BUTTON)) {
-      level.init(lastLevel);
+      level.init(level.getCurrentLevel());
     }
     if (arduboy.justPressed(B_BUTTON)) {
       currentMenu = Menus::main;

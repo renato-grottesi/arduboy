@@ -6,8 +6,8 @@
 class Onychophora {
 public:
   Onychophora()
-      : level(arduboy),
-        tinyfont(arduboy.sBuffer, Arduboy2::width(), Arduboy2::height()) {}
+      : tinyfont(arduboy.sBuffer, Arduboy2::width(), Arduboy2::height()),
+        level(arduboy, tinyfont) {}
   void init();
   void loop();
 
@@ -20,8 +20,8 @@ private:
   enum class MainSelections : uint8_t { play, credits, help };
 
   Arduboy2 arduboy;
-  Level level;
   Tinyfont tinyfont;
+  Level level;
   uint8_t lastLevel = 0;
   Menus currentMenu = Menus::main;
   MainSelections currentMainSelection = MainSelections::play;

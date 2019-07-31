@@ -8,9 +8,18 @@ bool Worm::moveTo(Cell newHead, bool enlarge, bool shorten) {
   if (shorten) {
     count--;
   }
+  if (count < 2) {
+    count = 2;
+  }
+  if (count > 16) {
+    count = 16;
+  }
+  if (newHead.x > 7) {
+    return;
+  }
 
   for (uint8_t i = 0; i < count; i++) {
-    if ((cells[i].x == newHead.x) && (cells[i].y == newHead.y)) {
+    if (cells[i].intersects(newHead)) {
       return false;
     }
   }
@@ -45,6 +54,7 @@ void Worm::addPiece(uint8_t x, uint8_t y) {
 
 bool Worm::fall(uint16_t rock[8], uint16_t soil[8]) {
   for (uint8_t i = 0; i < count; i++) {
+    /* Can't go outside the bottom of the screen. */
     if (cells[i].x == 7) {
       return false;
     }

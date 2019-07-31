@@ -33,6 +33,17 @@ const unsigned char PROGMEM bmp_food[] = {
     0b00011000, /**/
 };
 
+const unsigned char PROGMEM bmp_poop[] = {
+    0b10000000, /**/
+    0b11000000, /**/
+    0b11110000, /**/
+    0b11111100, /**/
+    0b11111110, /**/
+    0b11101000, /**/
+    0b11100000, /**/
+    0b10000000, /**/
+};
+
 const unsigned char PROGMEM bmp_worm[] = {
     0b00000000, /**/
     0b01111110, /**/

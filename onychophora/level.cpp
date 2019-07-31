@@ -1,49 +1,23 @@
 #include "level.h"
 #include "bitmaps.h"
+#include "levels.h"
 
 void Level::init(uint8_t level) {
-  static uint16_t level_001_rock[8] = {
-      0b1111111111111111, /**/
-      0b1000000000000001, /**/
-      0b1000000000000001, /**/
-      0b1000000000000001, /**/
-      0b1000000000000001, /**/
-      0b1000001000000001, /**/
-      0b1000011100000001, /**/
-      0b1111111111111111, /**/
-  };
-  static uint16_t level_001_soil[8] = {
-      0b0000000000000000, /**/
-      0b0000000000011000, /**/
-      0b0000000000011000, /**/
-      0b0000000000011000, /**/
-      0b0000000000011000, /**/
-      0b0000000000011000, /**/
-      0b0000000000011000, /**/
-      0b0000000000000000, /**/
-  };
-  static uint16_t level_001_food[8] = {
-      0b1111111111111111, /**/
-      0b1000000000000001, /**/
-      0b1000000000000001, /**/
-      0b1000000000000001, /**/
-      0b1000001000000001, /**/
-      0b1000000000000001, /**/
-      0b1000000000000001, /**/
-      0b1111111111111111, /**/
-  };
 
   for (uint8_t row = 0; row < 8; row++) {
-    rock[row] = level_001_rock[row];
-    soil[row] = level_001_soil[row];
-    food[row] = level_001_food[row];
+    rock[row] = levelsData[level].rock[row];
+    soil[row] = levelsData[level].soil[row];
+    food[row] = levelsData[level].food[row];
+    poop[row] = levelsData[level].poop[row];
   }
 
   worm.reset(3, 3);
   worm.addPiece(3, 2);
   worm.addPiece(3, 1);
 
-  goal.set(6, 14);
+  goal = levelsData[level].goal;
+  tutorial = levelsData[level].tutorial;
+  currentLevel = level;
 }
 
 void Level::onInput(Direction dir) {
@@ -71,21 +45,27 @@ void Level::onInput(Direction dir) {
 }
 
 void Level::updateWorm(Cell newHead) {
-  if (rock[newHead.x] & (1 << (15 - newHead.y))) {
+  if (newHead.intersects(rock)) {
     return;
   }
 
   bool enlarge = false;
+  bool shrink = false;
 
-  if (food[newHead.x] & (1 << (15 - newHead.y))) {
-    food[newHead.x] &= ~(1 << (15 - newHead.y));
+  if (newHead.intersects(food)) {
+    newHead.resetTilemap(food);
     enlarge = true;
   }
 
-  worm.moveTo(newHead, enlarge, false);
+  if (newHead.intersects(poop)) {
+    newHead.resetTilemap(poop);
+    shrink = true;
+  }
 
-  if (soil[newHead.x] & (1 << (15 - newHead.y))) {
-    soil[newHead.x] &= ~(1 << (15 - newHead.y));
+  worm.moveTo(newHead, enlarge, shrink);
+
+  if (newHead.intersects(soil)) {
+    newHead.resetTilemap(soil);
   }
 }
 
@@ -93,9 +73,17 @@ void Level::update() {
   if (worm.fall(rock, soil)) {
     updateWorm(worm.getHead());
   }
+  if (worm.getHead().intersects(goal)) {
+    currentLevel++;
+    if (currentLevel >= levelsCount)
+      currentLevel = 0;
+    init(currentLevel);
+  }
 }
 
 void Level::render() {
+  tinyfont.setCursor(10, 10);
+  tinyfont.print(tutorial);
   for (uint8_t row = 0; row < 8; row++) {
     for (uint16_t col = 0; col < 16; col++) {
       if (rock[row] & (1 << (15 - col))) {
@@ -106,6 +94,9 @@ void Level::render() {
       }
       if (food[row] & (1 << (15 - col))) {
         arduboy.drawBitmap(col * 8, row * 8, bmp_food, 8, 8);
+      }
+      if (poop[row] & (1 << (15 - col))) {
+        arduboy.drawBitmap(col * 8, row * 8, bmp_poop, 8, 8);
       }
     }
   }
