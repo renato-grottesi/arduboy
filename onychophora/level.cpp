@@ -11,9 +11,9 @@ void Level::init(uint8_t level) {
     poop[row] = levelsData[level].poop[row];
   }
 
-  worm.reset(3, 3);
-  worm.addPiece(3, 2);
-  worm.addPiece(3, 1);
+  worm.reset(levelsData[level].head);
+  worm.addPiece(levelsData[level].body);
+  worm.addPiece(levelsData[level].tail);
 
   goal = levelsData[level].goal;
   tutorial = levelsData[level].tutorial;
@@ -27,15 +27,27 @@ void Level::onInput(Direction dir) {
 
     switch (dir) {
     case Direction::up:
+      if (newHead.x == 0) {
+        return;
+      };
       newHead.x--;
       break;
     case Direction::down:
+      if (newHead.x == 7) {
+        return;
+      };
       newHead.x++;
       break;
     case Direction::left:
+      if (newHead.y == 0) {
+        return;
+      };
       newHead.y--;
       break;
     case Direction::right:
+      if (newHead.y == 15) {
+        return;
+      };
       newHead.y++;
       break;
     }
@@ -79,13 +91,52 @@ void Level::update() {
       currentLevel = 0;
     init(currentLevel);
   }
+
+  uint16_t stable[8];
+  for (uint8_t row = 0; row < 8; row++) {
+    stable[row] = rock[row];
+  }
+
+  uint16_t oldStable = 0;
+  uint16_t newStable = 1;
+
+  while (newStable != oldStable) {
+    oldStable = newStable;
+    newStable = 0;
+    for (uint8_t row = 0; row < 8; row++) {
+      for (uint8_t col = 0; col < 16; col++) {
+        if (soil[row] & (1 << (15 - col))) {
+          if ((row < 7 && (stable[row + 1] & (1 << (15 - col)))) ||
+              (row > 0 && (stable[row - 1] & (1 << (15 - col)))) ||
+              (col < 15 && (stable[row] & (1 << (15 - col + 1)))) ||
+              (col > 0 && (stable[row] & (1 << (15 - col - 1)))) ||
+              (row == 7 || row == 0 || col == 15 ||
+               col == 0) /* Borders are safe. */
+          ) {
+            stable[row] |= (1 << (15 - col));
+            newStable++;
+          }
+        }
+      }
+    }
+  }
+
+  for (uint8_t row = 6; row != 0; row--) {
+    for (uint8_t col = 0; col < 16; col++) {
+      if ((soil[row] & (1 << (15 - col))) &&
+          !(stable[row] & (1 << (15 - col)))) {
+        soil[row] &= ~(1 << (15 - col));
+        soil[row + 1] |= (1 << (15 - col));
+      }
+    }
+  }
 }
 
 void Level::render() {
-  tinyfont.setCursor(10, 10);
+  tinyfont.setCursor(0, 0);
   tinyfont.print(tutorial);
   for (uint8_t row = 0; row < 8; row++) {
-    for (uint16_t col = 0; col < 16; col++) {
+    for (uint8_t col = 0; col < 16; col++) {
       if (rock[row] & (1 << (15 - col))) {
         arduboy.drawBitmap(col * 8, row * 8, bmp_rock, 8, 8);
       }

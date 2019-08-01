@@ -41,14 +41,13 @@ void Worm::render() {
   }
 }
 
-void Worm::reset(uint8_t x, uint8_t y) {
+void Worm::reset(Cell c) {
   count = 0;
-  addPiece(x, y);
+  addPiece(c);
 }
 
-void Worm::addPiece(uint8_t x, uint8_t y) {
-  cells[count].x = x;
-  cells[count].y = y;
+void Worm::addPiece(Cell c) {
+  cells[count] = c;
   count++;
 }
 

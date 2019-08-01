@@ -67,6 +67,7 @@ void Onychophora::update() {
       switch (currentMainSelection) {
       case MainSelections::play:
         level.init(lastLevel);
+        level.init(6);
         currentMenu = Menus::game;
         break;
       case MainSelections::credits:
