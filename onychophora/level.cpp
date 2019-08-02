@@ -82,7 +82,11 @@ void Level::updateWorm(Cell newHead) {
 }
 
 void Level::update() {
-  if (worm.fall(rock, soil)) {
+  uint16_t solids[8];
+  for (uint8_t row = 0; row < 8; row++) {
+    solids[row] = rock[row] | soil[row] | food[row] | poop[row];
+  }
+  if (worm.fall(solids)) {
     updateWorm(worm.getHead());
   }
   if (worm.getHead().intersects(goal)) {
@@ -133,7 +137,7 @@ void Level::update() {
 }
 
 void Level::render() {
-  tinyfont.setCursor(0, 0);
+  tinyfont.setCursor(2, 2);
   tinyfont.print(tutorial);
   for (uint8_t row = 0; row < 8; row++) {
     for (uint8_t col = 0; col < 16; col++) {
@@ -152,5 +156,9 @@ void Level::render() {
     }
   }
   worm.render();
+  arduboy.drawLine(0, 0, 127, 0);
+  arduboy.drawLine(127, 0, 127, 63);
+  arduboy.drawLine(127, 63, 0, 63);
+  arduboy.drawLine(0, 63, 0, 0);
   arduboy.drawBitmap(goal.y * 8, goal.x * 8, bmp_goal, 8, 8);
 }

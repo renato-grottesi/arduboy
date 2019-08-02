@@ -148,12 +148,12 @@ void Onychophora::render() {
     break;
   case Menus::help:
     tinyfont.setCursor(2, 0);
-    tinyfont.print("USE ARROWS TO MOVE THE\n"    /**/
+    tinyfont.print("USE THE D-PAD TO MOVE THE\n" /**/
                    "WORM TO REACH THE EXIT.\n"   /**/
                    "EAT FOOD TO GET LONGER.\n"   /**/
-                   "POISON MAKES YOU SHORTER.\n" /**/
+                   "POOP MAKES YOU SHORTER.\n"   /**/
                    "ROCKS CAN'T BE EATEN.\n"     /**/
-                   "SOIL CAN BE EATEN.\n"        /**/
+                   "YOU CAN DIG SOIL.\n"         /**/
                    "SOIL NOT CONNECTED TO\n"     /**/
                    "ROCKS WILL FALL DOWN.\n"     /**/
                    "DON'T GET BURIED!\n"         /**/
