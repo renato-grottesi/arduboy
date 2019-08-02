@@ -12,6 +12,7 @@ public:
   void reset(Cell c);
   Cell getHead() { return cells[0]; }
   bool fall(uint16_t solids[8]);
+  bool intersects(uint16_t solids[8]);
 
 private:
   Arduboy2 &arduboy;

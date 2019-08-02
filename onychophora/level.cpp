@@ -134,6 +134,10 @@ void Level::update() {
       }
     }
   }
+
+  if (worm.intersects(soil)) {
+    init(currentLevel);
+  }
 }
 
 void Level::render() {

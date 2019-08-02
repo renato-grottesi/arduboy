@@ -128,3 +128,12 @@ bool Worm::fall(uint16_t solids[8]) {
   fall(solids);
   return true;
 }
+
+bool Worm::intersects(uint16_t solids[8]) {
+  for (uint8_t i = 0; i < count; i++) {
+    if (cells[i].intersects(solids)) {
+      return true;
+    }
+  }
+  return false;
+}
