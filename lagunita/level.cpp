@@ -1,21 +1,37 @@
 #include "level.h"
-#include "bitmaps.h"
 
-void Level::init() {}
+void Level::init() {
+
+  for (uint8_t i = 0; i < size; i++) {
+    ground_top[i] = Ground::empty;
+    ground_low[i] = Ground::ground;
+  }
+
+  ground_top[5] = Ground::bridge;
+  ground_low[5] = Ground::river;
+}
 
 void Level::onInput(Input dir) {
-  if ((!is.moving) && (!is.falling)) {
-
-    switch (dir) {
-    case Input::up:
-      break;
-    case Input::down:
-      break;
-    case Input::left:
-      break;
-    case Input::right:
-      break;
-    }
+  switch (dir) {
+  case Input::up:
+    break;
+  case Input::down:
+    break;
+  case Input::left:
+    if (camera == 0)
+      camera = size * 8;
+    else
+      camera--;
+    break;
+  case Input::right:
+    camera++;
+    if (camera > size * 8)
+      camera = 0;
+    break;
+  case Input::a:
+    break;
+  case Input::b:
+    break;
   }
 }
 
@@ -25,32 +41,26 @@ void Level::render() {
   static uint8_t frame = 0;
   frame++;
 
-  tinyfont.setCursor(2, 2);
-  tinyfont.print(tutorial);
-  /*
-  arduboy.drawLine(0, 0, 127, 0);
-  arduboy.drawLine(127, 0, 127, 63);
-  arduboy.drawLine(127, 63, 0, 63);
-  arduboy.drawLine(0, 63, 0, 0);
-  */
+  for (uint8_t tile = 0; tile < 16; tile++) {
+    uint8_t *bmp = groundBmps[(uint8_t)ground_top[tile]];
+    arduboy.drawBitmap(tile * 8, 4 * 8 - 2, bmp, 8, 8);
+  }
+
+  for (uint8_t tile = 0; tile < 16; tile++) {
+    uint8_t *bmp = groundBmps[(uint8_t)ground_low[tile]];
+    arduboy.drawBitmap(tile * 8, 5 * 8 - 2, bmp, 8, 8);
+  }
+
+  for (uint8_t tile = 0; tile < 16; tile++) {
+    uint8_t *bmp = &(bmp_lake[(frame >> 3) % 2]);
+    arduboy.drawBitmap(tile * 8, 6 * 8 - 2, bmp, 8, 8);
+  }
+
   arduboy.drawBitmap(2 * 8, 0 * 8, &bmp_bird[((frame >> 2) % 4) * 8], 8, 8);
   arduboy.drawBitmap(0 * 8, 1 + 4 * 8, bmp_weed, 8, 8);
   arduboy.drawBitmap(1 * 8, 1 + 4 * 8, bmp_cactus, 8, 8);
   arduboy.drawBitmap(2 * 8, 1 + 4 * 8, &bmp_man[((frame >> 3) % 4) * 8], 8, 8);
-  for (uint8_t i = 0; i < 16; i++)
-    arduboy.drawBitmap(i * 8, 6 * 8 - 2, &bmp_lake[((frame >> 3) % 2) * 8], 8,
-                       8);
-
-  for (uint8_t i = 0; i < 13; i++)
-    arduboy.drawBitmap(i * 8, 5 * 8 - 2, bmp_ground, 8, 8);
-  arduboy.drawBitmap(13 * 8, 4 * 8 - 2, &bmp_river[((frame >> 2) % 3) * 8], 8,
-                     8);
-  arduboy.drawBitmap(13 * 8, 4 * 8, bmp_bridge, 8, 8);
   arduboy.drawBitmap(2 * 8, 1 + 4 * 8, &bmp_man[((frame >> 3) % 4) * 8], 8, 8);
-  arduboy.drawBitmap(13 * 8, 5 * 8 - 2, &bmp_river[((frame >> 2) % 3) * 8], 8,
-                     8);
-  for (uint8_t i = 14; i < 16; i++)
-    arduboy.drawBitmap(i * 8, 5 * 8 - 2, bmp_ground, 8, 8);
 
   arduboy.drawBitmap(0 * 8, 2 * 8, bmp_house, 16, 16);
   // arduboy.drawBitmap(13 * 8, 1 * 8, bmp_mine, 24, 24);

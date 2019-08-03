@@ -1,5 +1,4 @@
 #include "lagunita.h"
-#include "bitmaps.h"
 
 void Lagunita::init() {
   // initiate arduboy instance

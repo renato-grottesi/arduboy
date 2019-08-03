@@ -1,5 +1,19 @@
 #pragma once
 
+#include <avr/io.h>
+#include <avr/pgmspace.h>
+
+const unsigned char PROGMEM bmp_empty[] = {
+    0b00000000, /**/
+    0b00000000, /**/
+    0b00000000, /**/
+    0b00000000, /**/
+    0b00000000, /**/
+    0b00000000, /**/
+    0b00000000, /**/
+    0b00000000, /**/
+};
+
 const unsigned char PROGMEM bmp_cactus[] = {
     0b00001100, /**/
     0b00011000, /**/
