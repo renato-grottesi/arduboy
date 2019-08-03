@@ -42,17 +42,18 @@ void Level::render() {
   frame++;
 
   for (uint8_t tile = 0; tile < 16; tile++) {
-    uint8_t *bmp = groundBmps[(uint8_t)ground_top[tile]];
+    const uint8_t *bmp = groundBmps[(uint8_t)ground_top[tile]];
     arduboy.drawBitmap(tile * 8, 4 * 8 - 2, bmp, 8, 8);
   }
 
   for (uint8_t tile = 0; tile < 16; tile++) {
-    uint8_t *bmp = groundBmps[(uint8_t)ground_low[tile]];
+    uint8_t frames = groundFrames[(uint8_t)(ground_low[tile])];
+    const uint8_t *bmp = groundBmps[(uint8_t)ground_low[tile]] + 8*((frame>>2)%frames);
     arduboy.drawBitmap(tile * 8, 5 * 8 - 2, bmp, 8, 8);
   }
 
   for (uint8_t tile = 0; tile < 16; tile++) {
-    uint8_t *bmp = &(bmp_lake[(frame >> 3) % 2]);
+    const uint8_t *bmp = &(bmp_lake[(frame >> 3) % 2]);
     arduboy.drawBitmap(tile * 8, 6 * 8 - 2, bmp, 8, 8);
   }
 

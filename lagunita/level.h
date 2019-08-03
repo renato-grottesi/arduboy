@@ -44,8 +44,8 @@ private:
       bmp_saloon, bmp_mill,   bmp_farm};
 
   enum class Ground : uint8_t { empty, lake, ground, river, bridge };
-  const uint8_t *groundBmps[8] = {bmp_empty, bmp_lake, bmp_ground, bmp_river,
-                                  bmp_bridge};
+  const uint8_t *groundBmps[8] = {bmp_empty, bmp_lake, bmp_ground, bmp_river, bmp_bridge};
+  const uint8_t groundFrames[8] = {1, 2, 1, 3, 1};
 
   enum class Walkers : uint8_t { man, bird };
   const uint8_t *walkersBmps[8] = {bmp_man, bmp_bird};
