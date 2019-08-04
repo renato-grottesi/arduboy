@@ -41,6 +41,9 @@ private:
   const uint8_t buildableCost[16] = {0, 0, 0, 0, 2, 20, 20, 8, 15, 1, 5, 1, 6};
   const uint8_t buildableWidth[16] = {1, 1, 1, 2, 2, 3, 3, 2, 2, 1, 3, 1, 4};
   const uint8_t buildableHeight[16] = {1, 1, 1, 2, 2, 3, 3, 2, 2, 3, 3, 3, 2};
+  const uint8_t buildableMaintenance[16] = {0, 0, 0, 0, 1, 0, 2,
+                                            2, 5, 0, 0, 0, 0};
+  const uint8_t buildableProfit[16] = {0, 0, 0, 0, 0, 10, 0, 0, 0, 1, 0, 1, 5};
   const uint8_t *buildableBmps[16] = {
       bmp_empty,  bmp_weed,   bmp_cactus,  bmp_tree, bmp_house,
       bmp_mine,   bmp_church, bmp_sheriff, bmp_bank, bmp_water,
@@ -83,4 +86,6 @@ private:
   Buildable currBuil = Buildable::empty;
 
   uint16_t money = 1000;
+
+  unsigned long timeToUpdate = 0;
 };

@@ -1,6 +1,7 @@
 #include "level.h"
 
 void Level::init() {
+  timeToUpdate = millis();
 
   for (uint8_t i = 0; i < size; i++) {
     ground_top[i] = Ground::empty;
@@ -64,7 +65,17 @@ void Level::onInput(Input dir) {
   }
 }
 
-void Level::update() {}
+void Level::update() {
+
+  unsigned long time = millis();
+  if ((time - timeToUpdate) > 1000) {
+    timeToUpdate = time;
+    for (uint8_t obj = 0; obj < size; obj++) {
+      money += buildableProfit[(uint8_t)buildings[obj]];
+      money -= buildableMaintenance[(uint8_t)buildings[obj]];
+    }
+  }
+}
 
 void Level::render() {
   static uint8_t frame = 0;
@@ -82,6 +93,24 @@ void Level::render() {
   // Walking objects
   arduboy.drawBitmap(2 * 8, 1 + 4 * 8, &bmp_man[((frame >> 3) % 4) * 8], 8, 8);
 
+  // Render the first partially visible building on the left
+  if (buildings[camera] == Buildable::empty) {
+    for (uint8_t i = 0; i < 4; i++) {
+      uint8_t lidx = ((uint16_t)camera + (uint16_t)(size - i)) % size;
+      uint8_t bidx = (uint8_t)(buildings[lidx]);
+      uint8_t ends = buildableWidth[bidx];
+      if (((lidx + ends) % size) > camera &&
+          Buildable::empty != buildings[lidx]) {
+        const uint8_t *bmp = buildableBmps[bidx];
+        uint8_t w = buildableWidth[bidx];
+        uint8_t h = buildableHeight[bidx];
+
+        arduboy.drawBitmap((-((int16_t)(i))) * 8, (4 - h) * 8, bmp, w * 8,
+                           h * 8);
+      }
+    }
+  }
+
   // Camera affected objects
   for (uint8_t obj = 0; obj < size; obj++) {
     uint8_t moved = (obj + camera) % size;
@@ -97,7 +126,7 @@ void Level::render() {
 
     // Building area
     Buildable b = buildings[moved];
-    // if(b == Buildable::empty) continue;
+
     uint8_t id = (uint8_t)(b);
     bmp = buildableBmps[id];
     uint8_t w = buildableWidth[id];
