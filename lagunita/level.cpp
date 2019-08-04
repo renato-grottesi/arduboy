@@ -110,11 +110,8 @@ void Level::render() {
 
     // Current selection
     for (uint8_t tile = 7; tile < 7 + (buildableWidth[sel]); tile++) {
-      for (uint8_t vtile = 0; vtile < (buildableHeight[sel]); vtile++) {
-        const uint8_t *bmp = bmp_selection;
-        const uint8_t y = vtile - (buildableHeight[sel]) + 4;
-        arduboy.drawBitmap(tile * 8, (y)*8, bmp, 8, 8);
-      }
+      const uint8_t *bmp = bmp_selection;
+      arduboy.drawBitmap(tile * 8, 0, bmp, 8, 8);
     }
 
     // Two lines of GUI
