@@ -133,19 +133,19 @@ void Lagunita::render() {
     break;
   case Menus::help:
     tinyfont.setCursor(2, 0);
-    tinyfont.print(""               /**/
-                   "\n"             /**/
-                   "\n"             /**/
-                   "\n"             /**/
-                   "\n"             /**/
-                   "\n"             /**/
-                   "\n"             /**/
-                   "\n"             /**/
-                   "\n"             /**/
-                   "\n"             /**/
-                   "\n"             /**/
-                   "\n"             /**/
-                   "\nGOOD LUCK!\n" /**/
+    tinyfont.print(""                            /**/
+                   "LEFT AND RIGHT TO MOVE\n"    /**/
+                   "THE MAP AROUND THE LAKE.\n"  /**/
+                   "UP AND DOWN TO CHANGE THE\n" /**/
+                   "CURRENT TYPE OF BUILDING.\n" /**/
+                   "(A) TO BUILD IT.\n"          /**/
+                   "SOME BUILDINGS INCREASE\n"   /**/
+                   "THE REVENUE PER SECOND,\n"   /**/
+                   "WHILE OTHERS DECREASE IT.\n" /**/
+                   "DON'T RUN OUT OF MONEY!\n"   /**/
+                   "\n"                          /**/
+                   "\n"                          /**/
+                   "\nGOOD LUCK!\n"              /**/
     );
     break;
   }
