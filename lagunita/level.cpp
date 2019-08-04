@@ -34,8 +34,31 @@ void Level::onInput(Input dir) {
   case Input::right:
     camera = (camera + 1) % size;
     break;
-  case Input::a:
-    break;
+  case Input::a: {
+    uint8_t idx = (uint8_t)(currBuil);
+    if (money > (buildableCost[idx] * 5)) {
+
+      uint8_t cidx = (camera + 7) % size;
+
+      // Check if we are in the middle of another building that has to be
+      // destroyed
+      for (uint8_t i = 0; i < 4; i++) {
+        uint8_t lidx = ((uint16_t)cidx + (uint16_t)size - (uint16_t)i) % size;
+        uint8_t ends = buildableWidth[(uint8_t)(buildings[lidx])];
+        if (((lidx + ends) % size) > cidx)
+          buildings[lidx] = Buildable::empty;
+      }
+
+      // Check if there is another building on the right that has to be
+      // destroyed
+      for (uint8_t i = 0; i < buildableWidth[cidx]; i++) {
+        buildings[(cidx + i) % size] = Buildable::empty;
+      }
+
+      buildings[cidx] = currBuil;
+      money -= buildableCost[idx] * 5;
+    }
+  } break;
   case Input::b:
     break;
   }
@@ -82,12 +105,29 @@ void Level::render() {
     arduboy.drawBitmap(obj * 8, (4 - h) * 8, bmp, w * 8, h * 8);
   }
 
-  // Two lines of GUI
   {
     uint8_t sel = (uint8_t)(currBuil);
+
+    // Current selection
+    for (uint8_t tile = 7; tile < 7 + (buildableWidth[sel]); tile++) {
+      for (uint8_t vtile = 0; vtile < (buildableHeight[sel]); vtile++) {
+        const uint8_t *bmp = bmp_selection;
+        const uint8_t y = vtile - (buildableHeight[sel]) + 4;
+        arduboy.drawBitmap(tile * 8, (y)*8, bmp, 8, 8);
+      }
+    }
+
+    // Two lines of GUI
+    char money_str[16];
+
     tinyfont.setCursor(0 * 8, 6 * 8 + 6);
     tinyfont.print(buildableNames[sel]);
+    tinyfont.setCursor(32, 6 * 8 + 6);
+    tinyfont.print(itoa(5 * buildableCost[sel], money_str, 10));
+
     tinyfont.setCursor(0 * 8, 6 * 8 + 6 + 6);
-    tinyfont.print("AVAIL $999");
+    tinyfont.print("AVAIL");
+    tinyfont.setCursor(32, 6 * 8 + 6 + 6);
+    tinyfont.print(itoa(money, money_str, 10));
   }
 }

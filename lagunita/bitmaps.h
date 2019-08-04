@@ -3,6 +3,17 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 
+const unsigned char PROGMEM bmp_selection[] = {
+    0b00111000, /**/
+    0b01000100, /**/
+    0b10101010, /**/
+    0b10010010, /**/
+    0b10101010, /**/
+    0b01000100, /**/
+    0b00111000, /**/
+    0b00000000, /**/
+};
+
 const unsigned char PROGMEM bmp_empty[] = {
     0b00000000, /**/
     0b00000000, /**/

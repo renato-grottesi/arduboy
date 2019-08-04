@@ -38,6 +38,7 @@ private:
     count
   };
   const uint8_t buildableCount = (uint8_t)(Buildable::count);
+  const uint8_t buildableCost[16] = {0, 0, 0, 0, 2, 20, 20, 8, 15, 1, 5, 1, 6};
   const uint8_t buildableWidth[16] = {1, 1, 1, 2, 2, 3, 3, 2, 2, 1, 3, 1, 4};
   const uint8_t buildableHeight[16] = {1, 1, 1, 2, 2, 3, 3, 2, 2, 3, 3, 3, 2};
   const uint8_t *buildableBmps[16] = {
@@ -45,7 +46,7 @@ private:
       bmp_mine,   bmp_church, bmp_sheriff, bmp_bank, bmp_water,
       bmp_saloon, bmp_mill,   bmp_farm};
   const char *buildableNames[16] = {
-      "EMPTY",   "WEED", "CACTUS", "TREE",   "HOUSE", "MINE", "CHURCH",
+      "CLEAR",   "WEED", "CACTUS", "TREE",   "HOUSE", "MINE", "CHURCH",
       "SHERIFF", "BANK", "WATER",  "SALOON", "MILL",  "FARM"};
 
   enum class Ground : uint8_t { empty, lake, ground, river, bridge };
@@ -80,4 +81,6 @@ private:
 
   // Currently selected object
   Buildable currBuil = Buildable::empty;
+
+  uint16_t money = 1000;
 };
