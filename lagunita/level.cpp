@@ -36,7 +36,7 @@ void Level::onInput(Input dir) {
     break;
   case Input::a: {
     uint8_t idx = (uint8_t)(currBuil);
-    if (money > (buildableCost[idx] * 5)) {
+    if (money >= (buildableCost[idx] * 5)) {
 
       uint8_t cidx = (camera + 7) % size;
 
@@ -51,7 +51,7 @@ void Level::onInput(Input dir) {
 
       // Check if there is another building on the right that has to be
       // destroyed
-      for (uint8_t i = 0; i < buildableWidth[cidx]; i++) {
+      for (uint8_t i = 0; i < buildableWidth[(uint8_t)currBuil]; i++) {
         buildings[(cidx + i) % size] = Buildable::empty;
       }
 
