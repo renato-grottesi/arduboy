@@ -2,14 +2,40 @@
 
 void Level::init() {
   timeToUpdate = millis();
+  arduboy.initRandomSeed();
 
+  // Add some random plants
   for (uint8_t i = 0; i < size; i++) {
-    ground_top[i] = Ground::empty;
+    unsigned long r = arduboy.generateRandomSeed();
+    if ((r % 7) == 0) {
+      buildings[i] = Buildable::cactus;
+      i++;
+    }
+    if ((r % 7) == 1) {
+      buildings[i] = Buildable::weed;
+      i++;
+    };
+    if ((r % 9) == 2) {
+      buildings[i] = Buildable::tree;
+      i++;
+    };
+  }
+
+  // Init ground
+  for (uint8_t i = 0; i < size; i++) {
     ground_low[i] = Ground::ground;
   }
 
+  // Add a river
   ground_top[5] = Ground::bridge;
   ground_low[5] = Ground::river;
+
+  // Add some random walkers and birds
+
+  for (uint8_t i = 0; i < 4; i++) {
+    walking[i] = random() % 1024;
+    flying[i] = random() % 1024;
+  }
 }
 
 void Level::onInput(Input dir) {
@@ -81,17 +107,24 @@ void Level::render() {
   static uint8_t frame = 0;
   frame++;
 
+  for (uint8_t i = 0; i < 4; i++) {
+    walking[i] = (walking[i] + 1) % (1024);
+    flying[i] = (flying[i] + 1) % (1024);
+
+    // Flying objects
+    arduboy.drawBitmap((flying[i]), 0 * 8, &bmp_bird[((frame >> 2) % 4) * 8], 8,
+                       8);
+
+    // Walking objects
+    arduboy.drawBitmap((walking[i] >> 2), 1 + 4 * 8,
+                       &bmp_man[((frame >> 3) % 4) * 8], 8, 8);
+  }
+
   // Lake area
   for (uint8_t tile = 0; tile < 16; tile++) {
     const uint8_t *bmp = &(bmp_lake[(frame >> 3) % 2]);
     arduboy.drawBitmap(tile * 8, 6 * 8 - 2, bmp, 8, 8);
   }
-
-  // Flying objects
-  arduboy.drawBitmap(2 * 8, 0 * 8, &bmp_bird[((frame >> 2) % 4) * 8], 8, 8);
-
-  // Walking objects
-  arduboy.drawBitmap(2 * 8, 1 + 4 * 8, &bmp_man[((frame >> 3) % 4) * 8], 8, 8);
 
   // Render the first partially visible building on the left
   if (buildings[camera] == Buildable::empty) {

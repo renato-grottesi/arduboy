@@ -15,7 +15,7 @@ public:
   void render();
 
   // Number of tiles
-  static const uint8_t size = 32;
+  static const uint8_t size = 128;
 
 private:
   Arduboy2 &arduboy;
@@ -64,17 +64,14 @@ private:
   uint16_t camera = 0;
 
   Buildable buildings[size] = {
-      Buildable::empty,  Buildable::empty, Buildable::empty, Buildable::weed,
-      Buildable::cactus, Buildable::tree,  Buildable::empty, Buildable::house,
-      Buildable::empty,  Buildable::mine,  Buildable::empty, Buildable::empty,
-      Buildable::church, Buildable::empty, Buildable::empty, Buildable::sheriff,
-      Buildable::empty,  Buildable::bank,  Buildable::empty, Buildable::water,
-      Buildable::saloon, Buildable::empty, Buildable::empty, Buildable::mill,
-      Buildable::farm,   Buildable::empty, Buildable::empty,
+      Buildable::empty,
   };
-
-  Ground ground_top[Level::size];
-  Ground ground_low[Level::size];
+  Ground ground_top[size] = {
+      Ground::empty,
+  };
+  Ground ground_low[size] = {
+      Ground::ground,
+  };
 
   // x coordinates of 4 flying objects
   uint16_t flying[4];
