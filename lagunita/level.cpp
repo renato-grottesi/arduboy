@@ -12,21 +12,27 @@ void Level::init() {
 }
 
 void Level::onInput(Input dir) {
+  uint8_t sel = (uint8_t)(currBuil);
   switch (dir) {
   case Input::up:
+    if (sel == 0)
+      sel = buildableCount - 1;
+    else
+      sel--;
+    currBuil = (Buildable)(sel);
     break;
   case Input::down:
+    sel = (sel + 1) % buildableCount;
+    currBuil = (Buildable)(sel);
     break;
   case Input::left:
     if (camera == 0)
-      camera = size * 8;
+      camera = size;
     else
       camera--;
     break;
   case Input::right:
-    camera++;
-    if (camera > size * 8)
-      camera = 0;
+    camera = (camera + 1) % size;
     break;
   case Input::a:
     break;
@@ -41,39 +47,47 @@ void Level::render() {
   static uint8_t frame = 0;
   frame++;
 
-  for (uint8_t tile = 0; tile < 16; tile++) {
-    const uint8_t *bmp = groundBmps[(uint8_t)ground_top[tile]];
-    arduboy.drawBitmap(tile * 8, 4 * 8 - 2, bmp, 8, 8);
-  }
-
-  for (uint8_t tile = 0; tile < 16; tile++) {
-    uint8_t frames = groundFrames[(uint8_t)(ground_low[tile])];
-    const uint8_t *bmp = groundBmps[(uint8_t)ground_low[tile]] + 8*((frame>>2)%frames);
-    arduboy.drawBitmap(tile * 8, 5 * 8 - 2, bmp, 8, 8);
-  }
-
+  // Lake area
   for (uint8_t tile = 0; tile < 16; tile++) {
     const uint8_t *bmp = &(bmp_lake[(frame >> 3) % 2]);
     arduboy.drawBitmap(tile * 8, 6 * 8 - 2, bmp, 8, 8);
   }
 
+  // Flying objects
   arduboy.drawBitmap(2 * 8, 0 * 8, &bmp_bird[((frame >> 2) % 4) * 8], 8, 8);
-  arduboy.drawBitmap(0 * 8, 1 + 4 * 8, bmp_weed, 8, 8);
-  arduboy.drawBitmap(1 * 8, 1 + 4 * 8, bmp_cactus, 8, 8);
-  arduboy.drawBitmap(2 * 8, 1 + 4 * 8, &bmp_man[((frame >> 3) % 4) * 8], 8, 8);
+
+  // Walking objects
   arduboy.drawBitmap(2 * 8, 1 + 4 * 8, &bmp_man[((frame >> 3) % 4) * 8], 8, 8);
 
-  arduboy.drawBitmap(0 * 8, 2 * 8, bmp_house, 16, 16);
-  // arduboy.drawBitmap(13 * 8, 1 * 8, bmp_mine, 24, 24);
-  arduboy.drawBitmap(13 * 8, 1 * 8, bmp_church, 24, 24);
-  // arduboy.drawBitmap(2 * 8, 2 * 8, bmp_sheriff, 16, 16);
-  // arduboy.drawBitmap(2 * 8, 2 * 8, bmp_bank, 16, 16);
-  arduboy.drawBitmap(2 * 8, 2 * 8, bmp_tree, 16, 16);
-  arduboy.drawBitmap(4 * 8, 1 * 8, bmp_water, 8, 24);
-  arduboy.drawBitmap(5 * 8, 1 * 8, bmp_saloon, 24, 24);
-  arduboy.drawBitmap(8 * 8, 1 * 8, bmp_mill, 8, 24);
-  arduboy.drawBitmap(9 * 8, 2 * 8, bmp_farm, 32, 16);
+  // Camera affected objects
+  for (uint8_t obj = 0; obj < size; obj++) {
+    uint8_t moved = (obj + camera) % size;
 
-  tinyfont.setCursor(0 * 8, 6 * 8 + 6);
-  tinyfont.print("SHERIFF $999\nAVAIL $999");
+    // Area where characters walk
+    const uint8_t *bmp = groundBmps[(uint8_t)ground_top[moved]];
+    arduboy.drawBitmap(obj * 8, 4 * 8 - 2, bmp, 8, 8);
+
+    // Lake shore area
+    uint8_t frames = groundFrames[(uint8_t)(ground_low[moved])];
+    bmp = groundBmps[(uint8_t)ground_low[moved]] + 8 * ((frame >> 2) % frames);
+    arduboy.drawBitmap(obj * 8, 5 * 8 - 2, bmp, 8, 8);
+
+    // Building area
+    Buildable b = buildings[moved];
+    // if(b == Buildable::empty) continue;
+    uint8_t id = (uint8_t)(b);
+    bmp = buildableBmps[id];
+    uint8_t w = buildableWidth[id];
+    uint8_t h = buildableHeight[id];
+    arduboy.drawBitmap(obj * 8, (4 - h) * 8, bmp, w * 8, h * 8);
+  }
+
+  // Two lines of GUI
+  {
+    uint8_t sel = (uint8_t)(currBuil);
+    tinyfont.setCursor(0 * 8, 6 * 8 + 6);
+    tinyfont.print(buildableNames[sel]);
+    tinyfont.setCursor(0 * 8, 6 * 8 + 6 + 6);
+    tinyfont.print("AVAIL $999");
+  }
 }

@@ -34,17 +34,23 @@ private:
     water,
     saloon,
     mill,
-    farm
+    farm,
+    count
   };
+  const uint8_t buildableCount = (uint8_t)(Buildable::count);
   const uint8_t buildableWidth[16] = {1, 1, 1, 2, 2, 3, 3, 2, 2, 1, 3, 1, 4};
   const uint8_t buildableHeight[16] = {1, 1, 1, 2, 2, 3, 3, 2, 2, 3, 3, 3, 2};
   const uint8_t *buildableBmps[16] = {
       bmp_empty,  bmp_weed,   bmp_cactus,  bmp_tree, bmp_house,
       bmp_mine,   bmp_church, bmp_sheriff, bmp_bank, bmp_water,
       bmp_saloon, bmp_mill,   bmp_farm};
+  const char *buildableNames[16] = {
+      "EMPTY",   "WEED", "CACTUS", "TREE",   "HOUSE", "MINE", "CHURCH",
+      "SHERIFF", "BANK", "WATER",  "SALOON", "MILL",  "FARM"};
 
   enum class Ground : uint8_t { empty, lake, ground, river, bridge };
-  const uint8_t *groundBmps[8] = {bmp_empty, bmp_lake, bmp_ground, bmp_river, bmp_bridge};
+  const uint8_t *groundBmps[8] = {bmp_empty, bmp_lake, bmp_ground, bmp_river,
+                                  bmp_bridge};
   const uint8_t groundFrames[8] = {1, 2, 1, 3, 1};
 
   enum class Walkers : uint8_t { man, bird };
@@ -71,4 +77,7 @@ private:
 
   // x coordinates of 4 walking objects
   uint16_t walking[4];
+
+  // Currently selected object
+  Buildable currBuil = Buildable::empty;
 };
