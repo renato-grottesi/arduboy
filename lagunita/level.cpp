@@ -63,6 +63,10 @@ void Level::onInput(Input dir) {
     break;
   case Input::a: {
     uint8_t idx = (uint8_t)(currBuil);
+    if (tutor != nullptr) {
+      tutor = nullptr;
+      break;
+    }
     if (money >= (buildableCost[idx] * 5)) {
 
       uint8_t cidx = (camera + 7) % size;
@@ -92,13 +96,20 @@ void Level::onInput(Input dir) {
 }
 
 void Level::update() {
-
   unsigned long time = millis();
   if ((time - timeToUpdate) > 1000) {
     timeToUpdate = time;
     for (uint8_t obj = 0; obj < size; obj++) {
       money += buildableProfit[(uint8_t)buildings[obj]];
       money -= buildableMaintenance[(uint8_t)buildings[obj]];
+    }
+  }
+
+  for (uint8_t t = 0; t < tutorialCount; t++) {
+    tutorials[t].update(0, money);
+    if (tutorials[t].justTriggered()) {
+      // uint8_t b = tutorials[t].buildingUnlocked();
+      tutor = tutorials[t].getText();
     }
   }
 }
@@ -179,14 +190,29 @@ void Level::render() {
     // Two lines of GUI
     char money_str[16];
 
-    tinyfont.setCursor(0 * 8, 6 * 8 + 6);
-    tinyfont.print(buildableNames[sel]);
+    // tinyfont.setCursor(0, 6 * 8 + 6);
     tinyfont.setCursor(32, 6 * 8 + 6);
+    tinyfont.print(buildableNames[sel]);
+    // tinyfont.setCursor(32, 6 * 8 + 6);
+    tinyfont.setCursor(70, 6 * 8 + 6);
     tinyfont.print(itoa(5 * buildableCost[sel], money_str, 10));
 
-    tinyfont.setCursor(0 * 8, 6 * 8 + 6 + 6);
-    tinyfont.print("AVAIL");
+    // tinyfont.setCursor(0, 6 * 8 + 6 + 6);
     tinyfont.setCursor(32, 6 * 8 + 6 + 6);
+    tinyfont.print("AVAIL");
+    // tinyfont.setCursor(32, 6 * 8 + 6 + 6);
+    tinyfont.setCursor(70, 6 * 8 + 6 + 6);
     tinyfont.print(itoa(money, money_str, 10));
+  }
+
+  /* Temporary restrictions for the LOWREZJAM */
+  arduboy.fillRect(0, 0, 32, 64, BLACK);
+  arduboy.fillRect(32 + 64, 0, 32, 64, BLACK);
+
+  if (tutor != nullptr) {
+    arduboy.fillRect(32, 0, 64, 64, BLACK);
+    arduboy.drawRoundRect(32, 0, 64, 64, 4, WHITE);
+    tinyfont.setCursor(35, 3);
+    tinyfont.print(tutor);
   }
 }

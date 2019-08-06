@@ -1,6 +1,7 @@
 #pragma once
 
 #include "bitmaps.h"
+#include "tutorial.h"
 #include "utility.h"
 
 class Level {
@@ -85,4 +86,18 @@ private:
   uint16_t money = 1000;
 
   unsigned long timeToUpdate = 0;
+
+  static const uint8_t tutorialCount = 1;
+  Event tutorials[tutorialCount]{Event(0, 0, (uint8_t)(Buildable::farm), /**/
+                                       "\nWELCOME TO\n"                  /**/
+                                       "LAGUNITA,\n"                     /**/
+                                       "A SMALL LAKE\n"                  /**/
+                                       "IN THE WILD\n"                   /**/
+                                       "WILD WEST.\n\n"                  /**/
+                                       "BUILD A FARM\n"                  /**/
+                                       "TO GENERATE\n"                   /**/
+                                       "SOME INCOME."                    /**/
+                                       )};
+
+  const char *tutor = nullptr;
 };

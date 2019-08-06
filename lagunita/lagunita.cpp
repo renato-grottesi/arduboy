@@ -104,21 +104,21 @@ void Lagunita::render() {
 
   switch (currentMenu) {
   case Menus::main:
-    arduboy.setCursor(20, 15);
+    arduboy.setCursor(42, 15);
     arduboy.print(F("Play"));
-    arduboy.setCursor(20, 30);
+    arduboy.setCursor(42, 30);
     arduboy.print(F("Credits"));
-    arduboy.setCursor(20, 45);
+    arduboy.setCursor(42, 45);
     arduboy.print(F("Help"));
     switch (currentMainSelection) {
     case MainSelections::play:
-      arduboy.drawBitmap(10, 15, bmp_bullet, 8, 8);
+      arduboy.drawBitmap(32, 15, bmp_bullet, 8, 8);
       break;
     case MainSelections::credits:
-      arduboy.drawBitmap(10, 30, bmp_bullet, 8, 8);
+      arduboy.drawBitmap(32, 30, bmp_bullet, 8, 8);
       break;
     case MainSelections::help:
-      arduboy.drawBitmap(10, 45, bmp_bullet, 8, 8);
+      arduboy.drawBitmap(32, 45, bmp_bullet, 8, 8);
       break;
     }
     break;
@@ -126,10 +126,14 @@ void Lagunita::render() {
     level.render();
     break;
   case Menus::credits:
-    arduboy.setCursor(2, 10);
-    arduboy.print(F("Lagunita was made"));
-    arduboy.setCursor(2, 20);
-    arduboy.print(F("by Renato Grottesi"));
+    arduboy.setCursor(32, 10);
+    arduboy.print(F("Lagunita"));
+    arduboy.setCursor(32, 20);
+    arduboy.print(F("was made"));
+    arduboy.setCursor(32, 30);
+    arduboy.print(F("by Renato"));
+    arduboy.setCursor(32, 40);
+    arduboy.print(F("Grottesi"));
     break;
   case Menus::help:
     tinyfont.setCursor(2, 0);
