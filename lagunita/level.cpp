@@ -99,9 +99,11 @@ void Level::update() {
   unsigned long time = millis();
   if ((time - timeToUpdate) > 1000) {
     timeToUpdate = time;
+    population = 0;
     for (uint8_t obj = 0; obj < size; obj++) {
       money += buildableProfit[(uint8_t)buildings[obj]];
       money -= buildableMaintenance[(uint8_t)buildings[obj]];
+      population += buildableInhabitants[(uint8_t)buildings[obj]];
     }
   }
 
@@ -190,19 +192,19 @@ void Level::render() {
     // Two lines of GUI
     char money_str[16];
 
-    // tinyfont.setCursor(0, 6 * 8 + 6);
     tinyfont.setCursor(32, 6 * 8 + 6);
     tinyfont.print(buildableNames[sel]);
-    // tinyfont.setCursor(32, 6 * 8 + 6);
     tinyfont.setCursor(70, 6 * 8 + 6);
     tinyfont.print(itoa(5 * buildableCost[sel], money_str, 10));
 
-    // tinyfont.setCursor(0, 6 * 8 + 6 + 6);
     tinyfont.setCursor(32, 6 * 8 + 6 + 6);
-    tinyfont.print("AVAIL");
-    // tinyfont.setCursor(32, 6 * 8 + 6 + 6);
-    tinyfont.setCursor(70, 6 * 8 + 6 + 6);
+    tinyfont.print("$");
+    tinyfont.setCursor(38, 6 * 8 + 6 + 6);
     tinyfont.print(itoa(money, money_str, 10));
+    tinyfont.setCursor(64, 6 * 8 + 6 + 6);
+    tinyfont.print("PPL");
+    tinyfont.setCursor(82, 6 * 8 + 6 + 6);
+    tinyfont.print(itoa(population, money_str, 10));
   }
 
   /* Temporary restrictions for the LOWREZJAM */

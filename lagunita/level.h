@@ -39,6 +39,8 @@ private:
     count
   };
   const uint8_t buildableCount = (uint8_t)(Buildable::count);
+  const uint8_t buildableInhabitants[16] = {0, 0, 0, 0, 4, 0, 1,
+                                            1, 0, 0, 0, 0, 3};
   const uint8_t buildableCost[16] = {0, 0, 0, 0, 2, 20, 20, 8, 15, 1, 5, 1, 6};
   const uint8_t buildableWidth[16] = {1, 1, 1, 2, 2, 3, 3, 2, 2, 1, 3, 1, 4};
   const uint8_t buildableHeight[16] = {1, 1, 1, 2, 2, 3, 3, 2, 2, 3, 3, 3, 2};
@@ -87,17 +89,27 @@ private:
 
   unsigned long timeToUpdate = 0;
 
-  static const uint8_t tutorialCount = 1;
-  Event tutorials[tutorialCount]{Event(0, 0, (uint8_t)(Buildable::farm), /**/
-                                       "\nWELCOME TO\n"                  /**/
-                                       "LAGUNITA,\n"                     /**/
-                                       "A SMALL LAKE\n"                  /**/
-                                       "IN THE WILD\n"                   /**/
-                                       "WILD WEST.\n\n"                  /**/
-                                       "BUILD A FARM\n"                  /**/
-                                       "TO GENERATE\n"                   /**/
-                                       "SOME INCOME."                    /**/
-                                       )};
+  static const uint8_t tutorialCount = 2;
+  Event tutorials[tutorialCount]{
+      /**/
+      Event(0, 0, (uint8_t)(Buildable::farm), /**/
+            "\nWELCOME TO\n"                  /**/
+            "LAGUNITA,\n"                     /**/
+            "A SMALL LAKE\n"                  /**/
+            "IN THE WILD\n"                   /**/
+            "WILD WEST.\n\n"                  /**/
+            "BUILD A FARM\n"                  /**/
+            "TO GENERATE\n"                   /**/
+            "SOME INCOME."                    /**/
+            ),
+      Event(1001, 0, (uint8_t)(Buildable::house), /**/
+            "\nBUILD SOME\n"                      /**/
+            "HOUSES TO\n"                         /**/
+            "INCREASE THE\n"                      /**/
+            "POPULATION.\n"                       /**/
+            )};
 
   const char *tutor = nullptr;
+
+  uint16_t population = 0;
 };
