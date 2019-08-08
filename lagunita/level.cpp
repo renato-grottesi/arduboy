@@ -8,27 +8,27 @@ void Level::init() {
   for (uint8_t i = 0; i < size; i++) {
     unsigned long r = arduboy.generateRandomSeed();
     if ((r % 7) == 0) {
-      buildings[i] = Buildable::cactus;
+      buildings[i] = Building::IDs::cactus;
       i++;
     }
     if ((r % 7) == 1) {
-      buildings[i] = Buildable::weed;
+      buildings[i] = Building::IDs::weed;
       i++;
     };
     if ((r % 9) == 2) {
-      buildings[i] = Buildable::tree;
+      buildings[i] = Building::IDs::tree;
       i++;
     };
   }
 
   // Init ground
   for (uint8_t i = 0; i < size; i++) {
-    ground_low[i] = Ground::ground;
+    ground_low[i] = Grounds::ground;
   }
 
   // Add a river
-  ground_top[5] = Ground::bridge;
-  ground_low[5] = Ground::river;
+  ground_top[5] = Grounds::bridge;
+  ground_low[5] = Grounds::river;
 
   // Add some random walkers and birds
 
@@ -43,14 +43,14 @@ void Level::onInput(Input dir) {
   switch (dir) {
   case Input::up:
     if (sel == 0)
-      sel = buildableCount - 1;
+      sel = Buildings::count() - 1;
     else
       sel--;
-    currBuil = (Buildable)(sel);
+    currBuil = (Building::IDs)(sel);
     break;
   case Input::down:
-    sel = (sel + 1) % buildableCount;
-    currBuil = (Buildable)(sel);
+    sel = (sel + 1) % Buildings::count();
+    currBuil = (Building::IDs)(sel);
     break;
   case Input::left:
     if (camera == 0)
@@ -67,7 +67,7 @@ void Level::onInput(Input dir) {
       tutor = nullptr;
       break;
     }
-    if (money >= (buildableCost[idx] * 5)) {
+    if (money >= (Buildings::at(idx).cost * 5)) {
 
       uint8_t cidx = (camera + 7) % size;
 
@@ -75,19 +75,19 @@ void Level::onInput(Input dir) {
       // destroyed
       for (uint8_t i = 0; i < 4; i++) {
         uint8_t lidx = ((uint16_t)cidx + (uint16_t)size - (uint16_t)i) % size;
-        uint8_t ends = buildableWidth[(uint8_t)(buildings[lidx])];
+        uint8_t ends = Buildings::at(buildings[lidx]).width;
         if (((lidx + ends) % size) > cidx)
-          buildings[lidx] = Buildable::empty;
+          buildings[lidx] = Building::IDs::empty;
       }
 
       // Check if there is another building on the right that has to be
       // destroyed
-      for (uint8_t i = 0; i < buildableWidth[(uint8_t)currBuil]; i++) {
-        buildings[(cidx + i) % size] = Buildable::empty;
+      for (uint8_t i = 0; i < Buildings::at(currBuil).width; i++) {
+        buildings[(cidx + i) % size] = Building::IDs::empty;
       }
 
       buildings[cidx] = currBuil;
-      money -= buildableCost[idx] * 5;
+      money -= Buildings::at(idx).cost * 5;
     }
   } break;
   case Input::b:
@@ -101,9 +101,9 @@ void Level::update() {
     timeToUpdate = time;
     population = 0;
     for (uint8_t obj = 0; obj < size; obj++) {
-      money += buildableProfit[(uint8_t)buildings[obj]];
-      money -= buildableMaintenance[(uint8_t)buildings[obj]];
-      population += buildableInhabitants[(uint8_t)buildings[obj]];
+      money += Buildings::at(buildings[obj]).profit;
+      money -= Buildings::at(buildings[obj]).maintenance;
+      population += Buildings::at(buildings[obj]).inhabitants;
     }
   }
 
@@ -140,16 +140,16 @@ void Level::render() {
   }
 
   // Render the first partially visible building on the left
-  if (buildings[camera] == Buildable::empty) {
+  if (buildings[camera] == Building::IDs::empty) {
     for (uint8_t i = 0; i < 4; i++) {
       uint8_t lidx = ((uint16_t)camera + (uint16_t)(size - i)) % size;
       uint8_t bidx = (uint8_t)(buildings[lidx]);
-      uint8_t ends = buildableWidth[bidx];
+      uint8_t ends = Buildings::at(bidx).width;
       if (((lidx + ends) % size) > camera &&
-          Buildable::empty != buildings[lidx]) {
-        const uint8_t *bmp = buildableBmps[bidx];
-        uint8_t w = buildableWidth[bidx];
-        uint8_t h = buildableHeight[bidx];
+          Building::IDs::empty != buildings[lidx]) {
+        const uint8_t *bmp = Buildings::at(bidx).bitmap;
+        uint8_t w = Buildings::at(bidx).width;
+        uint8_t h = Buildings::at(bidx).height;
 
         arduboy.drawBitmap((-((int16_t)(i))) * 8, (4 - h) * 8, bmp, w * 8,
                            h * 8);
@@ -171,12 +171,12 @@ void Level::render() {
     arduboy.drawBitmap(obj * 8, 5 * 8 - 2, bmp, 8, 8);
 
     // Building area
-    Buildable b = buildings[moved];
+    Building::IDs b = buildings[moved];
 
     uint8_t id = (uint8_t)(b);
-    bmp = buildableBmps[id];
-    uint8_t w = buildableWidth[id];
-    uint8_t h = buildableHeight[id];
+    bmp = Buildings::at(id).bitmap;
+    uint8_t w = Buildings::at(id).width;
+    uint8_t h = Buildings::at(id).height;
     arduboy.drawBitmap(obj * 8, (4 - h) * 8, bmp, w * 8, h * 8);
   }
 
@@ -184,7 +184,7 @@ void Level::render() {
     uint8_t sel = (uint8_t)(currBuil);
 
     // Current selection
-    for (uint8_t tile = 7; tile < 7 + (buildableWidth[sel]); tile++) {
+    for (uint8_t tile = 7; tile < 7 + (Buildings::at(sel).width); tile++) {
       const uint8_t *bmp = bmp_selection;
       arduboy.drawBitmap(tile * 8, 0, bmp, 8, 8);
     }
@@ -193,9 +193,9 @@ void Level::render() {
     char money_str[16];
 
     tinyfont.setCursor(32, 6 * 8 + 6);
-    tinyfont.print(buildableNames[sel]);
+    tinyfont.print(Buildings::at(sel).name);
     tinyfont.setCursor(70, 6 * 8 + 6);
-    tinyfont.print(itoa(5 * buildableCost[sel], money_str, 10));
+    tinyfont.print(itoa(5 * Buildings::at(sel).cost, money_str, 10));
 
     tinyfont.setCursor(32, 6 * 8 + 6 + 6);
     tinyfont.print("$");
