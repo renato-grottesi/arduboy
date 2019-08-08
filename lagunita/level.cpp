@@ -36,21 +36,27 @@ void Level::init() {
     walking[i] = random() % 1024;
     flying[i] = random() % 1024;
   }
+
+  buildingEnabled[(uint8_t)Building::IDs::empty] = true;
 }
 
 void Level::onInput(Input dir) {
   uint8_t sel = (uint8_t)(currBuil);
   switch (dir) {
   case Input::up:
-    if (sel == 0)
-      sel = Buildings::count() - 1;
-    else
-      sel--;
-    currBuil = (Building::IDs)(sel);
+    do {
+      if (sel == 0)
+        sel = Buildings::count() - 1;
+      else
+        sel--;
+      currBuil = (Building::IDs)(sel);
+    } while (buildingEnabled[sel] == false);
     break;
   case Input::down:
-    sel = (sel + 1) % Buildings::count();
-    currBuil = (Building::IDs)(sel);
+    do {
+      sel = (sel + 1) % Buildings::count();
+      currBuil = (Building::IDs)(sel);
+    } while (buildingEnabled[sel] == false);
     break;
   case Input::left:
     if (camera == 0)
@@ -110,7 +116,8 @@ void Level::update() {
   for (uint8_t t = 0; t < tutorialCount; t++) {
     tutorials[t].update(0, money);
     if (tutorials[t].justTriggered()) {
-      // uint8_t b = tutorials[t].buildingUnlocked();
+      uint8_t b = tutorials[t].buildingUnlocked();
+      buildingEnabled[b] = true;
       tutor = tutorials[t].getText();
     }
   }

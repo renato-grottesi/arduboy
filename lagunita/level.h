@@ -23,6 +23,10 @@ private:
   Arduboy2 &arduboy;
   Tinyfont &tinyfont;
 
+  bool buildingEnabled[(uint8_t)Building::IDs::count] = {
+      false,
+  };
+
   const uint8_t *groundBmps[8] = {bmp_empty, bmp_lake, bmp_ground, bmp_river,
                                   bmp_bridge};
   const uint8_t groundFrames[8] = {1, 2, 1, 3, 1};
