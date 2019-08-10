@@ -6,8 +6,21 @@ public:
       : onMoney(money), onPopulation(population), unlocks(unlocks), text(text) {
   }
 
-  void update(uint16_t population, uint16_t money) {
-    if (!triggered && (money > onMoney || population > onPopulation)) {
+  uint8_t buildingUnlocked() const { return unlocks; }
+  const char *getText() const { return text; }
+
+public:
+  const uint16_t onMoney;
+  const uint16_t onPopulation;
+  const uint8_t unlocks;
+  const char *text;
+};
+
+class EventWrapper {
+public:
+  EventWrapper() : triggered(0) {}
+  void update(const Event &ev, uint16_t population, uint16_t money) {
+    if (!triggered && (money > ev.onMoney || population > ev.onPopulation)) {
       triggered = 1;
     }
   }
@@ -20,16 +33,6 @@ public:
     return false;
   }
 
-  uint8_t buildingUnlocked() const { return unlocks; }
-
-  const char *getText() const { return text; }
-
 private:
-  uint8_t id = 0;
-
-  const uint16_t onMoney;
-  const uint16_t onPopulation;
-  const uint8_t unlocks;
-  const char *text;
   uint8_t triggered = 0;
 };

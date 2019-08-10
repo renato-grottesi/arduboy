@@ -1,5 +1,37 @@
 #include "level.h"
 
+const char t1[] PROGMEM = "\nWELCOME TO\n"   /**/
+                          "LAGUNITA,\n"      /**/
+                          "A SMALL LAKE\n"   /**/
+                          "IN THE WILD\n"    /**/
+                          "WILD WEST.\n\n"   /**/
+                          "BUILD A FARM\n"   /**/
+                          "TO GENERATE\n"    /**/
+                          "SOME INCOME.";    /**/
+const char t2[] PROGMEM = "\nBUILD SOME\n"   /**/
+                          "HOUSES TO\n"      /**/
+                          "INCREASE THE\n"   /**/
+                          "POPULATION.\n"    /**/
+                          "\nARROW UP\n"     /**/
+                          "TO SWITCH\n"      /**/
+                          "BUILDING.\n";     /**/
+const char t3[] PROGMEM = "\nMORE PEOPLE\n"  /**/
+                          "WOULD MOVE\n"     /**/
+                          "IN, IF THE\n"     /**/
+                          "HOUSES ARE\n"     /**/
+                          "SERVICED\n"       /**/
+                          "WITH WATER.\n"    /**/
+                          "\nTRY BUILDING\n" /**/
+                          "SOME WATER\n"     /**/
+                          "TOWERS.\n";       /**/
+
+const Event tutorialsData[] = {
+    /**/
+    Event(0, 0, (uint8_t)(Building::IDs::farm), t1),      /**/
+    Event(1000, 0, (uint8_t)(Building::IDs::house), t2),  /**/
+    Event(1100, 10, (uint8_t)(Building::IDs::water), t3), /**/
+};
+
 void Level::init() {
   timeToUpdate = millis();
   arduboy.initRandomSeed();
@@ -31,13 +63,12 @@ void Level::init() {
   ground_low[5] = Grounds::river;
 
   // Add some random walkers and birds
-
   for (uint8_t i = 0; i < 4; i++) {
     walking[i] = random() % 1024;
     flying[i] = random() % 1024;
   }
 
-  buildingEnabled[(uint8_t)Building::IDs::empty] = true;
+  inProgress = true;
 }
 
 void Level::onInput(Input dir) {
@@ -69,8 +100,8 @@ void Level::onInput(Input dir) {
     break;
   case Input::a: {
     uint8_t idx = (uint8_t)(currBuil);
-    if (tutor != nullptr) {
-      tutor = nullptr;
+    if (strlen(tutor)) {
+      tutor[0] = '\0';
       break;
     }
     if (money >= (Buildings::at(idx).cost * 5)) {
@@ -114,11 +145,19 @@ void Level::update() {
   }
 
   for (uint8_t t = 0; t < tutorialCount; t++) {
-    tutorials[t].update(0, money);
+    tutorials[t].update(tutorialsData[t], population, money);
     if (tutorials[t].justTriggered()) {
-      uint8_t b = tutorials[t].buildingUnlocked();
+      uint8_t b = tutorialsData[t].buildingUnlocked();
       buildingEnabled[b] = true;
-      tutor = tutorials[t].getText();
+      const char *src = tutorialsData[t].getText();
+
+      uint8_t k;
+      for (k = 0; k < strlen_P(src) && k < (128 - 1); k++) {
+        tutor[k] = pgm_read_byte_near(src + k);
+      }
+      for (; k < 128; k++) {
+        tutor[k] = '\0';
+      }
     }
   }
 }
@@ -218,7 +257,7 @@ void Level::render() {
   arduboy.fillRect(0, 0, 32, 64, BLACK);
   arduboy.fillRect(32 + 64, 0, 32, 64, BLACK);
 
-  if (tutor != nullptr) {
+  if (strlen(tutor)) {
     arduboy.fillRect(32, 0, 64, 64, BLACK);
     arduboy.drawRoundRect(32, 0, 64, 64, 4, WHITE);
     tinyfont.setCursor(35, 3);

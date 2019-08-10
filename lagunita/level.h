@@ -11,6 +11,7 @@ public:
       : arduboy(arduboy), tinyfont(tinyfont) {}
 
   void init();
+  bool isInProgress() { return inProgress; };
 
   void update();
   void onInput(Input dir);
@@ -52,33 +53,19 @@ private:
   uint16_t walking[4];
 
   // Currently selected object
-  Building::IDs currBuil = Building::IDs::empty;
+  Building::IDs currBuil = Building::IDs::farm;
 
-  uint16_t money = 1000;
+  uint16_t money = 999;
 
   unsigned long timeToUpdate = 0;
 
-  static const uint8_t tutorialCount = 2;
-  Event tutorials[tutorialCount]{
-      /**/
-      Event(0, 0, (uint8_t)(Building::IDs::farm), /**/
-            "\nWELCOME TO\n"                      /**/
-            "LAGUNITA,\n"                         /**/
-            "A SMALL LAKE\n"                      /**/
-            "IN THE WILD\n"                       /**/
-            "WILD WEST.\n\n"                      /**/
-            "BUILD A FARM\n"                      /**/
-            "TO GENERATE\n"                       /**/
-            "SOME INCOME."                        /**/
-            ),
-      Event(1001, 0, (uint8_t)(Building::IDs::house), /**/
-            "\nBUILD SOME\n"                          /**/
-            "HOUSES TO\n"                             /**/
-            "INCREASE THE\n"                          /**/
-            "POPULATION.\n"                           /**/
-            )};
+  static const uint8_t tutorialCount = 3;
+  EventWrapper tutorials[tutorialCount] = {};
 
-  const char *tutor = nullptr;
+  char tutor[128] = {
+      '\0',
+  };
 
   uint16_t population = 0;
+  bool inProgress = false;
 };

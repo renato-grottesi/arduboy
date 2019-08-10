@@ -51,7 +51,9 @@ void Lagunita::update() {
     if (arduboy.justPressed(A_BUTTON)) {
       switch (currentMainSelection) {
       case MainSelections::play:
-        level.init();
+        if (!level.isInProgress()) {
+          level.init();
+        }
         currentMenu = Menus::game;
         break;
       case MainSelections::credits:
@@ -105,7 +107,11 @@ void Lagunita::render() {
   switch (currentMenu) {
   case Menus::main:
     arduboy.setCursor(42, 15);
-    arduboy.print(F("Play"));
+    if (level.isInProgress()) {
+      arduboy.print(F("Resume"));
+    } else {
+      arduboy.print(F("Play"));
+    }
     arduboy.setCursor(42, 30);
     arduboy.print(F("Credits"));
     arduboy.setCursor(42, 45);
