@@ -28,10 +28,10 @@ private:
       false,
   };
 
-  const uint8_t *groundBmps[8] = {bmp_empty, bmp_lake, bmp_ground, bmp_river,
+  const uint8_t *groundBmps[5] = {bmp_empty, bmp_lake, bmp_ground, bmp_river,
                                   bmp_bridge};
-  const uint8_t groundFrames[8] = {1, 2, 1, 3, 1};
-  const uint8_t *walkersBmps[8] = {bmp_man, bmp_bird};
+  const uint8_t groundFrames[5] = {1, 2, 1, 3, 1};
+  const uint8_t *walkersBmps[2] = {bmp_man, bmp_bird};
 
   // Camera x position
   uint16_t camera = 0;
@@ -59,7 +59,7 @@ private:
 
   unsigned long timeToUpdate = 0;
 
-  static const uint8_t tutorialCount = 3;
+  static const uint8_t tutorialCount = 4;
   EventWrapper tutorials[tutorialCount] = {};
 
   char tutor[128] = {

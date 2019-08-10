@@ -20,7 +20,7 @@ class EventWrapper {
 public:
   EventWrapper() : triggered(0) {}
   void update(const Event &ev, uint16_t population, uint16_t money) {
-    if (!triggered && (money > ev.onMoney || population > ev.onPopulation)) {
+    if (!triggered && (money >= ev.onMoney && population >= ev.onPopulation)) {
       triggered = 1;
     }
   }

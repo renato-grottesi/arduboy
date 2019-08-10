@@ -24,12 +24,22 @@ const char t3[] PROGMEM = "\nMORE PEOPLE\n"  /**/
                           "\nTRY BUILDING\n" /**/
                           "SOME WATER\n"     /**/
                           "TOWERS.\n";       /**/
+const char t4[] PROGMEM = "\nTHE COWBOYS\n"  /**/
+                          "ARE GETTING\n"    /**/
+                          "RESTLESS.\n"      /**/
+                          "\nBUILD A NEW\n"  /**/
+                          "SALOON TO\n"      /**/
+                          "ENTERTAIN\n"      /**/
+                          "THEM AND\n"       /**/
+                          "COLLECT SOME\n"   /**/
+                          "TAXES.\n";        /**/
 
 const Event tutorialsData[] = {
     /**/
-    Event(0, 0, (uint8_t)(Building::IDs::farm), t1),      /**/
-    Event(1000, 0, (uint8_t)(Building::IDs::house), t2),  /**/
-    Event(1100, 10, (uint8_t)(Building::IDs::water), t3), /**/
+    Event(0, 0, (uint8_t)(Building::IDs::farm), t1),       /**/
+    Event(1000, 0, (uint8_t)(Building::IDs::house), t2),   /**/
+    Event(1050, 10, (uint8_t)(Building::IDs::water), t3),  /**/
+    Event(1150, 12, (uint8_t)(Building::IDs::saloon), t4), /**/
 };
 
 void Level::init() {
@@ -150,14 +160,7 @@ void Level::update() {
       uint8_t b = tutorialsData[t].buildingUnlocked();
       buildingEnabled[b] = true;
       const char *src = tutorialsData[t].getText();
-
-      uint8_t k;
-      for (k = 0; k < strlen_P(src) && k < (128 - 1); k++) {
-        tutor[k] = pgm_read_byte_near(src + k);
-      }
-      for (; k < 128; k++) {
-        tutor[k] = '\0';
-      }
+      strncpy_P(tutor, src, 128);
     }
   }
 }
@@ -236,21 +239,22 @@ void Level::render() {
     }
 
     // Two lines of GUI
-    char money_str[16];
+    char tmp_str[16];
 
     tinyfont.setCursor(32, 6 * 8 + 6);
-    tinyfont.print(Buildings::at(sel).name);
+    Buildings::at(sel).strncpyName(tmp_str);
+    tinyfont.print(tmp_str);
     tinyfont.setCursor(70, 6 * 8 + 6);
-    tinyfont.print(itoa(5 * Buildings::at(sel).cost, money_str, 10));
+    tinyfont.print(itoa(5 * Buildings::at(sel).cost, tmp_str, 10));
 
     tinyfont.setCursor(32, 6 * 8 + 6 + 6);
     tinyfont.print("$");
     tinyfont.setCursor(38, 6 * 8 + 6 + 6);
-    tinyfont.print(itoa(money, money_str, 10));
+    tinyfont.print(itoa(money, tmp_str, 10));
     tinyfont.setCursor(64, 6 * 8 + 6 + 6);
     tinyfont.print("PPL");
     tinyfont.setCursor(82, 6 * 8 + 6 + 6);
-    tinyfont.print(itoa(population, money_str, 10));
+    tinyfont.print(itoa(population, tmp_str, 10));
   }
 
   /* Temporary restrictions for the LOWREZJAM */
