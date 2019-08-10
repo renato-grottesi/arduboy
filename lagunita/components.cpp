@@ -1,8 +1,6 @@
 #include "components.h"
 #include "bitmaps.h"
-
-#include <avr/io.h>
-#include <avr/pgmspace.h>
+#include "utility.h"
 
 const char name_empty[] PROGMEM = "CLEAR";
 const char name_weed[] PROGMEM = "WEED";
@@ -66,12 +64,5 @@ Building::Building(const IDs id, const uint8_t inhabitants, const uint8_t cost,
                    const char *srcname, const uint8_t *bitmap)
     : id(id), inhabitants(inhabitants), cost(cost), width(width),
       height(height), maintenance(maintenance), profit(profit), bitmap(bitmap) {
-
-  uint8_t k;
-  for (k = 0; k < strlen_P(srcname) && k < (8 - 1); k++) {
-    name[k] = pgm_read_byte_near(srcname + k);
-  }
-  for (; k < 8; k++) {
-    name[k] = '\0';
-  }
+  snprintf_P(name, 8, srcname);
 };

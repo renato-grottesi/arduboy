@@ -11,6 +11,9 @@
 #include <SpritesB.h>
 #include <SpritesCommon.h>
 
+#include <avr/io.h>
+#include <avr/pgmspace.h>
+
 extern "C" {
 #include <stdint.h>
 }
