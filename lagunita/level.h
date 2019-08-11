@@ -59,10 +59,10 @@ private:
 
   unsigned long timeToUpdate = 0;
 
-  static const uint8_t tutorialCount = 4;
+  static const uint8_t tutorialCount = 13;
   EventWrapper tutorials[tutorialCount] = {};
 
-  char tutor[128] = {
+  char tutor[156] = {
       '\0',
   };
 
