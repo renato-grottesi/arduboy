@@ -2,12 +2,13 @@
 
 #include "level.h"
 #include "utility.h"
+#include "music.h"
 
 class Lagunita {
 public:
   Lagunita()
       : tinyfont(arduboy.sBuffer, Arduboy2::width(), Arduboy2::height()),
-        level(arduboy, tinyfont) {}
+        music(arduboy), level(arduboy, tinyfont) {}
   void init();
   void loop();
 
@@ -21,6 +22,7 @@ private:
 
   Arduboy2 arduboy;
   Tinyfont tinyfont;
+  Music music;
   Level level;
   Menus currentMenu = Menus::main;
   MainSelections currentMainSelection = MainSelections::play;
