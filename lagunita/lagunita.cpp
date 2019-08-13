@@ -140,31 +140,40 @@ void Lagunita::render() {
     level.render();
     break;
   case Menus::credits:
-    arduboy.setCursor(32, 10);
-    arduboy.print(F("Lagunita"));
-    arduboy.setCursor(32, 20);
-    arduboy.print(F("was made"));
-    arduboy.setCursor(32, 30);
-    arduboy.print(F("by Renato"));
-    arduboy.setCursor(32, 40);
-    arduboy.print(F("Grottesi"));
+    tinyfont.setCursor(2, 0);
+    tinyfont.print(F(                              /**/
+                     "                         \n" /**/
+                     "      LAGUNITA WAS       \n" /**/
+                     "      DEVELOPED BY       \n" /**/
+                     "                         \n" /**/
+                     "      RENATO             \n" /**/
+                     "           GROTTESI      \n" /**/
+                     "                         \n" /**/
+                     "                         \n" /**/
+                     "      MUSIC BY           \n" /**/
+                     "                         \n" /**/
+                     "      JOAKIM             \n" /**/
+                     "          SIMONSSON      \n" /**/
+                     "                         \n" /**/
+                     ));
     break;
   case Menus::help:
     tinyfont.setCursor(2, 0);
-    tinyfont.print(""                            /**/
-                   "LEFT AND RIGHT TO MOVE\n"    /**/
-                   "THE MAP AROUND THE LAKE.\n"  /**/
-                   "UP AND DOWN TO CHANGE THE\n" /**/
-                   "CURRENT TYPE OF BUILDING.\n" /**/
-                   "(A) TO BUILD IT.\n"          /**/
-                   "SOME BUILDINGS INCREASE\n"   /**/
-                   "THE REVENUE PER SECOND,\n"   /**/
-                   "WHILE OTHERS DECREASE IT.\n" /**/
-                   "DON'T RUN OUT OF MONEY!\n"   /**/
-                   "\n"                          /**/
-                   "\n"                          /**/
-                   "\nGOOD LUCK!\n"              /**/
-    );
+    tinyfont.print(F(                              /**/
+                     "      CONSTRUCT A        \n" /**/
+                     "      TOWN AROUND        \n" /**/
+                     "      THE LAGUNITA       \n" /**/
+                     "      LAKE WITH AS       \n" /**/
+                     "      MANY CITIZENS      \n" /**/
+                     "      AS POSSILE.        \n" /**/
+                     "      MAXIMIZE YOUR      \n" /**/
+                     "      PROFIT TO          \n" /**/
+                     "      UNLOCK NEW         \n" /**/
+                     "      BUILDINGS AND      \n" /**/
+                     "      HAVE FUN           \n" /**/
+                     "      PLAYING!           \n" /**/
+                     "                         \n" /**/
+                     ));
     break;
   }
 

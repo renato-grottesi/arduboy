@@ -17,9 +17,6 @@ public:
   void onInput(Input dir);
   void render();
 
-  // Number of tiles
-  static const uint8_t size = 128;
-
 private:
   Arduboy2 &arduboy;
   Tinyfont &tinyfont;
@@ -28,22 +25,22 @@ private:
       false,
   };
 
-  const uint8_t *groundBmps[5] = {bmp_empty, bmp_lake, bmp_ground, bmp_river,
-                                  bmp_bridge};
-  const uint8_t groundFrames[5] = {1, 2, 1, 3, 1};
+  const uint8_t *groundBmps[5] = {bmp_empty, bmp_ground, bmp_river, bmp_bridge};
+  const uint8_t groundFrames[5] = {1, 1, 3, 1};
   const uint8_t *walkersBmps[2] = {bmp_man, bmp_bird};
 
   // Camera x position
   uint16_t camera = 0;
 
-  Building::IDs buildings[size] = {
-      Building::IDs::empty,
-  };
-  Grounds ground_top[size] = {
-      Grounds::empty,
-  };
-  Grounds ground_low[size] = {
-      Grounds::ground,
+  // Number of tiles
+  static const uint8_t size = 255;
+  /* Use bit array to pack more fields in a byte. */
+  struct {
+    Building::IDs building : 4; /* max 16 different types of building */
+    Grounds top : 2;            /* max 4 types of grounds */
+    Grounds low : 2;            /* max 4 types of grounds */
+  } tiles[size] = {
+      {Building::IDs::empty, Grounds::empty, Grounds::ground},
   };
 
   // x coordinates of 4 flying objects

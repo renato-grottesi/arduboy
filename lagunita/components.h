@@ -3,7 +3,7 @@
 #include "utility.h"
 #include <stdint.h>
 
-enum class Grounds : uint8_t { empty, lake, ground, river, bridge };
+enum class Grounds : uint8_t { empty, ground, river, bridge };
 enum class Walkers : uint8_t { man, bird };
 
 class Building {
@@ -25,12 +25,12 @@ public:
     count
   };
 
-  Building(const IDs id, const uint8_t inhabitants, const uint8_t cost,
+  Building(const IDs id, const uint8_t jobs, const uint8_t cost,
            const uint8_t width, const uint8_t height, const uint8_t maintenance,
            const uint8_t profit, const uint8_t *bitmap);
 
   const IDs id;
-  const uint8_t inhabitants;
+  const uint8_t jobs;
   const uint8_t cost;
   const uint8_t width;
   const uint8_t height;

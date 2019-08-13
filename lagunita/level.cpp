@@ -151,8 +151,8 @@ const Event tutorialsData[] = {
     Event(4000, 100, (uint8_t)(Building::IDs::church), t09), /**/
     Event(5000, 200, (uint8_t)(Building::IDs::empty), t10),  /**/
     Event(5000, 250, (uint8_t)(Building::IDs::tree), t11),   /**/
-    Event(5000, 300, (uint8_t)(Building::IDs::cactus), t12), /**/
-    Event(5000, 350, (uint8_t)(Building::IDs::weed), t13),   /**/
+    Event(7500, 300, (uint8_t)(Building::IDs::cactus), t12), /**/
+    Event(7500, 350, (uint8_t)(Building::IDs::weed), t13),   /**/
 };
 
 void Level::init() {
@@ -163,27 +163,27 @@ void Level::init() {
   for (uint8_t i = 0; i < size; i++) {
     unsigned long r = arduboy.generateRandomSeed();
     if ((r % 7) == 0) {
-      buildings[i] = Building::IDs::cactus;
+      tiles[i].building = Building::IDs::cactus;
       i++;
     }
     if ((r % 7) == 1) {
-      buildings[i] = Building::IDs::weed;
+      tiles[i].building = Building::IDs::weed;
       i++;
     };
     if ((r % 9) == 2) {
-      buildings[i] = Building::IDs::tree;
+      tiles[i].building = Building::IDs::tree;
       i++;
     };
   }
 
   // Init ground
   for (uint8_t i = 0; i < size; i++) {
-    ground_low[i] = Grounds::ground;
+    tiles[i].low = Grounds::ground;
   }
 
   // Add a river
-  ground_top[5] = Grounds::bridge;
-  ground_low[5] = Grounds::river;
+  tiles[5].top = Grounds::bridge;
+  tiles[5].low = Grounds::river;
 
   // Add some random walkers and birds
   for (uint8_t i = 0; i < 4; i++) {
@@ -235,18 +235,18 @@ void Level::onInput(Input dir) {
       // destroyed
       for (uint8_t i = 0; i < 4; i++) {
         uint8_t lidx = ((uint16_t)cidx + (uint16_t)size - (uint16_t)i) % size;
-        uint8_t ends = Buildings::at(buildings[lidx]).width;
+        uint8_t ends = Buildings::at(tiles[lidx].building).width;
         if (((lidx + ends) % size) > cidx)
-          buildings[lidx] = Building::IDs::empty;
+          tiles[lidx].building = Building::IDs::empty;
       }
 
       // Check if there is another building on the right that has to be
       // destroyed
       for (uint8_t i = 0; i < Buildings::at(currBuil).width; i++) {
-        buildings[(cidx + i) % size] = Building::IDs::empty;
+        tiles[(cidx + i) % size].building = Building::IDs::empty;
       }
 
-      buildings[cidx] = currBuil;
+      tiles[cidx].building = currBuil;
       money -= Buildings::at(idx).cost * 5;
     }
   } break;
@@ -260,10 +260,33 @@ void Level::update() {
   if ((time - timeToUpdate) > 1000) {
     timeToUpdate = time;
     population = 0;
+    uint16_t max_money = 2500;
+    uint16_t jobs = 1;
     for (uint8_t obj = 0; obj < size; obj++) {
-      money += Buildings::at(buildings[obj]).profit;
-      money -= Buildings::at(buildings[obj]).maintenance;
-      population += Buildings::at(buildings[obj]).inhabitants;
+      money += Buildings::at(tiles[obj].building).profit;
+      if (money > Buildings::at(tiles[obj].building).maintenance) {
+        money -= Buildings::at(tiles[obj].building).maintenance;
+      } else {
+        money = 0;
+      }
+      jobs += Buildings::at(tiles[obj].building).jobs;
+      if (tiles[obj].building == Building::IDs::house) {
+        population += 4;
+        for (int16_t i = (obj + size - 16); i < (obj + size + 16); i++) {
+          if (tiles[i % size].building == Building::IDs::water) {
+            population += 4;
+          }
+        }
+      }
+      if (tiles[obj].building == Building::IDs::bank) {
+        max_money += 5000;
+      }
+    }
+    if (money > max_money) {
+      money = max_money;
+    }
+    if (population > jobs) {
+      population = jobs;
     }
   }
 
@@ -304,13 +327,13 @@ void Level::render() {
   }
 
   // Render the first partially visible building on the left
-  if (buildings[camera] == Building::IDs::empty) {
+  if (tiles[camera].building == Building::IDs::empty) {
     for (uint8_t i = 0; i < 4; i++) {
       uint8_t lidx = ((uint16_t)camera + (uint16_t)(size - i)) % size;
-      uint8_t bidx = (uint8_t)(buildings[lidx]);
+      uint8_t bidx = (uint8_t)(tiles[lidx].building);
       uint8_t ends = Buildings::at(bidx).width;
       if (((lidx + ends) % size) > camera &&
-          Building::IDs::empty != buildings[lidx]) {
+          Building::IDs::empty != tiles[lidx].building) {
         const uint8_t *bmp = Buildings::at(bidx).bitmap;
         uint8_t w = Buildings::at(bidx).width;
         uint8_t h = Buildings::at(bidx).height;
@@ -326,16 +349,16 @@ void Level::render() {
     uint8_t moved = (obj + camera) % size;
 
     // Area where characters walk
-    const uint8_t *bmp = groundBmps[(uint8_t)ground_top[moved]];
+    const uint8_t *bmp = groundBmps[(uint8_t)(tiles[moved].top)];
     arduboy.drawBitmap(obj * 8, 4 * 8 - 2, bmp, 8, 8);
 
     // Lake shore area
-    uint8_t frames = groundFrames[(uint8_t)(ground_low[moved])];
-    bmp = groundBmps[(uint8_t)ground_low[moved]] + 8 * ((frame >> 2) % frames);
+    uint8_t frames = groundFrames[(uint8_t)(tiles[moved].low)];
+    bmp = groundBmps[(uint8_t)(tiles[moved].low)] + 8 * ((frame >> 2) % frames);
     arduboy.drawBitmap(obj * 8, 5 * 8 - 2, bmp, 8, 8);
 
     // Building area
-    Building::IDs b = buildings[moved];
+    Building::IDs b = tiles[moved].building;
 
     uint8_t id = (uint8_t)(b);
     bmp = Buildings::at(id).bitmap;
