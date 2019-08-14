@@ -143,7 +143,7 @@ const Event tutorialsData[] = {
     Event(0, 0, (uint8_t)(Building::IDs::farm), t01),        /**/
     Event(1000, 0, (uint8_t)(Building::IDs::house), t02),    /**/
     Event(1050, 10, (uint8_t)(Building::IDs::water), t03),   /**/
-    Event(1150, 12, (uint8_t)(Building::IDs::saloon), t04),  /**/
+    Event(1150, 20, (uint8_t)(Building::IDs::saloon), t04),  /**/
     Event(1550, 20, (uint8_t)(Building::IDs::mine), t05),    /**/
     Event(2500, 20, (uint8_t)(Building::IDs::bank), t06),    /**/
     Event(3500, 25, (uint8_t)(Building::IDs::sheriff), t07), /**/
@@ -217,7 +217,7 @@ void Level::onInput(Input dir) {
     break;
   case Input::left:
     if (camera == 0)
-      camera = size;
+      camera = size - 1;
     else
       camera--;
     camera_off = 8;
@@ -305,6 +305,7 @@ void Level::update() {
         buildingEnabled[b] = true;
         const char *src = tutorialsData[t].getText();
         strncpy_P(tutor, src, 156);
+        break;
       }
     }
   }
