@@ -5,7 +5,7 @@ void Lagunita::init() {
   arduboy.begin();
 
   // set the framerate to 16 to save battery
-  arduboy.setFrameRate(16);
+  arduboy.setFrameRate(32);
 
   arduboy.audio.begin();
   arduboy.audio.on();

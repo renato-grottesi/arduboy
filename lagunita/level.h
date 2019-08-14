@@ -31,9 +31,11 @@ private:
 
   // Camera x position
   uint16_t camera = 0;
+  uint8_t camera_off = 0;
+  uint8_t camera_sign = 0;
 
   // Number of tiles
-  static const uint8_t size = 255;
+  static const uint8_t size = 192;
   /* Use bit array to pack more fields in a byte. */
   struct {
     Building::IDs building : 4; /* max 16 different types of building */
@@ -43,11 +45,10 @@ private:
       {Building::IDs::empty, Grounds::empty, Grounds::ground},
   };
 
-  // x coordinates of 4 flying objects
-  uint16_t flying[4];
-
-  // x coordinates of 4 walking objects
-  uint16_t walking[4];
+  // x coordinates for moving objects
+  static const uint8_t npc_count = 8;
+  uint16_t flying[npc_count];
+  uint16_t walking[npc_count];
 
   // Currently selected object
   Building::IDs currBuil = Building::IDs::farm;

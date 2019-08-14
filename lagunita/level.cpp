@@ -186,15 +186,18 @@ void Level::init() {
   tiles[5].low = Grounds::river;
 
   // Add some random walkers and birds
-  for (uint8_t i = 0; i < 4; i++) {
-    walking[i] = random() % 1024;
-    flying[i] = random() % 1024;
+  for (uint8_t i = 0; i < npc_count; i++) {
+    walking[i] = random() % ((uint16_t)size * 8);
+    flying[i] = random() % ((uint16_t)size * 8);
   }
 
   inProgress = true;
 }
 
 void Level::onInput(Input dir) {
+  if (camera_off > 0) {
+    return;
+  }
   uint8_t sel = (uint8_t)(currBuil);
   switch (dir) {
   case Input::up:
@@ -217,9 +220,13 @@ void Level::onInput(Input dir) {
       camera = size;
     else
       camera--;
+    camera_off = 8;
+    camera_sign = 0;
     break;
   case Input::right:
     camera = (camera + 1) % size;
+    camera_off = 8;
+    camera_sign = 1;
     break;
   case Input::a: {
     uint8_t idx = (uint8_t)(currBuil);
@@ -307,55 +314,43 @@ void Level::render() {
   static uint8_t frame = 0;
   frame++;
 
-  for (uint8_t i = 0; i < 4; i++) {
-    walking[i] = (walking[i] + 1) % (1024);
-    flying[i] = (flying[i] + 1) % (1024);
+  int8_t x_off = (camera_sign ? (1) : (-1)) * ((int8_t)(camera_off));
+
+  for (uint8_t i = 0; i < npc_count; i++) {
+    if (!(frame % 1)) {
+      flying[i] = (flying[i] + 1) % ((uint16_t)size * 8);
+    }
+    if (!(frame % 4)) {
+      walking[i] = (walking[i] + 1) % ((uint16_t)size * 8);
+    }
 
     // Flying objects
-    arduboy.drawBitmap((flying[i]), 0 * 8, &bmp_bird[((frame >> 2) % 4) * 8], 8,
-                       8);
+    arduboy.drawBitmap(flying[i] - camera * 8 + x_off, 0 * 8,
+                       &bmp_bird[((frame >> 2) % 4) * 8], 8, 8);
 
     // Walking objects
-    arduboy.drawBitmap((walking[i] >> 2), 1 + 4 * 8,
+    arduboy.drawBitmap(walking[i] - camera * 8 + x_off, 1 + 4 * 8,
                        &bmp_man[((frame >> 3) % 4) * 8], 8, 8);
   }
 
   // Lake area
-  for (uint8_t tile = 0; tile < 16; tile++) {
+  for (int8_t tile = -1; tile < 17; tile++) {
     const uint8_t *bmp = &(bmp_lake[(frame >> 3) % 2]);
-    arduboy.drawBitmap(tile * 8, 6 * 8 - 2, bmp, 8, 8);
-  }
-
-  // Render the first partially visible building on the left
-  if (tiles[camera].building == Building::IDs::empty) {
-    for (uint8_t i = 0; i < 4; i++) {
-      uint8_t lidx = ((uint16_t)camera + (uint16_t)(size - i)) % size;
-      uint8_t bidx = (uint8_t)(tiles[lidx].building);
-      uint8_t ends = Buildings::at(bidx).width;
-      if (((lidx + ends) % size) > camera &&
-          Building::IDs::empty != tiles[lidx].building) {
-        const uint8_t *bmp = Buildings::at(bidx).bitmap;
-        uint8_t w = Buildings::at(bidx).width;
-        uint8_t h = Buildings::at(bidx).height;
-
-        arduboy.drawBitmap((-((int16_t)(i))) * 8, (4 - h) * 8, bmp, w * 8,
-                           h * 8);
-      }
-    }
+    arduboy.drawBitmap(x_off + tile * 8, 6 * 8 - 2, bmp, 8, 8);
   }
 
   // Camera affected objects
-  for (uint8_t obj = 0; obj < size; obj++) {
-    uint8_t moved = (obj + camera) % size;
+  for (int8_t obj = -5; obj < 17; obj++) {
+    uint8_t moved = (obj + size + camera) % size;
 
     // Area where characters walk
     const uint8_t *bmp = groundBmps[(uint8_t)(tiles[moved].top)];
-    arduboy.drawBitmap(obj * 8, 4 * 8 - 2, bmp, 8, 8);
+    arduboy.drawBitmap(x_off + obj * 8, 4 * 8 - 2, bmp, 8, 8);
 
     // Lake shore area
     uint8_t frames = groundFrames[(uint8_t)(tiles[moved].low)];
     bmp = groundBmps[(uint8_t)(tiles[moved].low)] + 8 * ((frame >> 2) % frames);
-    arduboy.drawBitmap(obj * 8, 5 * 8 - 2, bmp, 8, 8);
+    arduboy.drawBitmap(x_off + obj * 8, 5 * 8 - 2, bmp, 8, 8);
 
     // Building area
     Building::IDs b = tiles[moved].building;
@@ -364,7 +359,7 @@ void Level::render() {
     bmp = Buildings::at(id).bitmap;
     uint8_t w = Buildings::at(id).width;
     uint8_t h = Buildings::at(id).height;
-    arduboy.drawBitmap(obj * 8, (4 - h) * 8, bmp, w * 8, h * 8);
+    arduboy.drawBitmap(x_off + obj * 8, (4 - h) * 8, bmp, w * 8, h * 8);
   }
 
   {
@@ -404,5 +399,9 @@ void Level::render() {
     arduboy.drawRoundRect(32, 0, 64, 64, 4, WHITE);
     tinyfont.setCursor(35, 3);
     tinyfont.print(tutor);
+  }
+
+  if (camera_off > 0) {
+    camera_off--;
   }
 }
