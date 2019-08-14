@@ -46,7 +46,7 @@ private:
   };
 
   // x coordinates for moving objects
-  static const uint8_t npc_count = 8;
+  static const uint8_t npc_count = 16;
   uint16_t flying[npc_count];
   uint16_t walking[npc_count];
 

@@ -321,13 +321,18 @@ void Level::render() {
     if (!(frame % 1)) {
       flying[i] = (flying[i] + 1) % ((uint16_t)size * 8);
     }
-    if (!(frame % 4)) {
-      walking[i] = (walking[i] + 1) % ((uint16_t)size * 8);
-    }
 
     // Flying objects
     arduboy.drawBitmap(flying[i] - camera * 8 + x_off, 0 * 8,
                        &bmp_bird[((frame >> 2) % 4) * 8], 8, 8);
+  }
+
+  uint8_t cowboys = population / 16;
+  cowboys = cowboys > npc_count ? npc_count : cowboys;
+  for (uint8_t i = 0; i < cowboys; i++) {
+    if (!(frame % 4)) {
+      walking[i] = (walking[i] + 1) % ((uint16_t)size * 8);
+    }
 
     // Walking objects
     arduboy.drawBitmap(walking[i] - camera * 8 + x_off, 1 + 4 * 8,
