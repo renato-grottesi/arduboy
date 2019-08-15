@@ -92,7 +92,7 @@ void Lagunita::update() {
       level.onInput(Input::a);
     }
     if (arduboy.justPressed(B_BUTTON)) {
-      currentMenu = Menus::main;
+      level.onInput(Input::b);
     }
     break;
   case Menus::credits:

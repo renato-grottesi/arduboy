@@ -45,13 +45,18 @@ private:
       {Building::IDs::empty, Grounds::empty, Grounds::ground},
   };
 
+  uint16_t housing;
+  uint16_t jobs;
+  uint16_t earnings;
+  uint16_t maintenance;
+
   // x coordinates for moving objects
   static const uint8_t npc_count = 16;
   uint16_t flying[npc_count];
   uint16_t walking[npc_count];
 
   // Currently selected object
-  Building::IDs currBuil = Building::IDs::farm;
+  Building::IDs currBuil = Building::IDs::house;
 
   uint16_t money = 999;
 

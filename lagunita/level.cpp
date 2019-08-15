@@ -7,14 +7,15 @@ const char t01[] PROGMEM = "            \n"  /**/
                            "IN THE WILD \n"  /**/
                            "WILD WEST.  \n"  /**/
                            "            \n"  /**/
-                           "BUILD A FARM\n"  /**/
-                           "TO GENERATE \n"  /**/
-                           "SOME INCOME.\n"; /**/
-const char t02[] PROGMEM = "            \n"  /**/
                            "BUILD SOME  \n"  /**/
                            "HOUSES TO   \n"  /**/
                            "INCREASE THE\n"  /**/
-                           "POPULATION. \n"  /**/
+                           "POPULATION. \n"; /**/
+const char t02[] PROGMEM = "            \n"  /**/
+                           "BUILD A FARM\n"  /**/
+                           "TO GIVE A   \n"  /**/
+                           "JOB TO THE  \n"  /**/
+                           "CITIZENS.   \n"  /**/
                            "            \n"  /**/
                            "ARROW UP    \n"  /**/
                            "TO SWITCH   \n"  /**/
@@ -140,11 +141,11 @@ const char t13[] PROGMEM = "            \n"  /**/
 
 const Event tutorialsData[] = {
     /**/
-    Event(0, 0, (uint8_t)(Building::IDs::farm), t01),        /**/
-    Event(1000, 0, (uint8_t)(Building::IDs::house), t02),    /**/
-    Event(1050, 10, (uint8_t)(Building::IDs::water), t03),   /**/
-    Event(1150, 20, (uint8_t)(Building::IDs::saloon), t04),  /**/
-    Event(1550, 20, (uint8_t)(Building::IDs::mine), t05),    /**/
+    Event(0, 0, (uint8_t)(Building::IDs::house), t01),       /**/
+    Event(0, 1, (uint8_t)(Building::IDs::farm), t02),        /**/
+    Event(1000, 10, (uint8_t)(Building::IDs::water), t03),   /**/
+    Event(1100, 20, (uint8_t)(Building::IDs::saloon), t04),  /**/
+    Event(1500, 20, (uint8_t)(Building::IDs::mine), t05),    /**/
     Event(2500, 20, (uint8_t)(Building::IDs::bank), t06),    /**/
     Event(3500, 25, (uint8_t)(Building::IDs::sheriff), t07), /**/
     Event(4000, 50, (uint8_t)(Building::IDs::mill), t08),    /**/
@@ -185,7 +186,7 @@ void Level::init() {
   tiles[5].top = Grounds::bridge;
   tiles[5].low = Grounds::river;
 
-  // Add some random walkers and birds
+  // Init the random walkers and birds
   for (uint8_t i = 0; i < npc_count; i++) {
     walking[i] = random() % ((uint16_t)size * 8);
     flying[i] = random() % ((uint16_t)size * 8);
@@ -195,7 +196,12 @@ void Level::init() {
 }
 
 void Level::onInput(Input dir) {
+  // Let the camera scrolling complete
   if (camera_off > 0) {
+    return;
+  }
+  // If there is a tutorial displayed, only allow the b button
+  if (strlen(tutor) && (dir != Input::b)) {
     return;
   }
   uint8_t sel = (uint8_t)(currBuil);
@@ -230,10 +236,6 @@ void Level::onInput(Input dir) {
     break;
   case Input::a: {
     uint8_t idx = (uint8_t)(currBuil);
-    if (strlen(tutor)) {
-      tutor[0] = '\0';
-      break;
-    }
     if (money >= (Buildings::at(idx).cost * 5)) {
 
       uint8_t cidx = (camera + 7) % size;
@@ -258,6 +260,14 @@ void Level::onInput(Input dir) {
     }
   } break;
   case Input::b:
+    if (strlen(tutor)) {
+      tutor[0] = '\0';
+    } else {
+      snprintf(tutor, 156,
+               ("\nHOUSING\n   %d\nJOBS\n   %d\nMAINTENANCE\n   %d "
+                "$/s\nEARNINGS\n   %d $/s\n"),
+               housing, jobs, maintenance, earnings);
+    }
     break;
   }
 }
@@ -265,23 +275,21 @@ void Level::onInput(Input dir) {
 void Level::update() {
   unsigned long time = millis();
   if ((time - timeToUpdate) > 1000) {
-    timeToUpdate = time;
-    population = 0;
     uint16_t max_money = 2500;
-    uint16_t jobs = 1;
+    timeToUpdate = time;
+    housing = 0;
+    maintenance = 0;
+    earnings = 0;
+    jobs = 1;
     for (uint8_t obj = 0; obj < size; obj++) {
-      money += Buildings::at(tiles[obj].building).profit;
-      if (money > Buildings::at(tiles[obj].building).maintenance) {
-        money -= Buildings::at(tiles[obj].building).maintenance;
-      } else {
-        money = 0;
-      }
+      earnings += Buildings::at(tiles[obj].building).profit;
+      maintenance += Buildings::at(tiles[obj].building).maintenance;
       jobs += Buildings::at(tiles[obj].building).jobs;
       if (tiles[obj].building == Building::IDs::house) {
-        population += 4;
+        housing += 4;
         for (int16_t i = (obj + size - 16); i < (obj + size + 16); i++) {
           if (tiles[i % size].building == Building::IDs::water) {
-            population += 4;
+            housing += 4;
           }
         }
       }
@@ -289,9 +297,18 @@ void Level::update() {
         max_money += 5000;
       }
     }
+
+    money += earnings;
+    if (money > maintenance) {
+      money -= maintenance;
+    } else {
+      money = 0;
+    }
+
     if (money > max_money) {
       money = max_money;
     }
+    population = housing;
     if (population > jobs) {
       population = jobs;
     }
@@ -323,8 +340,9 @@ void Level::render() {
     }
 
     // Flying objects
-    arduboy.drawBitmap(flying[i] - camera * 8 + x_off, 0 * 8,
-                       &bmp_bird[((frame >> 2) % 4) * 8], 8, 8);
+    arduboy.drawBitmap((size + flying[i] - camera * 8 + x_off) %
+                           ((uint16_t)size * 8),
+                       0 * 8, &bmp_bird[((frame >> 2) % 4) * 8], 8, 8);
   }
 
   uint8_t cowboys = population / 16;
@@ -335,8 +353,9 @@ void Level::render() {
     }
 
     // Walking objects
-    arduboy.drawBitmap(walking[i] - camera * 8 + x_off, 1 + 4 * 8,
-                       &bmp_man[((frame >> 3) % 4) * 8], 8, 8);
+    arduboy.drawBitmap((size + walking[i] - camera * 8 + x_off) %
+                           ((uint16_t)size * 8),
+                       1 + 4 * 8, &bmp_man[((frame >> 3) % 4) * 8], 8, 8);
   }
 
   // Lake area
