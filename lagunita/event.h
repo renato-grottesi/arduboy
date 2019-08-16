@@ -33,6 +33,8 @@ public:
     return false;
   }
 
+  void reset() { triggered = 0; }
+
 private:
   uint8_t triggered = 0;
 };

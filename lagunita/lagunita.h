@@ -17,7 +17,7 @@ private:
   void render();
 
 private:
-  enum class Menus : uint8_t { main, game, credits, help };
+  enum class Menus : uint8_t { main, game, credits, help, lost };
   enum class MainSelections : uint8_t { play, credits, help };
 
   Arduboy2 arduboy;

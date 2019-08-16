@@ -76,6 +76,11 @@ void Lagunita::update() {
     break;
   case Menus::game:
     level.update();
+    if (level.gameOver()) {
+      currentMenu = Menus::lost;
+      level.pause();
+      break;
+    }
     if (arduboy.justPressed(UP_BUTTON)) {
       level.onInput(Input::up);
     }
@@ -101,6 +106,11 @@ void Lagunita::update() {
     }
     break;
   case Menus::help:
+    if (arduboy.justPressed(A_BUTTON) || arduboy.justPressed(B_BUTTON)) {
+      currentMenu = Menus::main;
+    }
+    break;
+  case Menus::lost:
     if (arduboy.justPressed(A_BUTTON) || arduboy.justPressed(B_BUTTON)) {
       currentMenu = Menus::main;
     }
@@ -138,6 +148,24 @@ void Lagunita::render() {
     break;
   case Menus::game:
     level.render();
+    break;
+  case Menus::lost:
+    tinyfont.setCursor(2, 0);
+    tinyfont.print(F(                              /**/
+                     "                         \n" /**/
+                     "      UNFORTUNATELY      \n" /**/
+                     "      YOU RUN OUT        \n" /**/
+                     "      OF MONEY.          \n" /**/
+                     "                         \n" /**/
+                     "      REMEMBER TO        \n" /**/
+                     "      CHECK THE          \n" /**/
+                     "      STATISTICS         \n" /**/
+                     "      WHILE PLAYING      \n" /**/
+                     "                         \n" /**/
+                     "      TRY AGAIN!         \n" /**/
+                     "                         \n" /**/
+                     "                         \n" /**/
+                     ));
     break;
   case Menus::credits:
     tinyfont.setCursor(2, 0);

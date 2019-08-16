@@ -16,6 +16,8 @@ public:
   void update();
   void onInput(Input dir);
   void render();
+  bool gameOver() { return (earnings <= maintenance) && (money < 100); };
+  bool pause() { inProgress = false; };
 
 private:
   Arduboy2 &arduboy;

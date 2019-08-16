@@ -157,6 +157,32 @@ const Event tutorialsData[] = {
 };
 
 void Level::init() {
+  camera = 0;
+  camera_off = 0;
+  camera_sign = 0;
+  housing = 0;
+  jobs = 0;
+  earnings = 0;
+  maintenance = 0;
+  happiness = 0;
+  safety = 0;
+  spirituality = 0;
+  environment = 0;
+  currBuil = Building::IDs::house;
+  money = 999;
+  tutor[0] = '\0';
+  population = 0;
+  inProgress = false;
+  inStats = false;
+
+  for (uint8_t i = 0; i < (uint8_t)Building::IDs::count; i++) {
+    tutorials[i].reset();
+  }
+
+  for (uint8_t i = 0; i < (uint8_t)Building::IDs::count; i++) {
+    buildingEnabled[i] = false;
+  }
+
   timeToUpdate = millis();
   arduboy.initRandomSeed();
 
@@ -166,19 +192,23 @@ void Level::init() {
     if ((r % 7) == 0) {
       tiles[i].building = Building::IDs::cactus;
       i++;
-    }
-    if ((r % 7) == 1) {
+      tiles[i].building = Building::IDs::empty;
+    } else if ((r % 7) == 1) {
       tiles[i].building = Building::IDs::weed;
       i++;
-    };
-    if ((r % 9) == 2) {
+      tiles[i].building = Building::IDs::empty;
+    } else if ((r % 9) == 2) {
       tiles[i].building = Building::IDs::tree;
       i++;
-    };
+      tiles[i].building = Building::IDs::empty;
+    } else {
+      tiles[i].building = Building::IDs::empty;
+    }
   }
 
   // Init ground
   for (uint8_t i = 0; i < size; i++) {
+    tiles[i].top = Grounds::empty;
     tiles[i].low = Grounds::ground;
   }
 
