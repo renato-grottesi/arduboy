@@ -261,11 +261,20 @@ void Level::onInput(Input dir) {
   } break;
   case Input::b:
     if (strlen(tutor)) {
-      tutor[0] = '\0';
+      if (inStats) {
+        snprintf(tutor, tutorLen,
+                 "\nHAPPINESS\n   %d %%\nSAFETY\n   %d %%\nSPIRITUALITY\n   %d "
+                 "%%\nENVIRONMENT\n   %d %%\n",
+                 happiness, safety, spirituality, environment);
+        inStats = false;
+      } else {
+        tutor[0] = '\0';
+      }
     } else {
-      snprintf(tutor, 156,
-               ("\nHOUSING\n   %d\nJOBS\n   %d\nMAINTENANCE\n   %d "
-                "$/s\nEARNINGS\n   %d $/s\n"),
+      inStats = true;
+      snprintf(tutor, tutorLen,
+               "\nHOUSING\n   %d\nJOBS\n   %d\nMAINTENANCE\n   %d "
+               "$/s\nEARNINGS\n   %d $/s\n",
                housing, jobs, maintenance, earnings);
     }
     break;
@@ -276,10 +285,15 @@ void Level::update() {
   unsigned long time = millis();
   if ((time - timeToUpdate) > 1000) {
     uint16_t max_money = 2500;
+    uint16_t earnings_ratio = ((population + 1) * 100) / (jobs + 1);
     timeToUpdate = time;
     housing = 0;
     maintenance = 0;
     earnings = 0;
+    environment = 0;
+    happiness = 0;
+    spirituality = 0;
+    safety = 0;
     jobs = 1;
     for (uint8_t obj = 0; obj < size; obj++) {
       earnings += Buildings::at(tiles[obj].building).profit;
@@ -296,9 +310,23 @@ void Level::update() {
       if (tiles[obj].building == Building::IDs::bank) {
         max_money += 5000;
       }
+      if (tiles[obj].building == Building::IDs::church) {
+        spirituality++;
+      }
+      if (tiles[obj].building == Building::IDs::sheriff) {
+        safety++;
+      }
+      if (tiles[obj].building == Building::IDs::saloon) {
+        happiness++;
+      }
+      if (tiles[obj].building == Building::IDs::tree ||
+          tiles[obj].building == Building::IDs::cactus ||
+          tiles[obj].building == Building::IDs::weed) {
+        environment++;
+      }
     }
 
-    money += earnings;
+    money += (earnings * earnings_ratio) / 100;
     if (money > maintenance) {
       money -= maintenance;
     } else {
@@ -308,10 +336,30 @@ void Level::update() {
     if (money > max_money) {
       money = max_money;
     }
-    population = housing;
-    if (population > jobs) {
-      population = jobs;
-    }
+
+    // Some vegetation for every 16 people
+    environment =
+        (population / 16) ? (environment * 100) / (population / 16) : 100;
+    environment = environment < 100 ? environment : 100;
+    // A saloon for every 24 people
+    happiness = (population / 24) ? (happiness * 100) / (population / 24) : 100;
+    happiness = happiness < 100 ? happiness : 100;
+    // A church for every 100 people
+    spirituality =
+        (population / 100) ? (spirituality * 100) / (population / 100) : 100;
+    spirituality = spirituality < 100 ? spirituality : 100;
+    // A sheriff for every 100 people
+    safety = (population / 100) ? (safety * 100) / (population / 100) : 100;
+    safety = safety < 100 ? safety : 100;
+
+    uint16_t stats = (environment + happiness + spirituality + safety) / 4;
+    uint16_t max_housing = (housing * stats) / 100;
+    max_housing = max_housing > jobs ? jobs : max_housing;
+
+    if (population < max_housing)
+      population++;
+    if (population > 1 && population > max_housing)
+      population--;
   }
 
   if (strlen(tutor) == 0) {
@@ -321,7 +369,7 @@ void Level::update() {
         uint8_t b = tutorialsData[t].buildingUnlocked();
         buildingEnabled[b] = true;
         const char *src = tutorialsData[t].getText();
-        strncpy_P(tutor, src, 156);
+        strncpy_P(tutor, src, tutorLen);
         break;
       }
     }

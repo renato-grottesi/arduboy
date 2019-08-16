@@ -49,6 +49,10 @@ private:
   uint16_t jobs;
   uint16_t earnings;
   uint16_t maintenance;
+  uint16_t happiness;
+  uint16_t safety;
+  uint16_t spirituality;
+  uint16_t environment;
 
   // x coordinates for moving objects
   static const uint8_t npc_count = 16;
@@ -65,10 +69,12 @@ private:
   static const uint8_t tutorialCount = 13;
   EventWrapper tutorials[tutorialCount] = {};
 
-  char tutor[156] = {
+  static const uint8_t tutorLen = 156;
+  char tutor[tutorLen] = {
       '\0',
   };
 
   uint16_t population = 0;
   bool inProgress = false;
+  bool inStats = false;
 };
