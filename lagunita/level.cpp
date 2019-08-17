@@ -144,16 +144,16 @@ const Event tutorialsData[] = {
     Event(0, 0, (uint8_t)(Building::IDs::house), t01),       /**/
     Event(0, 1, (uint8_t)(Building::IDs::farm), t02),        /**/
     Event(1000, 10, (uint8_t)(Building::IDs::water), t03),   /**/
-    Event(1100, 20, (uint8_t)(Building::IDs::saloon), t04),  /**/
+    Event(1100, 15, (uint8_t)(Building::IDs::saloon), t04),  /**/
     Event(1500, 20, (uint8_t)(Building::IDs::mine), t05),    /**/
-    Event(2500, 20, (uint8_t)(Building::IDs::bank), t06),    /**/
-    Event(3500, 25, (uint8_t)(Building::IDs::sheriff), t07), /**/
-    Event(4000, 50, (uint8_t)(Building::IDs::mill), t08),    /**/
-    Event(4000, 100, (uint8_t)(Building::IDs::church), t09), /**/
-    Event(5000, 200, (uint8_t)(Building::IDs::empty), t10),  /**/
-    Event(5000, 250, (uint8_t)(Building::IDs::tree), t11),   /**/
-    Event(7500, 300, (uint8_t)(Building::IDs::cactus), t12), /**/
-    Event(7500, 350, (uint8_t)(Building::IDs::weed), t13),   /**/
+    Event(2000, 25, (uint8_t)(Building::IDs::sheriff), t07), /**/
+    Event(2500, 30, (uint8_t)(Building::IDs::bank), t06),    /**/
+    Event(3000, 50, (uint8_t)(Building::IDs::mill), t08),    /**/
+    Event(3500, 100, (uint8_t)(Building::IDs::church), t09), /**/
+    Event(4000, 150, (uint8_t)(Building::IDs::empty), t10),  /**/
+    Event(4500, 200, (uint8_t)(Building::IDs::tree), t11),   /**/
+    Event(5000, 250, (uint8_t)(Building::IDs::cactus), t12), /**/
+    Event(5500, 300, (uint8_t)(Building::IDs::weed), t13),   /**/
 };
 
 void Level::init() {

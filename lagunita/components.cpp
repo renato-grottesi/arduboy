@@ -11,19 +11,20 @@ const char names[][8] PROGMEM = {
 };
 
 const Building Building::buildings[(uint8_t)Building::IDs::count] = {
-    Building(Building::IDs::empty, 0, 0, 1, 1, 0, 0, bmp_empty),
-    Building(Building::IDs::weed, 0, 0, 1, 1, 0, 0, bmp_weed),
-    Building(Building::IDs::cactus, 0, 0, 1, 1, 0, 0, bmp_cactus),
-    Building(Building::IDs::tree, 0, 0, 2, 2, 0, 0, bmp_tree),
-    Building(Building::IDs::house, 1, 2, 2, 2, 1, 0, bmp_house),
-    Building(Building::IDs::mine, 31, 20, 3, 3, 0, 9, bmp_mine),
-    Building(Building::IDs::church, 1, 20, 3, 3, 2, 0, bmp_church),
-    Building(Building::IDs::sheriff, 2, 8, 2, 2, 2, 0, bmp_sheriff),
-    Building(Building::IDs::bank, 4, 15, 2, 2, 5, 0, bmp_bank),
-    Building(Building::IDs::water, 0, 1, 1, 3, 0, 1, bmp_water),
-    Building(Building::IDs::saloon, 8, 5, 3, 3, 0, 1, bmp_saloon),
-    Building(Building::IDs::mill, 1, 1, 1, 3, 0, 1, bmp_mill),
-    Building(Building::IDs::farm, 8, 6, 4, 2, 0, 5, bmp_farm),
+    /* id, jobs, cost/5, width, height, maintenance, profit, bitmap, */
+    Building(Building::IDs::empty, 0, 4, 1, 1, 0, 0, bmp_empty),
+    Building(Building::IDs::weed, 0, 2, 1, 1, 0, 0, bmp_weed),
+    Building(Building::IDs::cactus, 0, 2, 1, 1, 0, 0, bmp_cactus),
+    Building(Building::IDs::tree, 0, 4, 2, 2, 0, 0, bmp_tree),
+    Building(Building::IDs::house, 1, 5, 2, 2, 1, 0, bmp_house),
+    Building(Building::IDs::mine, 30, 100, 3, 3, 0, 30, bmp_mine),
+    Building(Building::IDs::church, 1, 150, 3, 3, 2, 0, bmp_church),
+    Building(Building::IDs::sheriff, 2, 20, 2, 2, 2, 0, bmp_sheriff),
+    Building(Building::IDs::bank, 4, 50, 2, 2, 5, 0, bmp_bank),
+    Building(Building::IDs::water, 0, 10, 1, 3, 0, 1, bmp_water),
+    Building(Building::IDs::saloon, 8, 50, 3, 3, 0, 1, bmp_saloon),
+    Building(Building::IDs::mill, 1, 20, 1, 3, 0, 1, bmp_mill),
+    Building(Building::IDs::farm, 8, 20, 4, 2, 0, 10, bmp_farm),
 };
 
 Building::Building(const IDs id, const uint8_t jobs, const uint8_t cost,
