@@ -493,10 +493,6 @@ void Level::render() {
     tinyfont.print(itoa(population, tmp_str, 10));
   }
 
-  /* Temporary restrictions for the LOWREZJAM */
-  arduboy.fillRect(0, 0, 32, 64, BLACK);
-  arduboy.fillRect(32 + 64, 0, 32, 64, BLACK);
-
   if (strlen(tutor)) {
     arduboy.fillRect(32, 0, 64, 64, BLACK);
     arduboy.drawRoundRect(32, 0, 64, 64, 4, WHITE);

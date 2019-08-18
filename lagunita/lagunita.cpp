@@ -25,9 +25,7 @@ void Lagunita::update() {
   arduboy.pollButtons();
 
   if (!music.isPlaying()) {
-    // TODO: lowrezjam submission in emulator has problems with music
-    // disable arduboy music an use the midi for the submission
-    // music.play();
+    music.play();
   }
 
   switch (currentMenu) {

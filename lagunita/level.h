@@ -37,7 +37,7 @@ private:
   uint8_t camera_sign = 0;
 
   // Number of tiles
-  static const uint8_t size = 192;
+  static const uint8_t size = 248;
   /* Use bit array to pack more fields in a byte. */
   struct {
     Building::IDs building : 4; /* max 16 different types of building */
