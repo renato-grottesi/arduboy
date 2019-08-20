@@ -87,12 +87,6 @@ void Lagunita::update() {
     if (arduboy.justPressed(DOWN_BUTTON)) {
       level.onInput(Input::down);
     }
-    if (arduboy.justPressed(RIGHT_BUTTON)) {
-      level.onInput(Input::right);
-    }
-    if (arduboy.justPressed(LEFT_BUTTON)) {
-      level.onInput(Input::left);
-    }
     if (arduboy.justPressed(A_BUTTON)) {
       level.onInput(Input::a);
     }

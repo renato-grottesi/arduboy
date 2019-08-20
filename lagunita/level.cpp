@@ -251,19 +251,6 @@ void Level::onInput(Input dir) {
       currBuil = (Building::IDs)(sel);
     } while (buildingEnabled[sel] == false);
     break;
-  case Input::left:
-    if (camera == 0)
-      camera = size - 1;
-    else
-      camera--;
-    camera_off = 8;
-    camera_sign = 0;
-    break;
-  case Input::right:
-    camera = (camera + 1) % size;
-    camera_off = 8;
-    camera_sign = 1;
-    break;
   case Input::a: {
     uint8_t idx = (uint8_t)(currBuil);
     if (money >= (Buildings::at(idx).cost * 5)) {
@@ -308,10 +295,29 @@ void Level::onInput(Input dir) {
                housing, jobs, maintenance, earnings);
     }
     break;
+  default:
+    break;
   }
 }
 
 void Level::update() {
+
+  if (strlen(tutor) && (camera_off == 0)) {
+    if (arduboy.pressed(LEFT_BUTTON)) {
+      if (camera == 0) {
+        camera = size - 1;
+      } else {
+        camera--;
+      }
+      camera_off = 8;
+      camera_sign = 0;
+    } else if (arduboy.pressed(RIGHT_BUTTON)) {
+      camera = (camera + 1) % size;
+      camera_off = 8;
+      camera_sign = 1;
+    }
+  }
+
   unsigned long time = millis();
   if ((time - timeToUpdate) > 1000) {
     uint16_t max_money = 2500;
