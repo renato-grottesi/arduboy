@@ -50,6 +50,7 @@ private:
 
   uint16_t housing;
   uint16_t jobs;
+  uint16_t food;
   uint16_t earnings;
   uint16_t maintenance;
   uint16_t happiness;

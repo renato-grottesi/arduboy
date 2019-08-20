@@ -279,20 +279,20 @@ void Level::onInput(Input dir) {
   case Input::b:
     if (strlen(tutor)) {
       if (inStats) {
-        snprintf(tutor, tutorLen,
-                 "\nHAPPINESS\n   %d %%\nSAFETY\n   %d %%\nSPIRITUALITY\n   %d "
-                 "%%\nENVIRONMENT\n   %d %%\n",
-                 happiness, safety, spirituality, environment);
+        snprintf(tutor, tutorLen,                               /**/
+                 "\nHAPPINESS\n%4d %%\nSAFETY\n%4d %%\n"        /**/
+                 "SPIRITUALITY\n%4d %%\nENVIRONMENT\n%4d %%\n", /**/
+                 happiness, safety, spirituality, environment); /**/
         inStats = false;
       } else {
         tutor[0] = '\0';
       }
     } else {
       inStats = true;
-      snprintf(tutor, tutorLen,
-               "\nHOUSING\n   %d\nJOBS\n   %d\nMAINTENANCE\n   %d "
-               "$/s\nEARNINGS\n   %d $/s\n",
-               housing, jobs, maintenance, earnings);
+      snprintf(tutor, tutorLen,                             /**/
+               "\nHOUSING\n%7d\nJOBS   FOOD\n%4d%7d\n"      /**/
+               "MAINTENANCE\n%7d $/s\nEARNINGS\n%4d $/s\n", /**/
+               housing, jobs, food, maintenance, earnings); /**/
     }
     break;
   default:
@@ -302,7 +302,7 @@ void Level::onInput(Input dir) {
 
 void Level::update() {
 
-  if (strlen(tutor) && (camera_off == 0)) {
+  if ((strlen(tutor) == 0) && (camera_off == 0)) {
     if (arduboy.pressed(LEFT_BUTTON)) {
       if (camera == 0) {
         camera = size - 1;
@@ -331,6 +331,7 @@ void Level::update() {
     spirituality = 0;
     safety = 0;
     jobs = 1;
+    food = 1;
     for (uint8_t obj = 0; obj < size; obj++) {
       earnings += Buildings::at(tiles[obj].building).profit;
       maintenance += Buildings::at(tiles[obj].building).maintenance;
@@ -351,6 +352,12 @@ void Level::update() {
       }
       if (tiles[obj].building == Building::IDs::sheriff) {
         safety++;
+      }
+      if (tiles[obj].building == Building::IDs::farm) {
+        food += 33;
+      }
+      if (tiles[obj].building == Building::IDs::mill) {
+        food += 22;
       }
       if (tiles[obj].building == Building::IDs::saloon) {
         happiness++;
@@ -396,6 +403,8 @@ void Level::update() {
       population++;
     if (population > 1 && population > max_housing)
       population--;
+    if (population > food)
+      population = food;
   }
 
   if (strlen(tutor) == 0) {
