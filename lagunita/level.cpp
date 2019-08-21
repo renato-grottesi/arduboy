@@ -405,6 +405,18 @@ void Level::update() {
       population--;
     if (population > food)
       population = food;
+
+    /* If the safety is low, simulate a robbery. */
+    arduboy.initRandomSeed();
+    unsigned long r = arduboy.generateRandomSeed() % 256;
+    if ((safety < 100) && (!r)) {
+      r = arduboy.generateRandomSeed() % (money / 2);
+      snprintf(tutor, tutorLen,             /**/
+               "\nYOU HAVE\nBEEN ROBBED!\n" /**/
+               "\nTHE THIEVES\nSTOLE %d\$", /**/
+               r);                          /**/
+      money -= r;
+    }
   }
 
   if (strlen(tutor) == 0) {
