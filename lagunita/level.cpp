@@ -382,17 +382,20 @@ void Level::update() {
 
     // Some vegetation for every 16 people
     environment =
-        (population / 16) ? (environment * 100) / (population / 16) : 100;
+        (population / 16) ? (environment * 1000) / (population * 10 / 16) : 100;
     environment = environment < 100 ? environment : 100;
     // A saloon for every 24 people
-    happiness = (population / 24) ? (happiness * 100) / (population / 24) : 100;
+    happiness =
+        (population / 24) ? (happiness * 1000) / (population * 10 / 24) : 100;
     happiness = happiness < 100 ? happiness : 100;
     // A church for every 100 people
-    spirituality =
-        (population / 100) ? (spirituality * 100) / (population / 100) : 100;
+    spirituality = (population / 100)
+                       ? (spirituality * 1000) / (population * 10 / 100)
+                       : 100;
     spirituality = spirituality < 100 ? spirituality : 100;
     // A sheriff for every 100 people
-    safety = (population / 100) ? (safety * 100) / (population / 100) : 100;
+    safety =
+        (population / 100) ? (safety * 1000) / (population * 10 / 100) : 100;
     safety = safety < 100 ? safety : 100;
 
     uint16_t stats = (environment + happiness + spirituality + safety) / 4;
@@ -411,11 +414,32 @@ void Level::update() {
     unsigned long r = arduboy.generateRandomSeed() % 256;
     if ((safety < 100) && (!r)) {
       r = arduboy.generateRandomSeed() % (money / 2);
-      snprintf(tutor, tutorLen,             /**/
-               "\nYOU HAVE\nBEEN ROBBED!\n" /**/
-               "\nTHE THIEVES\nSTOLE %d\$", /**/
-               r);                          /**/
+      snprintf(tutor, tutorLen,                   /**/
+               "\nYOU HAVE\nBEEN ROBBED!\n"       /**/
+               "\nTHE THIEVES\nSTOLE %4ld\$\n"    /**/
+               "\nBUILD MORE\nSHERIFF\nPOSTS!\n", /**/
+               r);                                /**/
       money -= r;
+    }
+
+    /* If the spirituality is low, simulate emigration. */
+    r = arduboy.generateRandomSeed() % 256;
+    if ((spirituality < 100) && (!r)) {
+      r = arduboy.generateRandomSeed() % (population / 2);
+      snprintf(tutor, tutorLen,  /**/
+               "\n%4ld PEOPLE\n" /**/
+               "LOST FAITH\n"    /**/
+               "IN LAGUNITA\n"   /**/
+               "AND DECIDED\n"   /**/
+               "TO FOUND\n"      /**/
+               "THEIR OWN\n"     /**/
+               "TOWN.\n"         /**/
+               "BUILD MORE\n"    /**/
+               "CHURCHES TO\n"   /**/
+               "RISE FAITH!\n",  /**/
+               r);               /**/
+
+      population -= r;
     }
   }
 
