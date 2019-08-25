@@ -22,7 +22,7 @@ const char t02[] PROGMEM = "            \n"  /**/
                            "BUILDING.   \n"; /**/
 const char t03[] PROGMEM = "            \n"  /**/
                            "MORE PEOPLE \n"  /**/
-                           "WOULD MOVE  \n"  /**/
+                           "WILL MODE   \n"  /**/
                            "IN, IF THE  \n"  /**/
                            "HOUSES ARE  \n"  /**/
                            "SERVICED    \n"  /**/
@@ -40,8 +40,8 @@ const char t04[] PROGMEM = "            \n"  /**/
                            "SALOON TO   \n"  /**/
                            "ENTERTAIN   \n"  /**/
                            "THEM AND    \n"  /**/
-                           "COLLECT SOME\n"  /**/
-                           "TAXES.      \n"; /**/
+                           "RAISE THEIR \n"  /**/
+                           "HAPPINESS.  \n"; /**/
 const char t05[] PROGMEM = "            \n"  /**/
                            "THE GOLD    \n"  /**/
                            "FEVER       \n"  /**/
@@ -102,10 +102,10 @@ const char t10[] PROGMEM = "            \n"  /**/
                            "MAKE SOME   \n"  /**/
                            "MISTAKES.   \n"  /**/
                            "            \n"  /**/
-                           "NOW YOU CAN \n"  /**/
-                           "REMOVE      \n"  /**/
-                           "BUILDING.   \n"  /**/
-                           "            \n"  /**/
+                           "NOW YOU     \n"  /**/
+                           "CAN REMOVE  \n"  /**/
+                           "TREES AND   \n"  /**/
+                           "BUILDINGS.  \n"  /**/
                            "            \n"; /**/
 const char t11[] PROGMEM = "            \n"  /**/
                            "IT'S SO     \n"  /**/
@@ -122,8 +122,8 @@ const char t12[] PROGMEM = "            \n"  /**/
                            "DID YOU TRY \n"  /**/
                            "THE FRUITS  \n"  /**/
                            "FROM OUR    \n"  /**/
-                           "LOCAL       \n"  /**/
-                           "CACTUS TREE?\n"  /**/
+                           "LOCAL CACTUS\n"  /**/
+                           "PLANTS?     \n"  /**/
                            "            \n"  /**/
                            "NOW YOU CAN \n"  /**/
                            "PLANT YOUR  \n"  /**/
@@ -255,25 +255,50 @@ void Level::onInput(Input dir) {
     uint8_t idx = (uint8_t)(currBuil);
     if (money >= (Buildings::at(idx).cost * 5)) {
 
-      uint8_t cidx = (camera + 7) % size;
+      uint16_t cidx = (camera + 7) % size;
+      bool replace = true;
 
-      // Check if we are in the middle of another building that has to be
-      // destroyed
-      for (uint8_t i = 0; i < 4; i++) {
-        uint8_t lidx = ((uint16_t)cidx + (uint16_t)size - (uint16_t)i) % size;
-        uint8_t ends = Buildings::at(tiles[lidx].building).width;
-        if (((lidx + ends) % size) > cidx)
-          tiles[lidx].building = Building::IDs::empty;
+      if (Building::IDs::empty == currBuil) {
+        // Check if we are in the middle of another building that has to be
+        // destroyed
+        for (uint16_t i = 0; i < 4; i++) {
+          uint16_t lidx = (cidx + (uint16_t)size - i) % size;
+          uint16_t ends = Buildings::at(tiles[lidx].building).width;
+          if (((lidx + ends) % size) > cidx)
+            tiles[lidx].building = Building::IDs::empty;
+        }
+      } else {
+        // Check if we are in the middle of another building or tree
+        for (uint16_t i = 0; i < 4; i++) {
+          uint16_t lidx = (cidx + (uint16_t)size - i) % size;
+          uint16_t ends = Buildings::at(tiles[lidx].building).width;
+          if (((lidx + ends) % size) > cidx) {
+            Building::IDs id = tiles[lidx].building;
+            if (Building::IDs::weed != id && Building::IDs::cactus != id &&
+                Building::IDs::empty != id) {
+              replace = false;
+            }
+          }
+        }
+
+        // Check if there is another building or tree on the right
+        for (uint16_t i = 0; i < Buildings::at(currBuil).width; i++) {
+          Building::IDs id = tiles[(cidx + i) % size].building;
+          if (Building::IDs::weed != id && Building::IDs::cactus != id &&
+              Building::IDs::empty != id) {
+            replace = false;
+          }
+        }
       }
+      if (replace) {
+        // Destroy everything on the path of this building
+        for (uint16_t i = 0; i < Buildings::at(currBuil).width; i++) {
+          tiles[(cidx + i) % size].building = Building::IDs::empty;
+        }
 
-      // Check if there is another building on the right that has to be
-      // destroyed
-      for (uint8_t i = 0; i < Buildings::at(currBuil).width; i++) {
-        tiles[(cidx + i) % size].building = Building::IDs::empty;
+        tiles[cidx].building = currBuil;
+        money -= Buildings::at(idx).cost * 5;
       }
-
-      tiles[cidx].building = currBuil;
-      money -= Buildings::at(idx).cost * 5;
     }
   } break;
   case Input::b:
@@ -402,56 +427,58 @@ void Level::update() {
     uint16_t max_housing = (housing * stats) / 100;
     max_housing = max_housing > jobs ? jobs : max_housing;
 
-    if (population < max_housing)
+    if (population < max_housing) {
       population++;
-    if (population > 1 && population > max_housing)
+    } else if (population > 1 && population > max_housing) {
       population--;
-    if (population > food)
+    }
+    if (population > food) {
       population = food;
-
-    /* If the safety is low, simulate a robbery. */
-    arduboy.initRandomSeed();
-    unsigned long r = arduboy.generateRandomSeed() % 256;
-    if ((safety < 100) && (!r)) {
-      r = arduboy.generateRandomSeed() % (money / 2);
-      snprintf(tutor, tutorLen,                   /**/
-               "\nYOU HAVE\nBEEN ROBBED!\n"       /**/
-               "\nTHE THIEVES\nSTOLE %4ld\$\n"    /**/
-               "\nBUILD MORE\nSHERIFF\nPOSTS!\n", /**/
-               r);                                /**/
-      money -= r;
     }
 
-    /* If the spirituality is low, simulate emigration. */
-    r = arduboy.generateRandomSeed() % 256;
-    if ((spirituality < 100) && (!r)) {
-      r = arduboy.generateRandomSeed() % (population / 2);
-      snprintf(tutor, tutorLen,  /**/
-               "\n%4ld PEOPLE\n" /**/
-               "LOST FAITH\n"    /**/
-               "IN LAGUNITA\n"   /**/
-               "AND DECIDED\n"   /**/
-               "TO FOUND\n"      /**/
-               "THEIR OWN\n"     /**/
-               "TOWN.\n"         /**/
-               "BUILD MORE\n"    /**/
-               "CHURCHES TO\n"   /**/
-               "RISE FAITH!\n",  /**/
-               r);               /**/
+    if (strlen(tutor) == 0) {
+      arduboy.initRandomSeed();
+      unsigned long r = arduboy.generateRandomSeed() % 256;
+      if ((safety < 100) && (!r) &&
+          buildingEnabled[(uint8_t)(Building::IDs::sheriff)]) {
+        /* If the safety is low, simulate a robbery. */
+        r = arduboy.generateRandomSeed() % (money / 2);
+        snprintf(tutor, tutorLen,                   /**/
+                 "\nYOU HAVE\nBEEN ROBBED!\n"       /**/
+                 "\nTHE THIEVES\nSTOLE %4ld\$\n"    /**/
+                 "\nBUILD MORE\nSHERIFF\nPOSTS!\n", /**/
+                 r);                                /**/
+        money -= r;
+      } else if ((spirituality < 100) && (!r) &&
+                 buildingEnabled[(uint8_t)(Building::IDs::church)]) {
+        /* If the spirituality is low, simulate emigration. */
+        r = arduboy.generateRandomSeed() % (population / 2);
+        snprintf(tutor, tutorLen,  /**/
+                 "\n%4ld PEOPLE\n" /**/
+                 "LOST FAITH\n"    /**/
+                 "IN LAGUNITA\n"   /**/
+                 "AND DECIDED\n"   /**/
+                 "TO FOUND\n"      /**/
+                 "THEIR OWN\n"     /**/
+                 "TOWN.\n"         /**/
+                 "BUILD MORE\n"    /**/
+                 "CHURCHES TO\n"   /**/
+                 "RISE FAITH!\n",  /**/
+                 r);               /**/
 
-      population -= r;
-    }
-  }
-
-  if (strlen(tutor) == 0) {
-    for (uint8_t t = 0; t < tutorialCount; t++) {
-      tutorials[t].update(tutorialsData[t], population, money);
-      if (tutorials[t].justTriggered()) {
-        uint8_t b = tutorialsData[t].buildingUnlocked();
-        buildingEnabled[b] = true;
-        const char *src = tutorialsData[t].getText();
-        strncpy_P(tutor, src, tutorLen);
-        break;
+        population -= r;
+      } else {
+        /* Check if any tutorial event is ready to trigger. */
+        for (uint8_t t = 0; t < tutorialCount; t++) {
+          tutorials[t].update(tutorialsData[t], population, money);
+          if (tutorials[t].justTriggered()) {
+            uint8_t b = tutorialsData[t].buildingUnlocked();
+            buildingEnabled[b] = true;
+            const char *src = tutorialsData[t].getText();
+            strncpy_P(tutor, src, tutorLen);
+            break;
+          }
+        }
       }
     }
   }
