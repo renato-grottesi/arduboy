@@ -142,18 +142,18 @@ const char t13[] PROGMEM = "            \n"  /**/
 const Event tutorialsData[] = {
     /**/
     Event(0, 0, (uint8_t)(Building::IDs::house), t01),       /**/
-    Event(0, 1, (uint8_t)(Building::IDs::farm), t02),        /**/
-    Event(1000, 10, (uint8_t)(Building::IDs::water), t03),   /**/
-    Event(1100, 15, (uint8_t)(Building::IDs::saloon), t04),  /**/
-    Event(1500, 20, (uint8_t)(Building::IDs::mine), t05),    /**/
-    Event(2000, 25, (uint8_t)(Building::IDs::sheriff), t07), /**/
-    Event(2500, 30, (uint8_t)(Building::IDs::bank), t06),    /**/
-    Event(3000, 50, (uint8_t)(Building::IDs::mill), t08),    /**/
-    Event(3500, 100, (uint8_t)(Building::IDs::church), t09), /**/
-    Event(4000, 150, (uint8_t)(Building::IDs::empty), t10),  /**/
-    Event(4500, 200, (uint8_t)(Building::IDs::tree), t11),   /**/
-    Event(5000, 250, (uint8_t)(Building::IDs::cactus), t12), /**/
-    Event(5500, 300, (uint8_t)(Building::IDs::weed), t13),   /**/
+    Event(50, 1, (uint8_t)(Building::IDs::farm), t02),       /**/
+    Event(900, 10, (uint8_t)(Building::IDs::water), t03),    /**/
+    Event(1000, 15, (uint8_t)(Building::IDs::saloon), t04),  /**/
+    Event(1300, 20, (uint8_t)(Building::IDs::mine), t05),    /**/
+    Event(1500, 25, (uint8_t)(Building::IDs::sheriff), t07), /**/
+    Event(2000, 30, (uint8_t)(Building::IDs::church), t09),  /**/
+    Event(2500, 50, (uint8_t)(Building::IDs::bank), t06),    /**/
+    Event(3000, 100, (uint8_t)(Building::IDs::mill), t08),   /**/
+    Event(3500, 150, (uint8_t)(Building::IDs::empty), t10),  /**/
+    Event(4000, 200, (uint8_t)(Building::IDs::tree), t11),   /**/
+    Event(4500, 250, (uint8_t)(Building::IDs::cactus), t12), /**/
+    Event(5000, 300, (uint8_t)(Building::IDs::weed), t13),   /**/
 };
 
 void Level::init() {
@@ -445,7 +445,7 @@ void Level::update() {
         r = arduboy.generateRandomSeed() % (money / 2);
         snprintf(tutor, tutorLen,                   /**/
                  "\nYOU HAVE\nBEEN ROBBED!\n"       /**/
-                 "\nTHE THIEVES\nSTOLE %4ld\$\n"    /**/
+                 "\nTHE THIEVES\nSTOLE %4ld$\n"     /**/
                  "\nBUILD MORE\nSHERIFF\nPOSTS!\n", /**/
                  r);                                /**/
         money -= r;
@@ -498,7 +498,7 @@ void Level::render() {
     // Flying objects
     arduboy.drawBitmap((size + flying[i] - camera * 8 + x_off) %
                            ((uint16_t)size * 8),
-                       0 * 8, &bmp_bird[((frame >> 2) % 4) * 8], 8, 8);
+                       8 * 8, &bmp_bird[((frame >> 2) % 4) * 8], 8, 8);
   }
 
   uint8_t cowboys = population / 16;
@@ -511,13 +511,7 @@ void Level::render() {
     // Walking objects
     arduboy.drawBitmap((size + walking[i] - camera * 8 + x_off) %
                            ((uint16_t)size * 8),
-                       1 + 4 * 8, &bmp_man[((frame >> 3) % 4) * 8], 8, 8);
-  }
-
-  // Lake area
-  for (int8_t tile = -1; tile < 17; tile++) {
-    const uint8_t *bmp = &(bmp_lake[(frame >> 3) % 2]);
-    arduboy.drawBitmap(x_off + tile * 8, 6 * 8 - 2, bmp, 8, 8);
+                       6 + 4 * 8, &bmp_man[((frame >> 3) % 4) * 8], 8, 8);
   }
 
   // Camera affected objects
@@ -526,12 +520,12 @@ void Level::render() {
 
     // Area where characters walk
     const uint8_t *bmp = groundBmps[(uint8_t)(tiles[moved].top)];
-    arduboy.drawBitmap(x_off + obj * 8, 4 * 8 - 2, bmp, 8, 8);
+    arduboy.drawBitmap(x_off + obj * 8, 4 * 8 + 4, bmp, 8, 8);
 
     // Lake shore area
     uint8_t frames = groundFrames[(uint8_t)(tiles[moved].low)];
     bmp = groundBmps[(uint8_t)(tiles[moved].low)] + 8 * ((frame >> 2) % frames);
-    arduboy.drawBitmap(x_off + obj * 8, 5 * 8 - 2, bmp, 8, 8);
+    arduboy.drawBitmap(x_off + obj * 8, 5 * 8, bmp, 8, 8);
 
     // Building area
     Building::IDs b = tiles[moved].building;
@@ -540,35 +534,63 @@ void Level::render() {
     bmp = Buildings::at(id).bitmap;
     uint8_t w = Buildings::at(id).width;
     uint8_t h = Buildings::at(id).height;
-    arduboy.drawBitmap(x_off + obj * 8, (4 - h) * 8, bmp, w * 8, h * 8);
+    arduboy.drawBitmap(x_off + obj * 8, (4 - h) * 8 + 6, bmp, w * 8, h * 8);
   }
 
-  {
-    uint8_t sel = (uint8_t)(currBuil);
+  uint8_t sel = (uint8_t)(currBuil);
 
-    // Current selection
-    for (uint8_t tile = 7; tile < 7 + (Buildings::at(sel).width); tile++) {
-      const uint8_t *bmp = bmp_selection;
-      arduboy.drawBitmap(tile * 8, 0, bmp, 8, 8);
+  // Current selection
+  for (uint8_t tile = 7; tile < 7 + (Buildings::at(sel).width); tile++) {
+    const uint8_t *bmp = bmp_selection;
+    arduboy.drawBitmap(tile * 8, 0, bmp, 8, 8);
+  }
+
+  // Two lines of GUI
+  char tmp_str[16];
+
+  tinyfont.setCursor(0, 0);
+  Buildings::at(sel).strncpyName(tmp_str);
+  tinyfont.print(tmp_str);
+  tinyfont.setCursor(0, 5);
+  tinyfont.print(itoa(5 * Buildings::at(sel).cost, tmp_str, 10));
+
+  snprintf(tmp_str, 16, "%9d$", money);
+  tinyfont.setCursor(78, 0);
+  tinyfont.print(tmp_str);
+  snprintf(tmp_str, 16, "%9dP", population);
+  tinyfont.setCursor(78, 5);
+  tinyfont.print(tmp_str);
+
+  /* Lake reflection effect. */
+  for (uint16_t y = 0; y < 2; y++) {
+    for (uint16_t x = 0; x < WIDTH; x++) {
+      uint8_t dst_col = 0x00;
+
+      uint8_t mirror[3] = {
+          arduboy.sBuffer[(5 - y) * WIDTH + x - (x == 0 ? 0 : 1)],
+          arduboy.sBuffer[(5 - y) * WIDTH + x],
+          arduboy.sBuffer[(5 - y) * WIDTH + x + (x == (WIDTH - 1) ? 0 : 1)]};
+      uint8_t src_col = 0x00;
+
+      src_col = mirror[((frame >> 3) + 0) % 3];
+      dst_col |= (src_col & 0x80) >> 7;
+      src_col = mirror[((frame >> 3) + 1) % 3];
+      dst_col |= (src_col & 0x40) >> 5;
+      src_col = mirror[((frame >> 3) + 2) % 3];
+      dst_col |= (src_col & 0x20) >> 3;
+      src_col = mirror[((frame >> 3) + 1) % 3];
+      dst_col |= (src_col & 0x10) >> 1;
+      src_col = mirror[((frame >> 3) + 0) % 3];
+      dst_col |= (src_col & 0x08) << 1;
+      src_col = mirror[((frame >> 3) + 1) % 3];
+      dst_col |= (src_col & 0x04) << 3;
+      src_col = mirror[((frame >> 3) + 2) % 3];
+      dst_col |= (src_col & 0x02) << 5;
+      src_col = mirror[((frame >> 3) + 1) % 3];
+      dst_col |= (src_col & 0x01) << 7;
+
+      arduboy.sBuffer[(6 + y) * WIDTH + x] = dst_col;
     }
-
-    // Two lines of GUI
-    char tmp_str[16];
-
-    tinyfont.setCursor(32, 6 * 8 + 6);
-    Buildings::at(sel).strncpyName(tmp_str);
-    tinyfont.print(tmp_str);
-    tinyfont.setCursor(70, 6 * 8 + 6);
-    tinyfont.print(itoa(5 * Buildings::at(sel).cost, tmp_str, 10));
-
-    tinyfont.setCursor(32, 6 * 8 + 6 + 6);
-    tinyfont.print("$");
-    tinyfont.setCursor(38, 6 * 8 + 6 + 6);
-    tinyfont.print(itoa(money, tmp_str, 10));
-    tinyfont.setCursor(64, 6 * 8 + 6 + 6);
-    tinyfont.print("PPL");
-    tinyfont.setCursor(82, 6 * 8 + 6 + 6);
-    tinyfont.print(itoa(population, tmp_str, 10));
   }
 
   if (strlen(tutor)) {
