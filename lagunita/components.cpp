@@ -1,15 +1,14 @@
 #include "components.h"
 #include "bitmaps.h"
 
-// TODO: save 7(bytes)*13(building = 91 bytes by moving the constant fields
-//       as PROGMEM arrays that are accessed with a getter.
-
 // The following signature is necessary to pack the names in an array
 const char names[][8] PROGMEM = {
     "CLEAR",   "WEED", "CACTUS", "TREE",   "HOUSE", "MINE", "CHURCH",
     "SHERIFF", "BANK", "WATER",  "SALOON", "MILL",  "FARM",
 };
 
+// TODO: save 7(bytes)*13(building = 91 bytes by moving the constant fields
+//       as PROGMEM arrays that are accessed with a getter.
 const Building Building::buildings[(uint8_t)Building::IDs::count] = {
     /* id, jobs, cost/5, width, height, maintenance, profit, bitmap, */
     Building(Building::IDs::empty, 0, 4, 1, 1, 0, 0, bmp_empty),
@@ -34,6 +33,6 @@ Building::Building(const IDs id, const uint8_t jobs, const uint8_t cost,
     : id(id), jobs(jobs), cost(cost), width(width), height(height),
       maintenance(maintenance), profit(profit), bitmap(bitmap){};
 
-void Building::strncpyName(char *dest) const {
+void Building::strncpyName(char dest[8]) const {
   strncpy_P(dest, names[(uint8_t)(id)], 8);
 };

@@ -4,11 +4,11 @@ void Lagunita::init() {
   // initiate arduboy instance
   arduboy.begin();
 
-  // set the framerate to 16 to save battery
+  // set the framerate to 32 FPS
   arduboy.setFrameRate(32);
 
+  // start the music
   arduboy.audio.begin();
-  arduboy.audio.on();
   music.init();
 }
 
@@ -17,13 +17,16 @@ void Lagunita::loop() {
   if (!(arduboy.nextFrame())) {
     return;
   }
+  // update the scene
   update();
+  // render the scene
   render();
 }
 
 void Lagunita::update() {
   arduboy.pollButtons();
 
+  // keep the music in a loop
   if (!music.isPlaying()) {
     music.play();
   }
@@ -33,13 +36,16 @@ void Lagunita::update() {
     if (arduboy.justPressed(UP_BUTTON)) {
       switch (currentMainSelection) {
       case MainSelections::play:
-        currentMainSelection = MainSelections::help;
+        currentMainSelection = MainSelections::audio;
         break;
       case MainSelections::credits:
         currentMainSelection = MainSelections::play;
         break;
       case MainSelections::help:
         currentMainSelection = MainSelections::credits;
+        break;
+      case MainSelections::audio:
+        currentMainSelection = MainSelections::help;
         break;
       }
     }
@@ -52,6 +58,9 @@ void Lagunita::update() {
         currentMainSelection = MainSelections::help;
         break;
       case MainSelections::help:
+        currentMainSelection = MainSelections::audio;
+        break;
+      case MainSelections::audio:
         currentMainSelection = MainSelections::play;
         break;
       }
@@ -69,6 +78,9 @@ void Lagunita::update() {
         break;
       case MainSelections::help:
         currentMenu = Menus::help;
+        break;
+      case MainSelections::audio:
+        arduboy.audio.toggle();
         break;
       }
     }
@@ -113,30 +125,40 @@ void Lagunita::update() {
 }
 
 void Lagunita::render() {
-  // clear the screen to black
+  // clear the whole screen to black
   arduboy.clear();
 
+  // render the menus
   switch (currentMenu) {
   case Menus::main:
-    arduboy.setCursor(42, 15);
+    tinyfont.setCursor(42, 20);
     if (level.isInProgress()) {
-      arduboy.print(F("Resume"));
+      tinyfont.print(F("RESUME"));
     } else {
-      arduboy.print(F("Play"));
+      tinyfont.print(F("PLAY"));
     }
-    arduboy.setCursor(42, 30);
-    arduboy.print(F("Credits"));
-    arduboy.setCursor(42, 45);
-    arduboy.print(F("Help"));
+    tinyfont.setCursor(42, 30);
+    tinyfont.print(F("CREDITS"));
+    tinyfont.setCursor(42, 40);
+    tinyfont.print(F("HELP"));
+    tinyfont.setCursor(42, 50);
+    if (arduboy.audio.enabled()) {
+      tinyfont.print(F("AUDIO: ON"));
+    } else {
+      tinyfont.print(F("AUDIO: OFF"));
+    }
     switch (currentMainSelection) {
     case MainSelections::play:
-      arduboy.drawBitmap(32, 15, bmp_bullet, 8, 8);
+      arduboy.drawBitmap(32, 18, bmp_bullet, 8, 8);
       break;
     case MainSelections::credits:
-      arduboy.drawBitmap(32, 30, bmp_bullet, 8, 8);
+      arduboy.drawBitmap(32, 28, bmp_bullet, 8, 8);
       break;
     case MainSelections::help:
-      arduboy.drawBitmap(32, 45, bmp_bullet, 8, 8);
+      arduboy.drawBitmap(32, 38, bmp_bullet, 8, 8);
+      break;
+    case MainSelections::audio:
+      arduboy.drawBitmap(32, 48, bmp_bullet, 8, 8);
       break;
     }
     break;

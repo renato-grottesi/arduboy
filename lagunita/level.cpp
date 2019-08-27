@@ -141,19 +141,19 @@ const char t13[] PROGMEM = "            \n"  /**/
 
 const Event tutorialsData[] = {
     /**/
-    Event(0, 0, (uint8_t)(Building::IDs::house), t01),       /**/
-    Event(50, 1, (uint8_t)(Building::IDs::farm), t02),       /**/
-    Event(900, 10, (uint8_t)(Building::IDs::water), t03),    /**/
-    Event(1000, 15, (uint8_t)(Building::IDs::saloon), t04),  /**/
-    Event(1300, 20, (uint8_t)(Building::IDs::mine), t05),    /**/
-    Event(1500, 25, (uint8_t)(Building::IDs::sheriff), t07), /**/
-    Event(2000, 30, (uint8_t)(Building::IDs::church), t09),  /**/
-    Event(2500, 50, (uint8_t)(Building::IDs::bank), t06),    /**/
-    Event(3000, 100, (uint8_t)(Building::IDs::mill), t08),   /**/
-    Event(3500, 150, (uint8_t)(Building::IDs::empty), t10),  /**/
-    Event(4000, 200, (uint8_t)(Building::IDs::tree), t11),   /**/
-    Event(4500, 250, (uint8_t)(Building::IDs::cactus), t12), /**/
-    Event(5000, 300, (uint8_t)(Building::IDs::weed), t13),   /**/
+    Event(0, 0, Building::IDs::house, t01),       /**/
+    Event(50, 1, Building::IDs::farm, t02),       /**/
+    Event(900, 10, Building::IDs::water, t03),    /**/
+    Event(1000, 15, Building::IDs::saloon, t04),  /**/
+    Event(1300, 20, Building::IDs::mine, t05),    /**/
+    Event(1500, 25, Building::IDs::sheriff, t07), /**/
+    Event(2000, 30, Building::IDs::church, t09),  /**/
+    Event(2500, 50, Building::IDs::bank, t06),    /**/
+    Event(3000, 100, Building::IDs::mill, t08),   /**/
+    Event(3500, 150, Building::IDs::empty, t10),  /**/
+    Event(4000, 200, Building::IDs::tree, t11),   /**/
+    Event(4500, 250, Building::IDs::cactus, t12), /**/
+    Event(5000, 300, Building::IDs::weed, t13),   /**/
 };
 
 void Level::init() {
@@ -171,12 +171,13 @@ void Level::init() {
   currBuil = Building::IDs::house;
   money = 999;
   tutor[0] = '\0';
+  tutorVisible = false;
   population = 0;
   inProgress = false;
   inStats = false;
 
   for (uint8_t i = 0; i < (uint8_t)Building::IDs::count; i++) {
-    tutorials[i].reset();
+    tutorials[i] = EventState::untriggered;
   }
 
   for (uint8_t i = 0; i < (uint8_t)Building::IDs::count; i++) {
@@ -186,23 +187,28 @@ void Level::init() {
   timeToUpdate = millis();
   arduboy.initRandomSeed();
 
-  // Add some random plants
+  // Add some random vegetation
+  uint8_t mask = 0x0f;
   for (uint8_t i = 0; i < size; i++) {
-    unsigned long r = arduboy.generateRandomSeed();
-    if ((r % 7) == 0) {
+    tiles[i].building = Building::IDs::empty;
+    uint8_t r = (rand() % 256) & mask;
+    mask = 0x0f;
+    switch (r) {
+    case 1:
       tiles[i].building = Building::IDs::cactus;
-      i++;
-      tiles[i].building = Building::IDs::empty;
-    } else if ((r % 7) == 1) {
+      break;
+    case 2:
       tiles[i].building = Building::IDs::weed;
-      i++;
-      tiles[i].building = Building::IDs::empty;
-    } else if ((r % 9) == 2) {
+      break;
+    /* Trees are non removable and add to the strategy: let's double them. */
+    case 3:
+    case 4:
       tiles[i].building = Building::IDs::tree;
-      i++;
-      tiles[i].building = Building::IDs::empty;
-    } else {
-      tiles[i].building = Building::IDs::empty;
+      /* After a tree there must be a blank space, so reset the mask. */
+      mask = 0x00;
+      break;
+    default:
+      break;
     }
   }
 
@@ -218,8 +224,8 @@ void Level::init() {
 
   // Init the random walkers and birds
   for (uint8_t i = 0; i < npc_count; i++) {
-    walking[i] = random() % ((uint16_t)size * 8);
-    flying[i] = random() % ((uint16_t)size * 8);
+    walking[i] = rand() % ((uint16_t)size * 8);
+    flying[i] = rand() % ((uint16_t)size * 8);
   }
 
   inProgress = true;
@@ -231,7 +237,7 @@ void Level::onInput(Input dir) {
     return;
   }
   // If there is a tutorial displayed, only allow the b button
-  if (strlen(tutor) && (dir != Input::b)) {
+  if (tutorVisible && (dir != Input::b)) {
     return;
   }
   uint8_t sel = (uint8_t)(currBuil);
@@ -239,7 +245,7 @@ void Level::onInput(Input dir) {
   case Input::up:
     do {
       if (sel == 0)
-        sel = Buildings::count() - 1;
+        sel = Building::count() - 1;
       else
         sel--;
       currBuil = (Building::IDs)(sel);
@@ -247,13 +253,13 @@ void Level::onInput(Input dir) {
     break;
   case Input::down:
     do {
-      sel = (sel + 1) % Buildings::count();
+      sel = (sel + 1) % Building::count();
       currBuil = (Building::IDs)(sel);
     } while (buildingEnabled[sel] == false);
     break;
   case Input::a: {
     uint8_t idx = (uint8_t)(currBuil);
-    if (money >= (Buildings::at(idx).cost * 5)) {
+    if (money >= (Building::at(idx).cost * 5)) {
 
       uint16_t cidx = (camera + 7) % size;
       bool replace = true;
@@ -263,7 +269,7 @@ void Level::onInput(Input dir) {
         // destroyed
         for (uint16_t i = 0; i < 4; i++) {
           uint16_t lidx = (cidx + (uint16_t)size - i) % size;
-          uint16_t ends = Buildings::at(tiles[lidx].building).width;
+          uint16_t ends = Building::at(tiles[lidx].building).width;
           if (((lidx + ends) % size) > cidx)
             tiles[lidx].building = Building::IDs::empty;
         }
@@ -271,7 +277,7 @@ void Level::onInput(Input dir) {
         // Check if we are in the middle of another building or tree
         for (uint16_t i = 0; i < 4; i++) {
           uint16_t lidx = (cidx + (uint16_t)size - i) % size;
-          uint16_t ends = Buildings::at(tiles[lidx].building).width;
+          uint16_t ends = Building::at(tiles[lidx].building).width;
           if (((lidx + ends) % size) > cidx) {
             Building::IDs id = tiles[lidx].building;
             if (Building::IDs::weed != id && Building::IDs::cactus != id &&
@@ -282,7 +288,7 @@ void Level::onInput(Input dir) {
         }
 
         // Check if there is another building or tree on the right
-        for (uint16_t i = 0; i < Buildings::at(currBuil).width; i++) {
+        for (uint16_t i = 0; i < Building::at(currBuil).width; i++) {
           Building::IDs id = tiles[(cidx + i) % size].building;
           if (Building::IDs::weed != id && Building::IDs::cactus != id &&
               Building::IDs::empty != id) {
@@ -292,17 +298,17 @@ void Level::onInput(Input dir) {
       }
       if (replace) {
         // Destroy everything on the path of this building
-        for (uint16_t i = 0; i < Buildings::at(currBuil).width; i++) {
+        for (uint16_t i = 0; i < Building::at(currBuil).width; i++) {
           tiles[(cidx + i) % size].building = Building::IDs::empty;
         }
 
         tiles[cidx].building = currBuil;
-        money -= Buildings::at(idx).cost * 5;
+        money -= Building::at(idx).cost * 5;
       }
     }
   } break;
   case Input::b:
-    if (strlen(tutor)) {
+    if (tutorVisible) {
       if (inStats) {
         snprintf(tutor, tutorLen,                               /**/
                  "\nHAPPINESS\n%4d %%\nSAFETY\n%4d %%\n"        /**/
@@ -310,10 +316,11 @@ void Level::onInput(Input dir) {
                  happiness, safety, spirituality, environment); /**/
         inStats = false;
       } else {
-        tutor[0] = '\0';
+        tutorVisible = false;
       }
     } else {
       inStats = true;
+      tutorVisible = true;
       snprintf(tutor, tutorLen,                             /**/
                "\nHOUSING\n%7d\nJOBS   FOOD\n%4d%7d\n"      /**/
                "MAINTENANCE\n%7d $/s\nEARNINGS\n%4d $/s\n", /**/
@@ -327,7 +334,7 @@ void Level::onInput(Input dir) {
 
 void Level::update() {
 
-  if ((strlen(tutor) == 0) && (camera_off == 0)) {
+  if (!tutorVisible && (camera_off == 0)) {
     if (arduboy.pressed(LEFT_BUTTON)) {
       if (camera == 0) {
         camera = size - 1;
@@ -358,9 +365,9 @@ void Level::update() {
     jobs = 1;
     food = 1;
     for (uint8_t obj = 0; obj < size; obj++) {
-      earnings += Buildings::at(tiles[obj].building).profit;
-      maintenance += Buildings::at(tiles[obj].building).maintenance;
-      jobs += Buildings::at(tiles[obj].building).jobs;
+      earnings += Building::at(tiles[obj].building).profit;
+      maintenance += Building::at(tiles[obj].building).maintenance;
+      jobs += Building::at(tiles[obj].building).jobs;
       if (tiles[obj].building == Building::IDs::house) {
         housing += 4;
         for (int16_t i = (obj + size - 16); i < (obj + size + 16); i++) {
@@ -436,46 +443,49 @@ void Level::update() {
       population = food;
     }
 
-    if (strlen(tutor) == 0) {
+    if (!tutorVisible) {
       arduboy.initRandomSeed();
-      unsigned long r = arduboy.generateRandomSeed() % 256;
+      uint16_t r = rand() % 256;
       if ((safety < 100) && (!r) &&
           buildingEnabled[(uint8_t)(Building::IDs::sheriff)]) {
         /* If the safety is low, simulate a robbery. */
-        r = arduboy.generateRandomSeed() % (money / 2);
+        r = rand() % (money / 2);
         snprintf(tutor, tutorLen,                   /**/
                  "\nYOU HAVE\nBEEN ROBBED!\n"       /**/
-                 "\nTHE THIEVES\nSTOLE %4ld$\n"     /**/
+                 "\nTHE THIEVES\nSTOLE %4d$\n"      /**/
                  "\nBUILD MORE\nSHERIFF\nPOSTS!\n", /**/
                  r);                                /**/
+        tutorVisible = true;
         money -= r;
       } else if ((spirituality < 100) && (!r) &&
                  buildingEnabled[(uint8_t)(Building::IDs::church)]) {
         /* If the spirituality is low, simulate emigration. */
-        r = arduboy.generateRandomSeed() % (population / 2);
-        snprintf(tutor, tutorLen,  /**/
-                 "\n%4ld PEOPLE\n" /**/
-                 "LOST FAITH\n"    /**/
-                 "IN LAGUNITA\n"   /**/
-                 "AND DECIDED\n"   /**/
-                 "TO FOUND\n"      /**/
-                 "THEIR OWN\n"     /**/
-                 "TOWN.\n"         /**/
-                 "BUILD MORE\n"    /**/
-                 "CHURCHES TO\n"   /**/
-                 "RISE FAITH!\n",  /**/
-                 r);               /**/
-
+        r = rand() % (population / 2);
+        snprintf(tutor, tutorLen, /**/
+                 "\n%4d PEOPLE\n" /**/
+                 "LOST FAITH\n"   /**/
+                 "IN LAGUNITA\n"  /**/
+                 "AND DECIDED\n"  /**/
+                 "TO FOUND\n"     /**/
+                 "THEIR OWN\n"    /**/
+                 "TOWN.\n"        /**/
+                 "BUILD MORE\n"   /**/
+                 "CHURCHES TO\n"  /**/
+                 "RISE FAITH!\n", /**/
+                 r);              /**/
+        tutorVisible = true;
         population -= r;
       } else {
         /* Check if any tutorial event is ready to trigger. */
         for (uint8_t t = 0; t < tutorialCount; t++) {
-          tutorials[t].update(tutorialsData[t], population, money);
-          if (tutorials[t].justTriggered()) {
+          tutorials[t] =
+              tutorialsData[t].update(tutorials[t], population, money);
+          if (tutorials[t] == EventState::justTriggered) {
             uint8_t b = tutorialsData[t].buildingUnlocked();
             buildingEnabled[b] = true;
             const char *src = tutorialsData[t].getText();
             strncpy_P(tutor, src, tutorLen);
+            tutorVisible = true;
             break;
           }
         }
@@ -498,7 +508,7 @@ void Level::render() {
     // Flying objects
     arduboy.drawBitmap((size + flying[i] - camera * 8 + x_off) %
                            ((uint16_t)size * 8),
-                       8 * 8, &bmp_bird[((frame >> 2) % 4) * 8], 8, 8);
+                       1 * 8, &bmp_bird[((frame >> 2) % 4) * 8], 8, 8);
   }
 
   uint8_t cowboys = population / 16;
@@ -531,16 +541,16 @@ void Level::render() {
     Building::IDs b = tiles[moved].building;
 
     uint8_t id = (uint8_t)(b);
-    bmp = Buildings::at(id).bitmap;
-    uint8_t w = Buildings::at(id).width;
-    uint8_t h = Buildings::at(id).height;
+    bmp = Building::at(id).bitmap;
+    uint8_t w = Building::at(id).width;
+    uint8_t h = Building::at(id).height;
     arduboy.drawBitmap(x_off + obj * 8, (4 - h) * 8 + 6, bmp, w * 8, h * 8);
   }
 
   uint8_t sel = (uint8_t)(currBuil);
 
   // Current selection
-  for (uint8_t tile = 7; tile < 7 + (Buildings::at(sel).width); tile++) {
+  for (uint8_t tile = 7; tile < 7 + (Building::at(sel).width); tile++) {
     const uint8_t *bmp = bmp_selection;
     arduboy.drawBitmap(tile * 8, 0, bmp, 8, 8);
   }
@@ -549,10 +559,10 @@ void Level::render() {
   char tmp_str[16];
 
   tinyfont.setCursor(0, 0);
-  Buildings::at(sel).strncpyName(tmp_str);
+  Building::at(sel).strncpyName(tmp_str);
   tinyfont.print(tmp_str);
   tinyfont.setCursor(0, 5);
-  tinyfont.print(itoa(5 * Buildings::at(sel).cost, tmp_str, 10));
+  tinyfont.print(itoa(5 * Building::at(sel).cost, tmp_str, 10));
 
   snprintf(tmp_str, 16, "%9d$", money);
   tinyfont.setCursor(78, 0);
@@ -593,7 +603,7 @@ void Level::render() {
     }
   }
 
-  if (strlen(tutor)) {
+  if (tutorVisible) {
     arduboy.fillRect(32, 0, 64, 64, BLACK);
     arduboy.drawRoundRect(32, 0, 64, 64, 4, WHITE);
     tinyfont.setCursor(35, 3);

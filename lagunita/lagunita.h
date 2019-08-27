@@ -7,7 +7,8 @@
 class Lagunita {
 public:
   Lagunita()
-      : tinyfont(arduboy.sBuffer, Arduboy2::width(), Arduboy2::height()),
+      : tinyfont(arduboy.sBuffer, Arduboy2Base::width(),
+                 Arduboy2Base::height()),
         music(arduboy), level(arduboy, tinyfont) {}
   void init();
   void loop();
@@ -18,9 +19,9 @@ private:
 
 private:
   enum class Menus : uint8_t { main, game, credits, help, lost };
-  enum class MainSelections : uint8_t { play, credits, help };
+  enum class MainSelections : uint8_t { play, credits, help, audio };
 
-  Arduboy2 arduboy;
+  Arduboy2Base arduboy;
   Tinyfont tinyfont;
   Music music;
   Level level;

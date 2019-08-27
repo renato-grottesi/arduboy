@@ -1,40 +1,45 @@
 #pragma once
 
+#include "components.h"
+
+/* Represents the state of an event. */
+enum class EventState : uint8_t { untriggered, justTriggered, triggered };
+
+/* Represent an immutable event. */
 class Event {
 public:
-  Event(uint16_t money, uint16_t population, uint8_t unlocks, const char *text)
+  /* Constructor. */
+  Event(uint16_t money, uint16_t population, Building::IDs unlocks,
+        const char *text)
       : onMoney(money), onPopulation(population), unlocks(unlocks), text(text) {
   }
 
-  uint8_t buildingUnlocked() const { return unlocks; }
+  /* Return the buildings that gets unlocked by this event. */
+  uint8_t buildingUnlocked() const { return (uint8_t)unlocks; }
+
+  /* Return the text of this event. */
   const char *getText() const { return text; }
 
-public:
-  const uint16_t onMoney;
-  const uint16_t onPopulation;
-  const uint8_t unlocks;
-  const char *text;
-};
-
-class EventWrapper {
-public:
-  EventWrapper() : triggered(0) {}
-  void update(const Event &ev, uint16_t population, uint16_t money) {
-    if (!triggered && (money >= ev.onMoney && population >= ev.onPopulation)) {
-      triggered = 1;
+  /* Update an EventState for this event's parameters. */
+  EventState update(EventState ev, uint16_t population, uint16_t money) const {
+    switch (ev) {
+    case EventState::untriggered:
+      if (money >= onMoney && population >= onPopulation) {
+        return EventState::justTriggered;
+      } else {
+        return EventState::untriggered;
+      }
+      break;
+    default:
+      break;
     }
-  }
 
-  bool justTriggered() {
-    if (triggered == 1) {
-      triggered = 2;
-      return true;
-    }
-    return false;
+    return EventState::triggered;
   }
-
-  void reset() { triggered = 0; }
 
 private:
-  uint8_t triggered = 0;
+  const uint16_t onMoney;      /* Minimum money that triggers the event. */
+  const uint16_t onPopulation; /* Minimum population that triggers the event. */
+  const Building::IDs unlocks; /* Buildings that gets unlocked by the event. */
+  const char *text; /* Pointer to text in PROGMEM that describe the event. */
 };

@@ -3,6 +3,10 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 
+/*
+ * Game bitmaps stored in PROGMEM
+ */
+
 const unsigned char PROGMEM bmp_selection[] = {
     0b00010000, /**/
     0b00110000, /**/

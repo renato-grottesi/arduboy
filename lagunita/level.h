@@ -7,7 +7,7 @@
 
 class Level {
 public:
-  Level(Arduboy2 &arduboy, Tinyfont &tinyfont)
+  Level(Arduboy2Base &arduboy, Tinyfont &tinyfont)
       : arduboy(arduboy), tinyfont(tinyfont) {}
 
   void init();
@@ -20,7 +20,7 @@ public:
   void pause() { inProgress = false; };
 
 private:
-  Arduboy2 &arduboy;
+  Arduboy2Base &arduboy;
   Tinyfont &tinyfont;
 
   bool buildingEnabled[(uint8_t)Building::IDs::count] = {
@@ -37,7 +37,7 @@ private:
   uint8_t camera_sign = 0;
 
   // Number of tiles
-  static const uint8_t size = 248;
+  static const uint8_t size = 255;
 
   /* Use bit array to pack more fields in a byte. */
   struct {
@@ -71,9 +71,12 @@ private:
   unsigned long timeToUpdate = 0;
 
   static const uint8_t tutorialCount = 13;
-  EventWrapper tutorials[tutorialCount] = {};
+  EventState tutorials[tutorialCount] = {
+      EventState::untriggered,
+  };
 
   static const uint8_t tutorLen = 156;
+  bool tutorVisible = false;
   char tutor[tutorLen] = {
       '\0',
   };

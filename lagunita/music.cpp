@@ -1,5 +1,6 @@
 #include "music.h"
 
+/* MIDI score converted in bytes stored in PROGMEM. */
 const byte western[] PROGMEM = {
     0x90, 52,   0,    136,  0x80, 1,    153,  0x90, 52,   0,    136,  0x80,
     1,    153,  0x90, 52,   0,    136,  0x80, 1,    153,  0x90, 53,   1,
