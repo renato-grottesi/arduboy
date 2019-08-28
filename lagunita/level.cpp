@@ -22,7 +22,7 @@ const char t02[] PROGMEM = "            \n"  /**/
                            "BUILDING.   \n"; /**/
 const char t03[] PROGMEM = "            \n"  /**/
                            "MORE PEOPLE \n"  /**/
-                           "WILL MODE   \n"  /**/
+                           "WILL MOVE   \n"  /**/
                            "IN, IF THE  \n"  /**/
                            "HOUSES ARE  \n"  /**/
                            "SERVICED    \n"  /**/
