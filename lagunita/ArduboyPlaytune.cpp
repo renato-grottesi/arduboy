@@ -90,25 +90,13 @@ static boolean (*outputEnabled)();
 static volatile const byte *score_start = 0;
 static volatile const byte *score_cursor = 0;
 
-// Table of midi note frequencies * 2
-//   They are times 2 for greater accuracy, yet still fits in a word.
-//   Generated from Excel by =ROUND(2*440/32*(2^((x-9)/12)),0) for 0<x<128
-// The lowest notes might not work, depending on the Arduino clock frequency
-// Ref: http://www.phy.mtu.edu/~suits/notefreqs.html
-const uint8_t _midi_byte_note_frequencies[48] PROGMEM = {
-    16,  17,  18,  19,  21,  22,  23,  24,  26,  28,  29,  31,
-    33,  35,  37,  39,  41,  44,  46,  49,  52,  55,  58,  62,
-    65,  69,  73,  78,  82,  87,  92,  98,  104, 110, 117, 123,
-    131, 139, 147, 156, 165, 175, 185, 196, 208, 220, 233, 247};
-const unsigned int _midi_word_note_frequencies[80] PROGMEM = {
-    262,   277,   294,   311,   330,   349,   370,   392,   415,   440,
-    466,   494,   523,   554,   587,   622,   659,   698,   740,   784,
-    831,   880,   932,   988,   1047,  1109,  1175,  1245,  1319,  1397,
-    1480,  1568,  1661,  1760,  1865,  1976,  2093,  2217,  2349,  2489,
-    2637,  2794,  2960,  3136,  3322,  3520,  3729,  3951,  4186,  4435,
-    4699,  4978,  5274,  5588,  5920,  6272,  6645,  7040,  7459,  7902,
-    8372,  8870,  9397,  9956,  10548, 11175, 11840, 12544, 13290, 14080,
-    14917, 15804, 16744, 17740, 18795, 19912, 21096, 22351, 23680, 25088};
+// array of frequencies used by the music
+const unsigned int _frequencies[] PROGMEM = {
+    16,  73,  82,  87,  98,  110, 131, 147, 165, 175, 196, 220,
+    247, 262, 294, 330, 349, 392, 440, 494, 523, 587, 659};
+
+// array of note durations used by the music
+const unsigned int _durations[] PROGMEM = {0, 136, 272, 409, 545, 818, 1090};
 
 ArduboyPlaytune::ArduboyPlaytune(boolean (*outEn)()) { outputEnabled = outEn; }
 
@@ -183,11 +171,7 @@ void ArduboyPlaytune::playNote(byte chan, byte note) {
   }
 
   timer_num = tune_pin_to_timer[chan];
-  if (note < 48) {
-    frequency2 = pgm_read_byte(_midi_byte_note_frequencies + note);
-  } else {
-    frequency2 = pgm_read_word(_midi_word_note_frequencies + note - 48);
-  }
+  frequency2 = pgm_read_word(_frequencies + note);
 
   //******  16-bit timer  *********
   // two choices for the 16 bit timers: ck/1 or ck/64
@@ -262,30 +246,33 @@ If CMD < 0x80, then the other 7 bits and the next byte are a
 15-bit big-endian number of msec to wait
 */
 void ArduboyPlaytune::step() {
-  byte command, opcode, chan;
-  unsigned duration;
+  byte command, note, dur;
+  const byte chan = 0;
 
   while (1) {
     command = pgm_read_byte(score_cursor++);
-    opcode = command & 0xf0;
-    chan = command & 0x0f;
-    if (opcode == TUNE_OP_STOPNOTE) { /* stop note */
+    if (command == 0) {
+      tune_playing = false;
+      return;
+    }
+
+    note = command & 0x19;
+    dur = (command >> 5) & 0x7;
+
+    if (!note) { /* stop note */
       stopNote(chan);
-    } else if (opcode == TUNE_OP_PLAYNOTE) { /* play note */
+    } else { /* play note */
       all_muted = !outputEnabled();
-      playNote(chan, pgm_read_byte(score_cursor++));
-    } else if (opcode < 0x80) { /* wait count in msec. */
-      duration = ((unsigned)command << 8) | (pgm_read_byte(score_cursor++));
-      wait_toggle_count =
-          ((unsigned long)wait_timer_frequency2 * duration + 500) / 1000;
+      playNote(chan, note);
+    };
+
+    if (dur) { /* wait count in msec. */
+      wait_toggle_count = ((unsigned long)wait_timer_frequency2 *
+                               pgm_read_word(_durations + dur) +
+                           500) /
+                          1000;
       if (wait_toggle_count == 0)
         wait_toggle_count = 1;
-      break;
-    } else if (opcode == TUNE_OP_RESTART) { /* restart score */
-      score_cursor = score_start;
-    } else if (opcode == TUNE_OP_STOP) { /* stop score */
-      tune_playing = false;
-      break;
     }
   }
 }
