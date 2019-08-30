@@ -1,38 +1,164 @@
 #include "components.h"
 #include "bitmaps.h"
 
-// The following signature is necessary to pack the names in an array
-const char names[][8] PROGMEM = {
-    "CLEAR",   "WEED", "CACTUS", "TREE",   "HOUSE", "MINE", "CHURCH",
-    "SHERIFF", "BANK", "WATER",  "SALOON", "MILL",  "FARM",
+Building::Building(const IDs id) : id(id){};
+
+static const char names[(uint8_t)Building::IDs::count][8] PROGMEM = {
+    "CLEAR",   /* CLEAR    */
+    "HOUSE",   /* HOUSE    */
+    "WATER",   /* WATER    */
+    "SALOON",  /* SALOON   */
+    "FARM",    /* FARM     */
+    "MILL",    /* MILL     */
+    "MINE",    /* MINE     */
+    "CHURCH",  /* CHURCH   */
+    "SHERIFF", /* SHERIFF  */
+    "BANK",    /* BANK     */
+    "WEED",    /* WEED     */
+    "CACTUS",  /* CACTUS   */
+    "TREE",    /* TREE     */
 };
 
-// TODO: save 7(bytes)*13(building = 91 bytes by moving the constant fields
-//       as PROGMEM arrays that are accessed with a getter.
-const Building Building::buildings[(uint8_t)Building::IDs::count] = {
-    /* id, jobs, cost/5, width, height, maintenance, profit, bitmap, */
-    Building(Building::IDs::empty, 0, 4, 1, 1, 0, 0, bmp_empty),
-    Building(Building::IDs::weed, 0, 2, 1, 1, 0, 0, bmp_weed),
-    Building(Building::IDs::cactus, 0, 2, 1, 1, 0, 0, bmp_cactus),
-    Building(Building::IDs::tree, 0, 4, 2, 2, 0, 0, bmp_tree),
-    Building(Building::IDs::house, 1, 5, 2, 2, 1, 0, bmp_house),
-    Building(Building::IDs::mine, 30, 100, 3, 3, 0, 30, bmp_mine),
-    Building(Building::IDs::church, 1, 150, 3, 3, 2, 0, bmp_church),
-    Building(Building::IDs::sheriff, 2, 20, 2, 2, 2, 0, bmp_sheriff),
-    Building(Building::IDs::bank, 4, 50, 2, 2, 5, 0, bmp_bank),
-    Building(Building::IDs::water, 0, 10, 1, 3, 0, 1, bmp_water),
-    Building(Building::IDs::saloon, 8, 50, 3, 3, 0, 1, bmp_saloon),
-    Building(Building::IDs::mill, 1, 20, 1, 3, 0, 1, bmp_mill),
-    Building(Building::IDs::farm, 8, 20, 4, 2, 0, 10, bmp_farm),
+static const uint8_t _jobs[(uint8_t)Building::IDs::count] PROGMEM = {
+    0,  /* CLEAR    */
+    1,  /* HOUSE    */
+    0,  /* WATER    */
+    8,  /* SALOON   */
+    8,  /* FARM     */
+    1,  /* MILL     */
+    30, /* MINE     */
+    1,  /* CHURCH   */
+    2,  /* SHERIFF  */
+    4,  /* BANK     */
+    0,  /* WEED     */
+    0,  /* CACTUS   */
+    0,  /* TREE     */
 };
 
-Building::Building(const IDs id, const uint8_t jobs, const uint8_t cost,
-                   const uint8_t width, const uint8_t height,
-                   const uint8_t maintenance, const uint8_t profit,
-                   const uint8_t *bitmap)
-    : id(id), jobs(jobs), cost(cost), width(width), height(height),
-      maintenance(maintenance), profit(profit), bitmap(bitmap){};
+static const uint8_t _cost[(uint8_t)Building::IDs::count] PROGMEM = {
+    4,   /* CLEAR    */
+    5,   /* HOUSE    */
+    10,  /* WATER    */
+    50,  /* SALOON   */
+    20,  /* FARM     */
+    20,  /* MILL     */
+    100, /* MINE     */
+    150, /* CHURCH   */
+    20,  /* SHERIFF  */
+    50,  /* BANK     */
+    2,   /* WEED     */
+    2,   /* CACTUS   */
+    4,   /* TREE     */
+};
 
-void Building::strncpyName(char dest[8]) const {
+static const uint8_t _width[(uint8_t)Building::IDs::count] PROGMEM = {
+    1, /* CLEAR    */
+    2, /* HOUSE    */
+    1, /* WATER    */
+    3, /* SALOON   */
+    4, /* FARM     */
+    1, /* MILL     */
+    3, /* MINE     */
+    3, /* CHURCH   */
+    2, /* SHERIFF  */
+    2, /* BANK     */
+    1, /* WEED     */
+    1, /* CACTUS   */
+    2, /* TREE     */
+};
+
+static const uint8_t _height[(uint8_t)Building::IDs::count] PROGMEM = {
+    1, /* CLEAR    */
+    2, /* HOUSE    */
+    3, /* WATER    */
+    3, /* SALOON   */
+    2, /* FARM     */
+    3, /* MILL     */
+    3, /* MINE     */
+    3, /* CHURCH   */
+    2, /* SHERIFF  */
+    2, /* BANK     */
+    1, /* WEED     */
+    1, /* CACTUS   */
+    2, /* TREE     */
+};
+
+static const uint8_t _maintenance[(uint8_t)Building::IDs::count] PROGMEM = {
+    0, /* CLEAR    */
+    1, /* HOUSE    */
+    0, /* WATER    */
+    0, /* SALOON   */
+    0, /* FARM     */
+    0, /* MILL     */
+    0, /* MINE     */
+    2, /* CHURCH   */
+    2, /* SHERIFF  */
+    5, /* BANK     */
+    0, /* WEED     */
+    0, /* CACTUS   */
+    0, /* TREE     */
+};
+
+static const uint8_t _profit[(uint8_t)Building::IDs::count] PROGMEM = {
+    0,  /* CLEAR    */
+    0,  /* HOUSE    */
+    1,  /* WATER    */
+    1,  /* SALOON   */
+    10, /* FARM     */
+    1,  /* MILL     */
+    30, /* MINE     */
+    0,  /* CHURCH   */
+    0,  /* SHERIFF  */
+    0,  /* BANK     */
+    0,  /* WEED     */
+    0,  /* CACTUS   */
+    0,  /* TREE     */
+};
+
+static const uint8_t *const _bitmap[(uint8_t)Building::IDs::count] PROGMEM = {
+    bmp_empty,   /* CLEAR    */
+    bmp_house,   /* HOUSE    */
+    bmp_water,   /* WATER    */
+    bmp_saloon,  /* SALOON   */
+    bmp_farm,    /* FARM     */
+    bmp_mill,    /* MILL     */
+    bmp_mine,    /* MINE     */
+    bmp_church,  /* CHURCH   */
+    bmp_sheriff, /* SHERIFF  */
+    bmp_bank,    /* BANK     */
+    bmp_weed,    /* WEED     */
+    bmp_cactus,  /* CACTUS   */
+    bmp_tree,    /* TREE     */
+};
+
+void Building::strncpyName(char dest[8], const uint8_t id) {
   strncpy_P(dest, names[(uint8_t)(id)], 8);
-};
+}
+
+const uint8_t Building::jobs(const uint8_t id) {
+  return pgm_read_byte(&(_jobs[(uint8_t)(id)]));
+}
+
+const uint8_t Building::cost(const uint8_t id) {
+  return pgm_read_byte(&(_cost[(uint8_t)(id)]));
+}
+
+const uint8_t Building::width(const uint8_t id) {
+  return pgm_read_byte(&(_width[(uint8_t)(id)]));
+}
+
+const uint8_t Building::height(const uint8_t id) {
+  return pgm_read_byte(&(_height[(uint8_t)(id)]));
+}
+
+const uint8_t Building::maintenance(const uint8_t id) {
+  return pgm_read_byte(&(_maintenance[(uint8_t)(id)]));
+}
+
+const uint8_t Building::profit(const uint8_t id) {
+  return pgm_read_byte(&(_profit[(uint8_t)(id)]));
+}
+
+const uint8_t *Building::bitmap(const uint8_t id) {
+  return pgm_read_ptr(&(_bitmap[(uint8_t)(id)]));
+}

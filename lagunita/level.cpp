@@ -140,7 +140,6 @@ const char t13[] PROGMEM = "            \n"  /**/
                            "            \n"; /**/
 
 const Event tutorialsData[] = {
-    /**/
     Event(0, 0, Building::IDs::house, t01),       /**/
     Event(50, 1, Building::IDs::farm, t02),       /**/
     Event(900, 10, Building::IDs::water, t03),    /**/
@@ -259,7 +258,7 @@ void Level::onInput(Input dir) {
     break;
   case Input::a: {
     uint8_t idx = (uint8_t)(currBuil);
-    if (money >= (Building::at(idx).cost * 5)) {
+    if (money >= (Building::cost(idx) * 5)) {
 
       uint16_t cidx = (camera + 7) % size;
       bool replace = true;
@@ -269,7 +268,7 @@ void Level::onInput(Input dir) {
         // destroyed
         for (uint16_t i = 0; i < 4; i++) {
           uint16_t lidx = (cidx + (uint16_t)size - i) % size;
-          uint16_t ends = Building::at(tiles[lidx].building).width;
+          uint16_t ends = Building::width(tiles[lidx].building);
           if (((lidx + ends) % size) > cidx)
             tiles[lidx].building = Building::IDs::empty;
         }
@@ -277,7 +276,7 @@ void Level::onInput(Input dir) {
         // Check if we are in the middle of another building or tree
         for (uint16_t i = 0; i < 4; i++) {
           uint16_t lidx = (cidx + (uint16_t)size - i) % size;
-          uint16_t ends = Building::at(tiles[lidx].building).width;
+          uint16_t ends = Building::width(tiles[lidx].building);
           if (((lidx + ends) % size) > cidx) {
             Building::IDs id = tiles[lidx].building;
             if (Building::IDs::weed != id && Building::IDs::cactus != id &&
@@ -288,7 +287,7 @@ void Level::onInput(Input dir) {
         }
 
         // Check if there is another building or tree on the right
-        for (uint16_t i = 0; i < Building::at(currBuil).width; i++) {
+        for (uint16_t i = 0; i < Building::width(currBuil); i++) {
           Building::IDs id = tiles[(cidx + i) % size].building;
           if (Building::IDs::weed != id && Building::IDs::cactus != id &&
               Building::IDs::empty != id) {
@@ -298,12 +297,12 @@ void Level::onInput(Input dir) {
       }
       if (replace) {
         // Destroy everything on the path of this building
-        for (uint16_t i = 0; i < Building::at(currBuil).width; i++) {
+        for (uint16_t i = 0; i < Building::width(currBuil); i++) {
           tiles[(cidx + i) % size].building = Building::IDs::empty;
         }
 
         tiles[cidx].building = currBuil;
-        money -= Building::at(idx).cost * 5;
+        money -= Building::cost(idx) * 5;
       }
     }
   } break;
@@ -365,9 +364,9 @@ void Level::update() {
     jobs = 1;
     food = 1;
     for (uint8_t obj = 0; obj < size; obj++) {
-      earnings += Building::at(tiles[obj].building).profit;
-      maintenance += Building::at(tiles[obj].building).maintenance;
-      jobs += Building::at(tiles[obj].building).jobs;
+      earnings += Building::profit(tiles[obj].building);
+      maintenance += Building::maintenance(tiles[obj].building);
+      jobs += Building::jobs(tiles[obj].building);
       if (tiles[obj].building == Building::IDs::house) {
         housing += 4;
         for (int16_t i = (obj + size - 16); i < (obj + size + 16); i++) {
@@ -541,16 +540,16 @@ void Level::render() {
     Building::IDs b = tiles[moved].building;
 
     uint8_t id = (uint8_t)(b);
-    bmp = Building::at(id).bitmap;
-    uint8_t w = Building::at(id).width;
-    uint8_t h = Building::at(id).height;
+    bmp = Building::bitmap(id);
+    uint8_t w = Building::width(id);
+    uint8_t h = Building::height(id);
     arduboy.drawBitmap(x_off + obj * 8, (4 - h) * 8 + 6, bmp, w * 8, h * 8);
   }
 
   uint8_t sel = (uint8_t)(currBuil);
 
   // Current selection
-  for (uint8_t tile = 7; tile < 7 + (Building::at(sel).width); tile++) {
+  for (uint8_t tile = 7; tile < 7 + (Building::width(sel)); tile++) {
     const uint8_t *bmp = bmp_selection;
     arduboy.drawBitmap(tile * 8, 0, bmp, 8, 8);
   }
@@ -559,10 +558,10 @@ void Level::render() {
   char tmp_str[16];
 
   tinyfont.setCursor(0, 0);
-  Building::at(sel).strncpyName(tmp_str);
+  Building::strncpyName(tmp_str, sel);
   tinyfont.print(tmp_str);
   tinyfont.setCursor(0, 5);
-  tinyfont.print(itoa(5 * Building::at(sel).cost, tmp_str, 10));
+  tinyfont.print(itoa(5 * Building::cost(sel), tmp_str, 10));
 
   snprintf_P(tmp_str, 16, PSTR("%9d$"), money);
   tinyfont.setCursor(78, 0);
