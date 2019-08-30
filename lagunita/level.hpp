@@ -74,7 +74,7 @@ private:
       EventState::untriggered,
   };
 
-  static const uint8_t tutorLen = 156;
+  static const uint8_t tutorLen = 128; /* 5% of total RAM! */
   bool tutorVisible = false;
   char tutor[tutorLen] = {
       '\0',
