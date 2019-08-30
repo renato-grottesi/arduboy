@@ -109,7 +109,7 @@ class Tinyfont : public Print {
   uint8_t letterSpacing;  //!< letterSpacing controls the distance between
                           //!< letters. Default is 1.
   uint8_t lineHeight;     //!< lineHeight controls the height between lines
-                       //!< breakend by \n. Default is 5.
+                          //!< breakend by \n. Default is 5.
 };
 
 #endif
