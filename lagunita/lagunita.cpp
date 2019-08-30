@@ -187,17 +187,17 @@ void Lagunita::render() {
     tinyfont.setCursor(2, 0);
     tinyfont.print(F(                              /**/
                      "                         \n" /**/
-                     "      LAGUNITA WAS       \n" /**/
-                     "      DEVELOPED BY       \n" /**/
+                     "LAGUNITA WAS CREATED BY  \n" /**/
+                     "    RENATO GROTTESI      \n" /**/
                      "                         \n" /**/
-                     "      RENATO             \n" /**/
-                     "           GROTTESI      \n" /**/
+                     "PROGRAMMING              \n" /**/
+                     "    RENATO GROTTESI      \n" /**/
+                     "    GUUS SLIEPEN         \n" /**/
+                     "                         \n" /**/
+                     "MUSIC BY                 \n" /**/
+                     "    JOAKIM SIMONSSON     \n" /**/
                      "                         \n" /**/
                      "                         \n" /**/
-                     "      MUSIC BY           \n" /**/
-                     "                         \n" /**/
-                     "      JOAKIM             \n" /**/
-                     "          SIMONSSON      \n" /**/
                      "                         \n" /**/
                      ));
     break;
