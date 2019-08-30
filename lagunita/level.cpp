@@ -310,10 +310,10 @@ void Level::onInput(Input dir) {
   case Input::b:
     if (tutorVisible) {
       if (inStats) {
-        snprintf_P(tutor, tutorLen,
-                   PSTR("\nHAPPINESS\n%4d %%\nSAFETY\n%4d %%\n"
-                        "SPIRITUALITY\n%4d %%\nENVIRONMENT\n%4d %%\n"),
-                   happiness, safety, spirituality, environment);
+        snprintf_P(tutor, tutorLen,                                     /**/
+                   PSTR("\nHAPPINESS\n%4d %%\nSAFETY\n%4d %%\n"         /**/
+                        "SPIRITUALITY\n%4d %%\nENVIRONMENT\n%4d %%\n"), /**/
+                   happiness, safety, spirituality, environment);       /**/
         inStats = false;
       } else {
         tutorVisible = false;
@@ -321,10 +321,10 @@ void Level::onInput(Input dir) {
     } else {
       inStats = true;
       tutorVisible = true;
-      snprintf_P(tutor, tutorLen,
-                 PSTR("\nHOUSING\n%7d\nJOBS   FOOD\n%4d%7d\n"
-                      "MAINTENANCE\n%7d $/s\nEARNINGS\n%4d $/s\n"),
-                 housing, jobs, food, maintenance, earnings);
+      snprintf_P(tutor, tutorLen,                                   /**/
+                 PSTR("\nHOUSING\n%7d\nJOBS   FOOD\n%4d%7d\n"       /**/
+                      "MAINTENANCE\n%7d $/s\nEARNINGS\n%4d $/s\n"), /**/
+                 housing, jobs, food, maintenance, earnings);       /**/
     }
     break;
   default:
@@ -450,29 +450,29 @@ void Level::update() {
           buildingEnabled[(uint8_t)(Building::IDs::sheriff)]) {
         /* If the safety is low, simulate a robbery. */
         r = rand() % (money / 2);
-        snprintf_P(tutor, tutorLen,
-                   PSTR("\nYOU HAVE\nBEEN ROBBED!\n"
-                        "\nTHE THIEVES\nSTOLE %4d$\n"
-                        "\nBUILD MORE\nSHERIFF\nPOSTS!\n"),
-                   r);
+        snprintf_P(tutor, tutorLen,                         /**/
+                   PSTR("\nYOU HAVE\nBEEN ROBBED!\n"        /**/
+                        "\nTHE THIEVES\nSTOLE %4d$\n"       /**/
+                        "\nBUILD MORE\nSHERIFF\nPOSTS!\n"), /**/
+                   r);                                      /**/
         tutorVisible = true;
         money -= r;
       } else if ((spirituality < 100) && (!r) &&
                  buildingEnabled[(uint8_t)(Building::IDs::church)]) {
         /* If the spirituality is low, simulate emigration. */
         r = rand() % (population / 2);
-        snprintf_P(tutor, tutorLen,
-                 PSTR("\n%4d PEOPLE\n"
-                      "LOST FAITH\n"
-                      "IN LAGUNITA\n"
-                      "AND DECIDED\n"
-                      "TO FOUND\n"
-                      "THEIR OWN\n"
-                      "TOWN.\n"
-                      "BUILD MORE\n"
-                      "CHURCHES TO\n"
-                      "RISE FAITH!\n"),
-                 r);
+        snprintf_P(tutor, tutorLen,       /**/
+                   PSTR("\n%4d PEOPLE\n"  /**/
+                        "LOST FAITH\n"    /**/
+                        "IN LAGUNITA\n"   /**/
+                        "AND DECIDED\n"   /**/
+                        "TO FOUND\n"      /**/
+                        "THEIR OWN\n"     /**/
+                        "TOWN.\n"         /**/
+                        "BUILD MORE\n"    /**/
+                        "CHURCHES TO\n"   /**/
+                        "RISE FAITH!\n"), /**/
+                   r);                    /**/
         tutorVisible = true;
         population -= r;
       } else {
