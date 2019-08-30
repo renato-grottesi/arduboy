@@ -59,7 +59,7 @@ pushing me to figure out why his music sounded weird, and for discovering that
 it worked ok with the 2013 version that used the 8-bit timer for score waits.
 */
 
-#include "ArduboyPlaytune.h"
+#include "ArduboyPlaytune.hpp"
 #include <avr/power.h>
 
 static const byte tune_pin_to_timer[] = {3, 1};

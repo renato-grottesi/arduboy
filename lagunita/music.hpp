@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ArduboyPlaytune.h"
+#include "ArduboyPlaytune.hpp"
 #include "utility.hpp"
 #include <stdint.h>
 

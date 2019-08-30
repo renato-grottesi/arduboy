@@ -1,5 +1,5 @@
 /**
- * @file ArduboyPlaytune.h
+ * @file ArduboyPlaytune.hpp
  * \brief An Arduino library that plays a one or two part musical score and
  * generates tones. Intended for the Arduboy game system.
  */
