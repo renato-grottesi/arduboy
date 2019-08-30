@@ -70,8 +70,7 @@ private:
 
   unsigned long timeToUpdate = 0;
 
-  static const uint8_t tutorialCount = 13;
-  EventState tutorials[tutorialCount] = {
+  EventState tutorials[Events::count] = {
       EventState::untriggered,
   };
 

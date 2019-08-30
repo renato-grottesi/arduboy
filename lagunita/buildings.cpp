@@ -1,8 +1,6 @@
 #include "buildings.hpp"
 #include "bitmaps.hpp"
 
-Building::Building(const IDs id) : id(id){};
-
 static const char names[(uint8_t)Building::IDs::count][8] PROGMEM = {
     "CLEAR",   /* CLEAR    */
     "HOUSE",   /* HOUSE    */

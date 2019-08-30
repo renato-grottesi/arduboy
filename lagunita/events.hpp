@@ -6,40 +6,21 @@
 enum class EventState : uint8_t { untriggered, justTriggered, triggered };
 
 /* Represent an immutable event. */
-class Event {
+class Events {
 public:
-  /* Constructor. */
-  Event(uint16_t money, uint16_t population, Building::IDs unlocks,
-        const char *text)
-      : onMoney(money), onPopulation(population), unlocks(unlocks), text(text) {
-  }
-
   /* Return the buildings that gets unlocked by this event. */
-  uint8_t buildingUnlocked() const { return (uint8_t)unlocks; }
+  static uint8_t buildingUnlocked(uint8_t id);
 
   /* Return the text of this event. */
-  const char *getText() const { return text; }
+  static const char *getText(uint8_t id);
 
   /* Update an EventState for this event's parameters. */
-  EventState update(EventState ev, uint16_t population, uint16_t money) const {
-    switch (ev) {
-    case EventState::untriggered:
-      if (money >= onMoney && population >= onPopulation) {
-        return EventState::justTriggered;
-      } else {
-        return EventState::untriggered;
-      }
-      break;
-    default:
-      break;
-    }
+  static EventState update(EventState ev, uint8_t id, uint16_t population,
+                           uint16_t money);
 
-    return EventState::triggered;
-  }
+  static const uint8_t count = 13;
 
 private:
-  const uint16_t onMoney;      /* Minimum money that triggers the event. */
-  const uint16_t onPopulation; /* Minimum population that triggers the event. */
-  const Building::IDs unlocks; /* Buildings that gets unlocked by the event. */
-  const char *text; /* Pointer to text in PROGMEM that describe the event. */
+  /* Private default constructor. */
+  Events(){};
 };

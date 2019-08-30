@@ -1,160 +1,5 @@
 #include "level.hpp"
 
-const char t01[] PROGMEM = "            \n"  /**/
-                           "WELCOME TO  \n"  /**/
-                           "LAGUNITA,   \n"  /**/
-                           "A SMALL LAKE\n"  /**/
-                           "IN THE WILD \n"  /**/
-                           "WILD WEST.  \n"  /**/
-                           "            \n"  /**/
-                           "BUILD SOME  \n"  /**/
-                           "HOUSES TO   \n"  /**/
-                           "INCREASE THE\n"  /**/
-                           "POPULATION. \n"; /**/
-const char t02[] PROGMEM = "            \n"  /**/
-                           "BUILD A FARM\n"  /**/
-                           "TO GIVE A   \n"  /**/
-                           "JOB TO THE  \n"  /**/
-                           "CITIZENS.   \n"  /**/
-                           "            \n"  /**/
-                           "ARROW UP    \n"  /**/
-                           "TO SWITCH   \n"  /**/
-                           "BUILDING.   \n"; /**/
-const char t03[] PROGMEM = "            \n"  /**/
-                           "MORE PEOPLE \n"  /**/
-                           "WILL MOVE   \n"  /**/
-                           "IN, IF THE  \n"  /**/
-                           "HOUSES ARE  \n"  /**/
-                           "SERVICED    \n"  /**/
-                           "WITH WATER. \n"  /**/
-                           "            \n"  /**/
-                           "TRY BUILDING\n"  /**/
-                           "SOME WATER  \n"  /**/
-                           "TOWERS.     \n"; /**/
-const char t04[] PROGMEM = "            \n"  /**/
-                           "THE COWBOYS \n"  /**/
-                           "ARE GETTING \n"  /**/
-                           "RESTLESS.   \n"  /**/
-                           "            \n"  /**/
-                           "BUILD A NEW \n"  /**/
-                           "SALOON TO   \n"  /**/
-                           "ENTERTAIN   \n"  /**/
-                           "THEM AND    \n"  /**/
-                           "RAISE THEIR \n"  /**/
-                           "HAPPINESS.  \n"; /**/
-const char t05[] PROGMEM = "            \n"  /**/
-                           "THE GOLD    \n"  /**/
-                           "FEVER       \n"  /**/
-                           "REACHED     \n"  /**/
-                           "LAGUNITA!   \n"  /**/
-                           "\nBUILD A   \n"  /**/
-                           "MINE TO     \n"  /**/
-                           "INCRESE     \n"  /**/
-                           "THE INCOME. \n"  /**/
-                           "            \n"; /**/
-const char t06[] PROGMEM = "            \n"  /**/
-                           "THERE IS NO \n"  /**/
-                           "SPACE LEFT  \n"  /**/
-                           "TO STORE ALL\n"  /**/
-                           "THE MONEY!  \n"  /**/
-                           "            \n"  /**/
-                           "BUILD A BANK\n"  /**/
-                           "TO INCREASE \n"  /**/
-                           "GOLD STORAGE\n"  /**/
-                           "BY 5000$.   \n"  /**/
-                           "            \n"; /**/
-const char t07[] PROGMEM = "            \n"  /**/
-                           "THE BANDITS \n"  /**/
-                           "COULD SMELL \n"  /**/
-                           "YOUR MONEY  \n"  /**/
-                           "AND THEY ARE\n"  /**/
-                           "COMING TO   \n"  /**/
-                           "ASSAULT THE \n"  /**/
-                           "BANK!       \n"  /**/
-                           "BUILD A POST\n"  /**/
-                           "FOR THE     \n"  /**/
-                           "SHERIFF.    \n"; /**/
-const char t08[] PROGMEM = "            \n"  /**/
-                           "AS THE TOWN \n"  /**/
-                           "GROWS, THE  \n"  /**/
-                           "COST FOR    \n"  /**/
-                           "IMPORTING   \n"  /**/
-                           "FOOD GETS   \n"  /**/
-                           "PROBLEMATIC.\n"  /**/
-                           "            \n"  /**/
-                           "BUILD A MILL\n"  /**/
-                           "TO FEED THE \n"  /**/
-                           "LAGUNITIANS.\n"; /**/
-const char t09[] PROGMEM = "            \n"  /**/
-                           "A PRIEST    \n"  /**/
-                           "PASSING BY  \n"  /**/
-                           "PROPOSES YOU\n"  /**/
-                           "TO EDUCATE  \n"  /**/
-                           "THE PEOPLE  \n"  /**/
-                           "IF YOU BUILD\n"  /**/
-                           "A SMALL     \n"  /**/
-                           "CHURCH FOR  \n"  /**/
-                           "HIM.        \n"  /**/
-                           "            \n"; /**/
-const char t10[] PROGMEM = "            \n"  /**/
-                           "EVEN THE    \n"  /**/
-                           "BEST OF US  \n"  /**/
-                           "MAKE SOME   \n"  /**/
-                           "MISTAKES.   \n"  /**/
-                           "            \n"  /**/
-                           "NOW YOU     \n"  /**/
-                           "CAN REMOVE  \n"  /**/
-                           "TREES AND   \n"  /**/
-                           "BUILDINGS.  \n"  /**/
-                           "            \n"; /**/
-const char t11[] PROGMEM = "            \n"  /**/
-                           "IT'S SO     \n"  /**/
-                           "WARM...     \n"  /**/
-                           "            \n"  /**/
-                           "PLANT A FEW \n"  /**/
-                           "TREES TO    \n"  /**/
-                           "PROVIDE     \n"  /**/
-                           "SOME SHADE  \n"  /**/
-                           "FOR THE     \n"  /**/
-                           "LAGUNITIANS!\n"  /**/
-                           "            \n"; /**/
-const char t12[] PROGMEM = "            \n"  /**/
-                           "DID YOU TRY \n"  /**/
-                           "THE FRUITS  \n"  /**/
-                           "FROM OUR    \n"  /**/
-                           "LOCAL CACTUS\n"  /**/
-                           "PLANTS?     \n"  /**/
-                           "            \n"  /**/
-                           "NOW YOU CAN \n"  /**/
-                           "PLANT YOUR  \n"  /**/
-                           "OWN!        \n"; /**/
-const char t13[] PROGMEM = "            \n"  /**/
-                           "DO YOU EVER \n"  /**/
-                           "REGRET      \n"  /**/
-                           "CUTTING ALL \n"  /**/
-                           "THE WEED?   \n"  /**/
-                           "            \n"  /**/
-                           "TAKE SOME   \n"  /**/
-                           "SEEDS.      \n"  /**/
-                           "            \n"  /**/
-                           "            \n"; /**/
-
-const Event tutorialsData[] = {
-    Event(0, 0, Building::IDs::house, t01),       /**/
-    Event(50, 1, Building::IDs::farm, t02),       /**/
-    Event(900, 10, Building::IDs::water, t03),    /**/
-    Event(1000, 15, Building::IDs::saloon, t04),  /**/
-    Event(1300, 20, Building::IDs::mine, t05),    /**/
-    Event(1500, 25, Building::IDs::sheriff, t07), /**/
-    Event(2000, 30, Building::IDs::church, t09),  /**/
-    Event(2500, 50, Building::IDs::bank, t06),    /**/
-    Event(3000, 100, Building::IDs::mill, t08),   /**/
-    Event(3500, 150, Building::IDs::empty, t10),  /**/
-    Event(4000, 200, Building::IDs::tree, t11),   /**/
-    Event(4500, 250, Building::IDs::cactus, t12), /**/
-    Event(5000, 300, Building::IDs::weed, t13),   /**/
-};
-
 void Level::init() {
   camera = 0;
   camera_off = 0;
@@ -476,13 +321,12 @@ void Level::update() {
         population -= r;
       } else {
         /* Check if any tutorial event is ready to trigger. */
-        for (uint8_t t = 0; t < tutorialCount; t++) {
-          tutorials[t] =
-              tutorialsData[t].update(tutorials[t], population, money);
+        for (uint8_t t = 0; t < Events::count; t++) {
+          tutorials[t] = Events::update(tutorials[t], t, population, money);
           if (tutorials[t] == EventState::justTriggered) {
-            uint8_t b = tutorialsData[t].buildingUnlocked();
+            uint8_t b = Events::buildingUnlocked(t);
             buildingEnabled[b] = true;
-            const char *src = tutorialsData[t].getText();
+            const char *src = Events::getText(t);
             strncpy_P(tutor, src, tutorLen);
             tutorVisible = true;
             break;

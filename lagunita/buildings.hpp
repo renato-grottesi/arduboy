@@ -29,8 +29,6 @@ public:
     count
   };
 
-  const IDs id; /* The building's ID. */
-
   /* Copies the building's name from PROGMEM to the destination string. */
   static void strncpyName(char dest[8], const uint8_t id);
   static void strncpyName(char dest[8], Building::IDs id) {
@@ -67,7 +65,4 @@ public:
 private:
   /* Private empty constructor. */
   Building() {}
-
-  /* It's not possible to construct a building programmatically. */
-  Building(const IDs id);
 };
