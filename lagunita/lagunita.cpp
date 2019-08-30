@@ -1,4 +1,4 @@
-#include "lagunita.h"
+#include "lagunita.hpp"
 
 void Lagunita::init() {
   // initiate arduboy instance

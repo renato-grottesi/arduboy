@@ -1,9 +1,9 @@
 #pragma once
 
-#include "bitmaps.h"
-#include "components.h"
-#include "event.h"
-#include "utility.h"
+#include "bitmaps.hpp"
+#include "buildings.hpp"
+#include "events.hpp"
+#include "utility.hpp"
 
 class Level {
 public:

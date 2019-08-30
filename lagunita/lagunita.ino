@@ -1,4 +1,4 @@
-#include "lagunita.h"
+#include "lagunita.hpp"
 
 /* The game instance. */
 Lagunita game;

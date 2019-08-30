@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ArduboyPlaytune.h"
-#include "utility.h"
+#include "utility.hpp"
 #include <stdint.h>
 
 /* Class that plays the game music. */

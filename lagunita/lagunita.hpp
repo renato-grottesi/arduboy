@@ -1,8 +1,8 @@
 #pragma once
 
-#include "level.h"
-#include "music.h"
-#include "utility.h"
+#include "level.hpp"
+#include "music.hpp"
+#include "utility.hpp"
 
 class Lagunita {
 public:

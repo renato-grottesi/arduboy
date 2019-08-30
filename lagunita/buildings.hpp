@@ -1,6 +1,6 @@
 #pragma once
 
-#include "utility.h"
+#include "utility.hpp"
 #include <stdint.h>
 
 /* Types of ground. */

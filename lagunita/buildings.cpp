@@ -1,5 +1,5 @@
-#include "components.h"
-#include "bitmaps.h"
+#include "buildings.hpp"
+#include "bitmaps.hpp"
 
 Building::Building(const IDs id) : id(id){};
 
