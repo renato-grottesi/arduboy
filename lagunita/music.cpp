@@ -64,4 +64,6 @@ void Music::init() {
   sound.initChannel(PIN_SPEAKER_2);
 };
 
-void Music::play() { sound.playScore(western); };
+void Music::play() {
+  sound.playScore(western);
+};

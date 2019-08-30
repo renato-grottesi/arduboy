@@ -1,143 +1,156 @@
 #include "events.hpp"
 
-const char textHouse[] PROGMEM = "\n"               /**/
-                                 "WELCOME TO\n"     /**/
-                                 "LAGUNITA,\n"      /**/
-                                 "A SMALL LAKE\n"   /**/
-                                 "IN THE WILD\n"    /**/
-                                 "WILD WEST.\n"     /**/
-                                 "\n"               /**/
-                                 "BUILD SOME\n"     /**/
-                                 "HOUSES TO\n"      /**/
-                                 "INCREASE THE\n"   /**/
-                                 "POPULATION.\n";   /**/
-const char textFarm[] PROGMEM = "\n"                /**/
-                                "BUILD A FARM\n"    /**/
-                                "TO GIVE A\n"       /**/
-                                "JOB TO THE\n"      /**/
-                                "CITIZENS.\n"       /**/
-                                "\n"                /**/
-                                "ARROW UP\n"        /**/
-                                "TO SWITCH\n"       /**/
-                                "BUILDING.\n";      /**/
-const char textWater[] PROGMEM = "\n"               /**/
-                                 "MORE PEOPLE\n"    /**/
-                                 "WILL MOVE\n"      /**/
-                                 "IN, IF THE\n"     /**/
-                                 "HOUSES ARE\n"     /**/
-                                 "SERVICED\n"       /**/
-                                 "WITH WATER.\n"    /**/
-                                 "\n"               /**/
-                                 "TRY BUILDING\n"   /**/
-                                 "SOME WATER\n"     /**/
-                                 "TOWERS.\n";       /**/
-const char textSaloon[] PROGMEM = "\n"              /**/
-                                  "THE COWBOYS\n"   /**/
-                                  "ARE GETTING\n"   /**/
-                                  "RESTLESS.\n"     /**/
-                                  "\n"              /**/
-                                  "BUILD A NEW\n"   /**/
-                                  "SALOON TO\n"     /**/
-                                  "ENTERTAIN\n"     /**/
-                                  "THEM AND\n"      /**/
-                                  "RAISE THEIR\n"   /**/
-                                  "HAPPINESS.\n";   /**/
-const char textMine[] PROGMEM = "\n"                /**/
-                                "THE GOLD\n"        /**/
-                                "FEVER\n"           /**/
-                                "REACHED\n"         /**/
-                                "LAGUNITA!\n"       /**/
-                                "\nBUILD A\n"       /**/
-                                "MINE TO\n"         /**/
-                                "INCRESE\n"         /**/
-                                "THE INCOME.\n"     /**/
-                                "\n";               /**/
-const char textBank[] PROGMEM = "\n"                /**/
-                                "THERE IS NO\n"     /**/
-                                "SPACE LEFT\n"      /**/
-                                "TO STORE ALL\n"    /**/
-                                "THE MONEY!\n"      /**/
-                                "\n"                /**/
-                                "BUILD A BANK\n"    /**/
-                                "TO INCREASE \n"    /**/
-                                "GOLD STORAGE\n"    /**/
-                                "BY 5000$.\n"       /**/
-                                "\n";               /**/
-const char textSheriff[] PROGMEM = "\n"             /**/
-                                   "THE BANDITS\n"  /**/
-                                   "COULD SMELL\n"  /**/
-                                   "YOUR MONEY\n"   /**/
-                                   "AND THEY ARE\n" /**/
-                                   "COMING TO\n"    /**/
-                                   "ASSAULT THE\n"  /**/
-                                   "BANK!\n"        /**/
-                                   "BUILD A POST\n" /**/
-                                   "FOR THE\n"      /**/
-                                   "SHERIFF.\n";    /**/
-const char textMill[] PROGMEM = "\n"                /**/
-                                "AS THE TOWN\n"     /**/
-                                "GROWS, THE\n"      /**/
-                                "COST FOR\n"        /**/
-                                "IMPORTING\n"       /**/
-                                "FOOD GETS\n"       /**/
-                                "PROBLEMATIC.\n"    /**/
-                                "\n"                /**/
-                                "BUILD A MILL\n"    /**/
-                                "TO FEED THE\n"     /**/
-                                "LAGUNITIANS.\n";   /**/
-const char textChurch[] PROGMEM = "\n"              /**/
-                                  "A PRIEST\n"      /**/
-                                  "PASSING BY\n"    /**/
-                                  "PROPOSES YOU\n"  /**/
-                                  "TO EDUCATE\n"    /**/
-                                  "THE PEOPLE\n"    /**/
-                                  "IF YOU BUILD\n"  /**/
-                                  "A SMALL\n"       /**/
-                                  "CHURCH FOR\n"    /**/
-                                  "HIM.\n"          /**/
-                                  "\n";             /**/
-const char textEmpty[] PROGMEM = "\n"               /**/
-                                 "EVEN THE\n"       /**/
-                                 "BEST OF US\n"     /**/
-                                 "MAKE SOME\n"      /**/
-                                 "MISTAKES.\n"      /**/
-                                 "\n"               /**/
-                                 "NOW YOU\n"        /**/
-                                 "CAN REMOVE\n"     /**/
-                                 "TREES AND\n"      /**/
-                                 "BUILDINGS.\n"     /**/
-                                 "\n";              /**/
-const char textTree[] PROGMEM = "\n"                /**/
-                                "IT'S SO\n"         /**/
-                                "WARM...\n"         /**/
-                                "\n"                /**/
-                                "PLANT A FEW\n"     /**/
-                                "TREES TO\n"        /**/
-                                "PROVIDE\n"         /**/
-                                "SOME SHADE\n"      /**/
-                                "FOR THE\n"         /**/
-                                "LAGUNITIANS!\n"    /**/
-                                "\n";               /**/
-const char textCactus[] PROGMEM = "\n"              /**/
-                                  "DID YOU TRY\n"   /**/
-                                  "THE FRUITS\n"    /**/
-                                  "FROM OUR\n"      /**/
-                                  "LOCAL CACTUS\n"  /**/
-                                  "PLANTS?\n"       /**/
-                                  "\n"              /**/
-                                  "NOW YOU CAN\n"   /**/
-                                  "PLANT YOUR\n"    /**/
-                                  "OWN!\n";         /**/
-const char textWeed[] PROGMEM = "\n"                /**/
-                                "DO YOU EVER\n"     /**/
-                                "REGRET\n"          /**/
-                                "CUTTING ALL\n"     /**/
-                                "THE WEED?\n"       /**/
-                                "\n"                /**/
-                                "TAKE SOME\n"       /**/
-                                "SEEDS.\n"          /**/
-                                "\n"                /**/
-                                "\n";               /**/
+const char textHouse[] PROGMEM =
+    "\n"             /**/
+    "WELCOME TO\n"   /**/
+    "LAGUNITA,\n"    /**/
+    "A SMALL LAKE\n" /**/
+    "IN THE WILD\n"  /**/
+    "WILD WEST.\n"   /**/
+    "\n"             /**/
+    "BUILD SOME\n"   /**/
+    "HOUSES TO\n"    /**/
+    "INCREASE THE\n" /**/
+    "POPULATION.\n"; /**/
+const char textFarm[] PROGMEM =
+    "\n"             /**/
+    "BUILD A FARM\n" /**/
+    "TO GIVE A\n"    /**/
+    "JOB TO THE\n"   /**/
+    "CITIZENS.\n"    /**/
+    "\n"             /**/
+    "ARROW UP\n"     /**/
+    "TO SWITCH\n"    /**/
+    "BUILDING.\n";   /**/
+const char textWater[] PROGMEM =
+    "\n"             /**/
+    "MORE PEOPLE\n"  /**/
+    "WILL MOVE\n"    /**/
+    "IN, IF THE\n"   /**/
+    "HOUSES ARE\n"   /**/
+    "SERVICED\n"     /**/
+    "WITH WATER.\n"  /**/
+    "\n"             /**/
+    "TRY BUILDING\n" /**/
+    "SOME WATER\n"   /**/
+    "TOWERS.\n";     /**/
+const char textSaloon[] PROGMEM =
+    "\n"            /**/
+    "THE COWBOYS\n" /**/
+    "ARE GETTING\n" /**/
+    "RESTLESS.\n"   /**/
+    "\n"            /**/
+    "BUILD A NEW\n" /**/
+    "SALOON TO\n"   /**/
+    "ENTERTAIN\n"   /**/
+    "THEM AND\n"    /**/
+    "RAISE THEIR\n" /**/
+    "HAPPINESS.\n"; /**/
+const char textMine[] PROGMEM =
+    "\n"            /**/
+    "THE GOLD\n"    /**/
+    "FEVER\n"       /**/
+    "REACHED\n"     /**/
+    "LAGUNITA!\n"   /**/
+    "\nBUILD A\n"   /**/
+    "MINE TO\n"     /**/
+    "INCRESE\n"     /**/
+    "THE INCOME.\n" /**/
+    "\n";           /**/
+const char textBank[] PROGMEM =
+    "\n"             /**/
+    "THERE IS NO\n"  /**/
+    "SPACE LEFT\n"   /**/
+    "TO STORE ALL\n" /**/
+    "THE MONEY!\n"   /**/
+    "\n"             /**/
+    "BUILD A BANK\n" /**/
+    "TO INCREASE \n" /**/
+    "GOLD STORAGE\n" /**/
+    "BY 5000$.\n"    /**/
+    "\n";            /**/
+const char textSheriff[] PROGMEM =
+    "\n"             /**/
+    "THE BANDITS\n"  /**/
+    "COULD SMELL\n"  /**/
+    "YOUR MONEY\n"   /**/
+    "AND THEY ARE\n" /**/
+    "COMING TO\n"    /**/
+    "ASSAULT THE\n"  /**/
+    "BANK!\n"        /**/
+    "BUILD A POST\n" /**/
+    "FOR THE\n"      /**/
+    "SHERIFF.\n";    /**/
+const char textMill[] PROGMEM =
+    "\n"              /**/
+    "AS THE TOWN\n"   /**/
+    "GROWS, THE\n"    /**/
+    "COST FOR\n"      /**/
+    "IMPORTING\n"     /**/
+    "FOOD GETS\n"     /**/
+    "PROBLEMATIC.\n"  /**/
+    "\n"              /**/
+    "BUILD A MILL\n"  /**/
+    "TO FEED THE\n"   /**/
+    "LAGUNITIANS.\n"; /**/
+const char textChurch[] PROGMEM =
+    "\n"             /**/
+    "A PRIEST\n"     /**/
+    "PASSING BY\n"   /**/
+    "PROPOSES YOU\n" /**/
+    "TO EDUCATE\n"   /**/
+    "THE PEOPLE\n"   /**/
+    "IF YOU BUILD\n" /**/
+    "A SMALL\n"      /**/
+    "CHURCH FOR\n"   /**/
+    "HIM.\n"         /**/
+    "\n";            /**/
+const char textEmpty[] PROGMEM =
+    "\n"           /**/
+    "EVEN THE\n"   /**/
+    "BEST OF US\n" /**/
+    "MAKE SOME\n"  /**/
+    "MISTAKES.\n"  /**/
+    "\n"           /**/
+    "NOW YOU\n"    /**/
+    "CAN REMOVE\n" /**/
+    "TREES AND\n"  /**/
+    "BUILDINGS.\n" /**/
+    "\n";          /**/
+const char textTree[] PROGMEM =
+    "\n"             /**/
+    "IT'S SO\n"      /**/
+    "WARM...\n"      /**/
+    "\n"             /**/
+    "PLANT A FEW\n"  /**/
+    "TREES TO\n"     /**/
+    "PROVIDE\n"      /**/
+    "SOME SHADE\n"   /**/
+    "FOR THE\n"      /**/
+    "LAGUNITIANS!\n" /**/
+    "\n";            /**/
+const char textCactus[] PROGMEM =
+    "\n"             /**/
+    "DID YOU TRY\n"  /**/
+    "THE FRUITS\n"   /**/
+    "FROM OUR\n"     /**/
+    "LOCAL CACTUS\n" /**/
+    "PLANTS?\n"      /**/
+    "\n"             /**/
+    "NOW YOU CAN\n"  /**/
+    "PLANT YOUR\n"   /**/
+    "OWN!\n";        /**/
+const char textWeed[] PROGMEM =
+    "\n"            /**/
+    "DO YOU EVER\n" /**/
+    "REGRET\n"      /**/
+    "CUTTING ALL\n" /**/
+    "THE WEED?\n"   /**/
+    "\n"            /**/
+    "TAKE SOME\n"   /**/
+    "SEEDS.\n"      /**/
+    "\n"            /**/
+    "\n";           /**/
 #if 0
 const char templ[] PROGMEM = "            \n"  /**/
                              "DO YOU EVER \n"  /**/
@@ -151,7 +164,7 @@ const char templ[] PROGMEM = "            \n"  /**/
                              "            \n"; /**/
 #endif
 
-const char *const texts[Events::count] PROGMEM = {
+const char* const texts[Events::count] PROGMEM = {
     textHouse,   /* HOUSE    */
     textFarm,    /* FARM     */
     textWater,   /* WATER    */
@@ -215,25 +228,29 @@ static const Building::IDs unlocks[Events::count] PROGMEM = {
     Building::IDs::weed,    /* WEED     */
 };
 
-const char *Events::getText(uint8_t id) { return pgm_read_ptr(&(texts[id])); }
+const char* Events::getText(uint8_t id) {
+  return pgm_read_ptr(&(texts[id]));
+}
 
 uint8_t Events::buildingUnlocked(uint8_t id) {
   return pgm_read_byte(&unlocks[id]);
 }
 
-EventState Events::update(EventState ev, uint8_t id, uint16_t population,
+EventState Events::update(EventState ev,
+                          uint8_t id,
+                          uint16_t population,
                           uint16_t money) {
   switch (ev) {
-  case EventState::untriggered:
-    if (money >= pgm_read_word(&onMoney[id]) &&
-        population >= pgm_read_word(&onPopulation[id])) {
-      return EventState::justTriggered;
-    } else {
-      return EventState::untriggered;
-    }
-    break;
-  default:
-    break;
+    case EventState::untriggered:
+      if (money >= pgm_read_word(&onMoney[id]) &&
+          population >= pgm_read_word(&onPopulation[id])) {
+        return EventState::justTriggered;
+      } else {
+        return EventState::untriggered;
+      }
+      break;
+    default:
+      break;
   }
 
   return EventState::triggered;

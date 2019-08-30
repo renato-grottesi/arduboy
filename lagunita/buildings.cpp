@@ -113,7 +113,7 @@ static const uint8_t _profit[(uint8_t)Building::IDs::count] PROGMEM = {
     0,  /* TREE     */
 };
 
-static const uint8_t *const _bitmap[(uint8_t)Building::IDs::count] PROGMEM = {
+static const uint8_t* const _bitmap[(uint8_t)Building::IDs::count] PROGMEM = {
     bmp_empty,   /* CLEAR    */
     bmp_house,   /* HOUSE    */
     bmp_water,   /* WATER    */
@@ -157,6 +157,6 @@ const uint8_t Building::profit(const uint8_t id) {
   return pgm_read_byte(&(_profit[(uint8_t)(id)]));
 }
 
-const uint8_t *Building::bitmap(const uint8_t id) {
+const uint8_t* Building::bitmap(const uint8_t id) {
   return pgm_read_ptr(&(_bitmap[(uint8_t)(id)]));
 }

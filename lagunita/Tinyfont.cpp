@@ -32,7 +32,7 @@ const unsigned char PROGMEM TINYFONT_SPRITE[] = {
     0x00, 0x9f, 0x60, 0x60, 0xf4, 0xf2, 0xf6, 0xf2, /**/
 };
 
-Tinyfont::Tinyfont(uint8_t *screenBuffer, int16_t width, int16_t height) {
+Tinyfont::Tinyfont(uint8_t* screenBuffer, int16_t width, int16_t height) {
   sBuffer = screenBuffer;
   sWidth = width;
   sHeight = height;
@@ -49,8 +49,8 @@ Tinyfont::Tinyfont(uint8_t *screenBuffer, int16_t width, int16_t height) {
 
 size_t Tinyfont::write(uint8_t c) {
   if (c == '\n') {
-    cursorX = baseX;       // cr
-    cursorY += lineHeight; // lf
+    cursorX = baseX;        // cr
+    cursorY += lineHeight;  // lf
   }
   // check for tab
   else if (c == '\t') {
@@ -89,10 +89,9 @@ void Tinyfont::printChar(char c, int16_t x, int16_t y) {
     y++;
 
   // get sprite frames
-  const uint8_t *letter = TINYFONT_SPRITE + ((cval / 2) * 4);
+  const uint8_t* letter = TINYFONT_SPRITE + ((cval / 2) * 4);
 
   for (uint8_t i = 0; i < 4; i++) {
-
     uint8_t colData = pgm_read_byte(letter++);
     if (c % 2 == 0) {
       // mask upper sprite
@@ -111,7 +110,6 @@ void Tinyfont::printChar(char c, int16_t x, int16_t y) {
 }
 
 void Tinyfont::drawByte(int16_t x, int16_t y, uint8_t pixels, uint8_t color) {
-
   uint8_t row = (uint8_t)y / 8;
 
   // check if byte needs to be seperated
@@ -134,10 +132,18 @@ void Tinyfont::setCursor(int16_t x, int16_t y) {
   cursorY = y;
 }
 
-int16_t Tinyfont::getCursorX() const { return cursorX; }
+int16_t Tinyfont::getCursorX() const {
+  return cursorX;
+}
 
-int16_t Tinyfont::getCursorY() const { return cursorY; }
+int16_t Tinyfont::getCursorY() const {
+  return cursorY;
+}
 
-void Tinyfont::setTextColor(uint8_t color) { textColor = color; }
+void Tinyfont::setTextColor(uint8_t color) {
+  textColor = color;
+}
 
-uint8_t Tinyfont::getTextColor() const { return textColor; }
+uint8_t Tinyfont::getTextColor() const {
+  return textColor;
+}

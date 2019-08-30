@@ -53,7 +53,7 @@
 #define AVAILABLE_TIMERS 2
 
 // score commands
-#define TUNE_OP_PLAYNOTE                                                       \
+#define TUNE_OP_PLAYNOTE \
   0x90 /* play a note: low nibble is generator #, note is next byte */
 #define TUNE_OP_STOPNOTE 0x80 /* stop a note: low nibble is generator # */
 #define TUNE_OP_RESTART 0xe0  /* restart the score from the beginning */
@@ -64,7 +64,7 @@
  * sounding tones.
  */
 class ArduboyPlaytune {
-public:
+ public:
   /** \brief
    * The ArduboyPlaytune class constructor.
 
@@ -128,7 +128,7 @@ public:
    *  is called. Any notes in the score for channels above the one or two that
    *  have been initialized will be ignored.
    */
-  void playScore(const byte *score);
+  void playScore(const byte* score);
 
   /** \brief
    * Stop playing a score started using `playScore()`.
@@ -185,11 +185,11 @@ public:
    */
   void toneMutesScore(boolean mute);
 
-private:
+ private:
   void static playNote(byte chan, byte note);
   void static stopNote(byte chan);
 
-public:
+ public:
   // called via interrupt. Should not be called by a program.
   void static step();
 };

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "utility.hpp"
 #include <stdint.h>
+#include "utility.hpp"
 
 /* Types of ground. */
 enum class Grounds : uint8_t { empty, ground, river, bridge };
@@ -11,7 +11,7 @@ enum class Walkers : uint8_t { man, bird };
 
 /* Type of building that can be constructed by the player. */
 class Building {
-public:
+ public:
   enum class IDs : uint8_t {
     empty,
     house,
@@ -55,14 +55,14 @@ public:
   static const uint8_t profit(const uint8_t id);
   static const uint8_t profit(Building::IDs id) { return profit((uint8_t)id); };
   /* Pointer to the bitmap. */
-  static const uint8_t *bitmap(const uint8_t id);
-  static const uint8_t *bitmap(Building::IDs id) {
+  static const uint8_t* bitmap(const uint8_t id);
+  static const uint8_t* bitmap(Building::IDs id) {
     return bitmap((uint8_t)id);
   };
 
   static const uint8_t count() { return (uint8_t)Building::IDs::count; }
 
-private:
+ private:
   /* Private empty constructor. */
   Building() {}
 };

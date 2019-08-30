@@ -1,10 +1,10 @@
 #pragma once
 
 /* List of headers included by all the other headers. */
-#include "Tinyfont.hpp"
 #include <Arduboy2.h>
 #include <avr/io.h>
 #include <avr/pgmspace.h>
+#include "Tinyfont.hpp"
 
 extern "C" {
 #include <stdint.h>

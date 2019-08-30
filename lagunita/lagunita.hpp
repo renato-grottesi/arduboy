@@ -5,19 +5,21 @@
 #include "utility.hpp"
 
 class Lagunita {
-public:
+ public:
   Lagunita()
-      : tinyfont(arduboy.sBuffer, Arduboy2Base::width(),
+      : tinyfont(arduboy.sBuffer,
+                 Arduboy2Base::width(),
                  Arduboy2Base::height()),
-        music(arduboy), level(arduboy, tinyfont) {}
+        music(arduboy),
+        level(arduboy, tinyfont) {}
   void init();
   void loop();
 
-private:
+ private:
   void update();
   void render();
 
-private:
+ private:
   enum class Menus : uint8_t { main, game, credits, help, lost };
   enum class MainSelections : uint8_t { play, credits, help, audio };
 

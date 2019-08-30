@@ -63,10 +63,10 @@ it worked ok with the 2013 version that used the 8-bit timer for score waits.
 #include <avr/power.h>
 
 static const byte tune_pin_to_timer[] = {3, 1};
-static volatile byte *_tunes_timer1_pin_port;
+static volatile byte* _tunes_timer1_pin_port;
 static volatile byte _tunes_timer1_pin_mask;
 static volatile int32_t timer1_toggle_count;
-static volatile byte *_tunes_timer3_pin_port;
+static volatile byte* _tunes_timer3_pin_port;
 static volatile byte _tunes_timer3_pin_mask;
 static byte _tune_pins[AVAILABLE_TIMERS];
 static byte _tune_num_chans = 0;
@@ -79,16 +79,16 @@ static volatile boolean all_muted = false;       // indicates all sound is muted
 static volatile boolean tone_playing = false;
 static volatile boolean tone_mutes_score = false;
 static volatile boolean tone_only =
-    false; // indicates don't play score on tone channel
+    false;  // indicates don't play score on tone channel
 static volatile boolean mute_score =
-    false; // indicates tone playing so mute other channels
+    false;  // indicates tone playing so mute other channels
 
 // pointer to a function that indicates if sound is enabled
 static boolean (*outputEnabled)();
 
 // pointers to your musical score and your position in said score
-static volatile const byte *score_start = 0;
-static volatile const byte *score_cursor = 0;
+static volatile const byte* score_start = 0;
+static volatile const byte* score_cursor = 0;
 
 // array of frequencies used by the music
 const unsigned int _frequencies[] PROGMEM = {
@@ -98,13 +98,15 @@ const unsigned int _frequencies[] PROGMEM = {
 // array of note durations used by the music
 const unsigned int _durations[] PROGMEM = {0, 136, 272, 409, 545, 818, 1090};
 
-ArduboyPlaytune::ArduboyPlaytune(boolean (*outEn)()) { outputEnabled = outEn; }
+ArduboyPlaytune::ArduboyPlaytune(boolean (*outEn)()) {
+  outputEnabled = outEn;
+}
 
 void ArduboyPlaytune::initChannel(byte pin) {
   byte timer_num;
   byte pin_port;
   byte pin_mask;
-  volatile byte *out_reg;
+  volatile byte* out_reg;
 
   // we are all out of timers
   if (_tune_num_chans == AVAILABLE_TIMERS)
@@ -113,8 +115,8 @@ void ArduboyPlaytune::initChannel(byte pin) {
   timer_num = tune_pin_to_timer[_tune_num_chans];
   _tune_pins[_tune_num_chans] = pin;
   if ((_tune_num_chans == 1) &&
-      (_tune_pins[0] == pin)) { // if channels 0 and 1 use the same pin
-    tone_only = true;           // don't play the score on channel 1
+      (_tune_pins[0] == pin)) {  // if channels 0 and 1 use the same pin
+    tone_only = true;            // don't play the score on channel 1
   }
   _tune_num_chans++;
 
@@ -122,30 +124,30 @@ void ArduboyPlaytune::initChannel(byte pin) {
   pin_mask = digitalPinToBitMask(pin);
   out_reg = portOutputRegister(pin_port);
 
-  *portModeRegister(pin_port) |= pin_mask; // set pin to output mode
+  *portModeRegister(pin_port) |= pin_mask;  // set pin to output mode
 
   switch (timer_num) {
-  case 1: // 16 bit timer
-    power_timer1_enable();
-    TCCR1A = 0;
-    TCCR1B = 0;
-    bitWrite(TCCR1B, WGM12, 1);
-    bitWrite(TCCR1B, CS10, 1);
-    _tunes_timer1_pin_port = out_reg;
-    _tunes_timer1_pin_mask = pin_mask;
-    break;
-  case 3: // 16 bit timer
-    power_timer3_enable();
-    TCCR3A = 0;
-    TCCR3B = 0;
-    bitWrite(TCCR3B, WGM32, 1);
-    bitWrite(TCCR3B, CS30, 1);
-    _tunes_timer3_pin_port = out_reg;
-    _tunes_timer3_pin_mask = pin_mask;
-    playNote(0, 60); /* start and stop channel 0 (timer 3) on middle C so
-                        wait/delay works */
-    stopNote(0);
-    break;
+    case 1:  // 16 bit timer
+      power_timer1_enable();
+      TCCR1A = 0;
+      TCCR1B = 0;
+      bitWrite(TCCR1B, WGM12, 1);
+      bitWrite(TCCR1B, CS10, 1);
+      _tunes_timer1_pin_port = out_reg;
+      _tunes_timer1_pin_mask = pin_mask;
+      break;
+    case 3:  // 16 bit timer
+      power_timer3_enable();
+      TCCR3A = 0;
+      TCCR3B = 0;
+      bitWrite(TCCR3B, WGM32, 1);
+      bitWrite(TCCR3B, CS30, 1);
+      _tunes_timer3_pin_port = out_reg;
+      _tunes_timer3_pin_mask = pin_mask;
+      playNote(0, 60); /* start and stop channel 0 (timer 3) on middle C so
+                          wait/delay works */
+      stopNote(0);
+      break;
   }
 }
 
@@ -183,22 +185,22 @@ void ArduboyPlaytune::playNote(byte chan, byte note) {
   }
   // Set the OCR for the given timer, then turn on the interrupts
   switch (timer_num) {
-  case 1:
-    if (!tone_playing) {
-      TCCR1B = (TCCR1B & 0b11111000) | prescalar_bits;
-      OCR1A = ocr;
-      TCNT1 = 0; // LJS
-      bitWrite(TIMSK1, OCIE1A, 1);
-    }
-    break;
-  case 3:
-    TCCR3B = (TCCR3B & 0b11111000) | prescalar_bits;
-    OCR3A = ocr;
-    TCNT3 = 0;                          // LJS
-    wait_timer_frequency2 = frequency2; // for "tune_delay" function
-    wait_timer_playing = true;
-    bitWrite(TIMSK3, OCIE3A, 1);
-    break;
+    case 1:
+      if (!tone_playing) {
+        TCCR1B = (TCCR1B & 0b11111000) | prescalar_bits;
+        OCR1A = ocr;
+        TCNT1 = 0;  // LJS
+        bitWrite(TIMSK1, OCIE1A, 1);
+      }
+      break;
+    case 3:
+      TCCR3B = (TCCR3B & 0b11111000) | prescalar_bits;
+      OCR3A = ocr;
+      TCNT3 = 0;                           // LJS
+      wait_timer_frequency2 = frequency2;  // for "tune_delay" function
+      wait_timer_playing = true;
+      bitWrite(TIMSK3, OCIE3A, 1);
+      break;
   }
 }
 
@@ -206,24 +208,24 @@ void ArduboyPlaytune::stopNote(byte chan) {
   byte timer_num;
   timer_num = tune_pin_to_timer[chan];
   switch (timer_num) {
-  case 1:
-    if (!tone_playing) {
-      TIMSK1 &= ~(1 << OCIE1A); // disable the interrupt
-      *_tunes_timer1_pin_port &=
-          ~(_tunes_timer1_pin_mask); // keep pin low after stop
-    }
-    break;
-  case 3:
-    wait_timer_playing = false;
-    if (!mute_score) {
-      *_tunes_timer3_pin_port &=
-          ~(_tunes_timer3_pin_mask); // keep pin low after stop
-    }
-    break;
+    case 1:
+      if (!tone_playing) {
+        TIMSK1 &= ~(1 << OCIE1A);  // disable the interrupt
+        *_tunes_timer1_pin_port &=
+            ~(_tunes_timer1_pin_mask);  // keep pin low after stop
+      }
+      break;
+    case 3:
+      wait_timer_playing = false;
+      if (!mute_score) {
+        *_tunes_timer3_pin_port &=
+            ~(_tunes_timer3_pin_mask);  // keep pin low after stop
+      }
+      break;
   }
 }
 
-void ArduboyPlaytune::playScore(const byte *score) {
+void ArduboyPlaytune::playScore(const byte* score) {
   score_start = score;
   score_cursor = score_start;
   step();              /* execute initial commands */
@@ -236,7 +238,9 @@ void ArduboyPlaytune::stopScore() {
   tune_playing = false;
 }
 
-boolean ArduboyPlaytune::playing() { return tune_playing; }
+boolean ArduboyPlaytune::playing() {
+  return tune_playing;
+}
 
 /* Do score commands until a "wait" is found, or the score is stopped.
 This is called initially from playScore(), but then is called
@@ -282,14 +286,14 @@ void ArduboyPlaytune::closeChannels() {
   for (uint8_t chan = 0; chan < _tune_num_chans; chan++) {
     timer_num = tune_pin_to_timer[chan];
     switch (timer_num) {
-    case 1:
-      TIMSK1 &= ~(1 << OCIE1A);
-      *_tunes_timer1_pin_port &= ~(_tunes_timer1_pin_mask); // set pin low
-      break;
-    case 3:
-      TIMSK3 &= ~(1 << OCIE3A);
-      *_tunes_timer3_pin_port &= ~(_tunes_timer3_pin_mask); // set pin low
-      break;
+      case 1:
+        TIMSK1 &= ~(1 << OCIE1A);
+        *_tunes_timer1_pin_port &= ~(_tunes_timer1_pin_mask);  // set pin low
+        break;
+      case 3:
+        TIMSK3 &= ~(1 << OCIE3A);
+        *_tunes_timer3_pin_port &= ~(_tunes_timer3_pin_mask);  // set pin low
+        break;
     }
   }
   _tune_num_chans = 0;
@@ -333,7 +337,9 @@ void ArduboyPlaytune::tone(unsigned int frequency, unsigned long duration) {
   bitWrite(TIMSK1, OCIE1A, 1);
 }
 
-void ArduboyPlaytune::toneMutesScore(boolean mute) { tone_mutes_score = mute; }
+void ArduboyPlaytune::toneMutesScore(boolean mute) {
+  tone_mutes_score = mute;
+}
 
 // ===== Interrupt service routines =====
 
@@ -347,13 +353,13 @@ ISR(TIMER1_COMPA_vect) {
         timer1_toggle_count--;
     } else {
       tone_playing = mute_score = false;
-      TIMSK1 &= ~(1 << OCIE1A); // disable the interrupt
+      TIMSK1 &= ~(1 << OCIE1A);  // disable the interrupt
       *_tunes_timer1_pin_port &=
-          ~(_tunes_timer1_pin_mask); // keep pin low after stop
+          ~(_tunes_timer1_pin_mask);  // keep pin low after stop
     }
   } else {
     if (!all_muted) {
-      *_tunes_timer1_pin_port ^= _tunes_timer1_pin_mask; // toggle the pin
+      *_tunes_timer1_pin_port ^= _tunes_timer1_pin_mask;  // toggle the pin
     }
   }
 }
@@ -370,6 +376,6 @@ ISR(TIMER3_COMPA_vect) {
 
   if (tune_playing && wait_toggle_count && --wait_toggle_count == 0) {
     // end of a score wait, so execute more score commands
-    ArduboyPlaytune::step(); // execute commands
+    ArduboyPlaytune::step();  // execute commands
   }
 }

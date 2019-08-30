@@ -6,8 +6,8 @@
 #include "utility.hpp"
 
 class Level {
-public:
-  Level(Arduboy2Base &arduboy, Tinyfont &tinyfont)
+ public:
+  Level(Arduboy2Base& arduboy, Tinyfont& tinyfont)
       : arduboy(arduboy), tinyfont(tinyfont) {}
 
   void init();
@@ -19,17 +19,17 @@ public:
   bool gameOver() { return (earnings <= maintenance) && (money < 100); };
   void pause() { inProgress = false; };
 
-private:
-  Arduboy2Base &arduboy;
-  Tinyfont &tinyfont;
+ private:
+  Arduboy2Base& arduboy;
+  Tinyfont& tinyfont;
 
   bool buildingEnabled[(uint8_t)Building::IDs::count] = {
       false,
   };
 
-  const uint8_t *groundBmps[5] = {bmp_empty, bmp_ground, bmp_river, bmp_bridge};
+  const uint8_t* groundBmps[5] = {bmp_empty, bmp_ground, bmp_river, bmp_bridge};
   const uint8_t groundFrames[5] = {1, 1, 3, 1};
-  const uint8_t *walkersBmps[2] = {bmp_man, bmp_bird};
+  const uint8_t* walkersBmps[2] = {bmp_man, bmp_bird};
 
   // Camera x position
   uint16_t camera = 0;
