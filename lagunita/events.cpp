@@ -228,6 +228,22 @@ static const Building::IDs unlocks[Events::count] PROGMEM = {
     Building::IDs::weed,    /* WEED     */
 };
 
+static const Building::IDs dependsOn[Events::count] PROGMEM = {
+    Building::IDs::house,   /* HOUSE    */
+    Building::IDs::house,   /* FARM     */
+    Building::IDs::farm,    /* WATER    */
+    Building::IDs::water,   /* SALOON   */
+    Building::IDs::saloon,  /* MINE     */
+    Building::IDs::mine,    /* SHERIFF  */
+    Building::IDs::sheriff, /* CHURCH   */
+    Building::IDs::church,  /* BANK     */
+    Building::IDs::bank,    /* MILL     */
+    Building::IDs::mill,    /* CLEAR    */
+    Building::IDs::empty,   /* TREE     */
+    Building::IDs::tree,    /* CACTUS   */
+    Building::IDs::cactus,  /* WEED     */
+};
+
 const char* Events::getText(uint8_t id) {
   return pgm_read_ptr(&(texts[id]));
 }
@@ -236,14 +252,17 @@ uint8_t Events::buildingUnlocked(uint8_t id) {
   return pgm_read_byte(&unlocks[id]);
 }
 
-EventState Events::update(EventState ev,
-                          uint8_t id,
-                          uint16_t population,
-                          uint16_t money) {
+EventState Events::update(
+    EventState ev,
+    uint8_t id,
+    uint16_t population,
+    uint16_t money,
+    BuildingStatus buildings[(uint8_t)Building::IDs::count]) {
   switch (ev) {
     case EventState::untriggered:
       if (money >= pgm_read_word(&onMoney[id]) &&
-          population >= pgm_read_word(&onPopulation[id])) {
+          population >= pgm_read_word(&onPopulation[id]) &&
+          buildings[(uint8_t)(pgm_read_byte(&dependsOn[id]))].built) {
         return EventState::justTriggered;
       } else {
         return EventState::untriggered;

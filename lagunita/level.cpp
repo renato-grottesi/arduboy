@@ -28,8 +28,13 @@ void Level::init() {
   }
 
   for (uint8_t i = 0; i < (uint8_t)Building::IDs::count; i++) {
-    buildingEnabled[i] = false;
+    buildings[i].enabled = false;
+    buildings[i].built = false;
   }
+
+  /* Make an exception for the house */
+  buildings[(uint8_t)(Building::IDs::house)].enabled = true;
+  buildings[(uint8_t)(Building::IDs::house)].built = true;
 
   timeToUpdate = millis();
   arduboy.initRandomSeed();
@@ -86,13 +91,13 @@ void Level::onInput(Input dir) {
         else
           sel--;
         currBuil = (Building::IDs)(sel);
-      } while (buildingEnabled[sel] == false);
+      } while (buildings[sel].enabled == false);
       break;
     case Input::down:
       do {
         sel = (sel + 1) % Building::count();
         currBuil = (Building::IDs)(sel);
-      } while (buildingEnabled[sel] == false);
+      } while (buildings[sel].enabled == false);
       break;
     case Input::a: {
       uint8_t idx = (uint8_t)(currBuil);
@@ -139,6 +144,7 @@ void Level::onInput(Input dir) {
           }
 
           tiles[cidx].building = currBuil;
+          buildings[(uint8_t)currBuil].built = true;
           money -= Building::cost(idx) * 5;
         }
       }
@@ -286,7 +292,7 @@ void Level::update() {
       arduboy.initRandomSeed();
       uint16_t r = rand() % 256;
       if ((safety < 100) && (!r) &&
-          buildingEnabled[(uint8_t)(Building::IDs::sheriff)]) {
+          buildings[(uint8_t)(Building::IDs::sheriff)].enabled) {
         /* If the safety is low, simulate a robbery. */
         r = rand() % (money / 2);
         snprintf_P(tutor, tutorLen,                         /**/
@@ -297,7 +303,7 @@ void Level::update() {
         tutorVisible = true;
         money -= r;
       } else if ((spirituality < 100) && (!r) &&
-                 buildingEnabled[(uint8_t)(Building::IDs::church)]) {
+                 buildings[(uint8_t)(Building::IDs::church)].enabled) {
         /* If the spirituality is low, simulate emigration. */
         r = rand() % (population / 2);
         snprintf_P(tutor, tutorLen,       /**/
@@ -317,10 +323,11 @@ void Level::update() {
       } else {
         /* Check if any tutorial event is ready to trigger. */
         for (uint8_t t = 0; t < Events::count; t++) {
-          tutorials[t] = Events::update(tutorials[t], t, population, money);
+          tutorials[t] =
+              Events::update(tutorials[t], t, population, money, buildings);
           if (tutorials[t] == EventState::justTriggered) {
             uint8_t b = Events::buildingUnlocked(t);
-            buildingEnabled[b] = true;
+            buildings[b].enabled = true;
             const char* src = Events::getText(t);
             strncpy_P(tutor, src, tutorLen);
             tutorVisible = true;

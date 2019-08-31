@@ -66,3 +66,8 @@ class Building {
   /* Private empty constructor. */
   Building() {}
 };
+
+struct BuildingStatus {
+  bool enabled : 1;
+  bool built : 1;
+};

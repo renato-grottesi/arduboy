@@ -15,10 +15,12 @@ class Events {
   static const char* getText(uint8_t id);
 
   /* Update an EventState for this event's parameters. */
-  static EventState update(EventState ev,
-                           uint8_t id,
-                           uint16_t population,
-                           uint16_t money);
+  static EventState update(
+      EventState ev,
+      uint8_t id,
+      uint16_t population,
+      uint16_t money,
+      BuildingStatus buildings[(uint8_t)Building::IDs::count]);
 
   static const uint8_t count = 13;
 

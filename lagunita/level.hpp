@@ -23,8 +23,8 @@ class Level {
   Arduboy2Base& arduboy;
   Tinyfont& tinyfont;
 
-  bool buildingEnabled[(uint8_t)Building::IDs::count] = {
-      false,
+  BuildingStatus buildings[(uint8_t)Building::IDs::count] = {
+      {false, false},
   };
 
   const uint8_t* groundBmps[5] = {bmp_empty, bmp_ground, bmp_river, bmp_bridge};
