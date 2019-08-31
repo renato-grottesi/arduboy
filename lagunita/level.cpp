@@ -3,6 +3,7 @@
 void Level::init() {
   camera = 0;
   camera_off = 0;
+  camera_scrolls = 0;
   camera_sign = 0;
   housing = 0;
   jobs = 0;
@@ -184,11 +185,15 @@ void Level::update() {
         camera--;
       }
       camera_off = 8;
+      camera_scrolls = camera_scrolls < 32 ? camera_scrolls + 1 : 32;
       camera_sign = 0;
     } else if (arduboy.pressed(RIGHT_BUTTON)) {
       camera = (camera + 1) % size;
       camera_off = 8;
+      camera_scrolls = camera_scrolls < 32 ? camera_scrolls + 1 : 32;
       camera_sign = 1;
+    } else {
+      camera_scrolls = 0;
     }
   }
 
@@ -452,6 +457,6 @@ void Level::render() {
   }
 
   if (camera_off > 0) {
-    camera_off--;
+    camera_off -= camera_scrolls < 8 ? 1 : (camera_scrolls < 32 ? 2 : 4);
   }
 }

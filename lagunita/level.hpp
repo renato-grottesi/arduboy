@@ -35,6 +35,7 @@ class Level {
   uint16_t camera = 0;
   uint8_t camera_off = 0;
   uint8_t camera_sign = 0;
+  uint8_t camera_scrolls = 0;
 
   // Number of tiles
   static const uint8_t size = 255;
