@@ -20,6 +20,8 @@ void Level::init() {
   population = 0;
   inProgress = false;
   inStats = false;
+  river_in = 5;
+  river_out = size / 2;
 
   for (uint8_t i = 0; i < (uint8_t)Building::IDs::count; i++) {
     tutorials[i] = EventState::untriggered;
@@ -56,16 +58,6 @@ void Level::init() {
         break;
     }
   }
-
-  // Init ground
-  for (uint8_t i = 0; i < size; i++) {
-    tiles[i].top = Grounds::empty;
-    tiles[i].low = Grounds::ground;
-  }
-
-  // Add a river
-  tiles[5].top = Grounds::bridge;
-  tiles[5].low = Grounds::river;
 
   // Init the random walkers and birds
   for (uint8_t i = 0; i < npc_count; i++) {
@@ -374,13 +366,17 @@ void Level::render() {
   for (int8_t obj = -5; obj < 17; obj++) {
     uint8_t moved = (obj + size + camera) % size;
 
+    const bool in_river = (moved == river_in || moved == river_out);
+    const uint8_t top = (uint8_t)(in_river ? Grounds::bridge : Grounds::empty);
+    const uint8_t low = (uint8_t)(in_river ? Grounds::river : Grounds::ground);
+
     // Area where characters walk
-    const uint8_t* bmp = groundBmps[(uint8_t)(tiles[moved].top)];
+    const uint8_t* bmp = groundBmps[top];
     arduboy.drawBitmap(x_off + obj * 8, 4 * 8 + 4, bmp, 8, 8);
 
     // Lake shore area
-    uint8_t frames = groundFrames[(uint8_t)(tiles[moved].low)];
-    bmp = groundBmps[(uint8_t)(tiles[moved].low)] + 8 * ((frame >> 2) % frames);
+    uint8_t frames = groundFrames[low];
+    bmp = groundBmps[low] + 8 * ((frame >> 2) % frames);
     arduboy.drawBitmap(x_off + obj * 8, 5 * 8, bmp, 8, 8);
 
     // Building area

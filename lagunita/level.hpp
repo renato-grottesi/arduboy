@@ -42,12 +42,13 @@ class Level {
 
   /* Use bit array to pack more fields in a byte. */
   struct {
-    Building::IDs building : 4; /* max 16 different types of building */
-    Grounds top : 2;            /* max 4 types of grounds */
-    Grounds low : 2;            /* max 4 types of grounds */
+    Building::IDs building;
   } tiles[size] = {
-      {Building::IDs::empty, Grounds::empty, Grounds::ground},
+      {Building::IDs::empty},
   };
+
+  uint16_t river_in = 0;  /*  X coordinate where the river goes into the lake */
+  uint16_t river_out = 0; /* X coordinate where the river leaves the lake */
 
   uint16_t housing;
   uint16_t jobs;
