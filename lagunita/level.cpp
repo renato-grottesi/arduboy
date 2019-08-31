@@ -291,33 +291,53 @@ void Level::update() {
     if (!tutorVisible) {
       arduboy.initRandomSeed();
       uint16_t r = rand() % 256;
-      if ((safety < 100) && (!r) &&
-          buildings[(uint8_t)(Building::IDs::sheriff)].enabled) {
-        /* If the safety is low, simulate a robbery. */
-        r = rand() % (money / 2);
-        snprintf_P(tutor, tutorLen,                         /**/
-                   PSTR("\nYOU HAVE\nBEEN ROBBED!\n"        /**/
-                        "\nTHE THIEVES\nSTOLE %4d$\n"       /**/
-                        "\nBUILD MORE\nSHERIFF\nPOSTS!\n"), /**/
-                   r);                                      /**/
+
+      if ((!r) && buildings[(uint8_t)(Building::IDs::sheriff)].enabled) {
+        if (safety < 100) {
+          /* If the safety is low, simulate a robbery. */
+          r = rand() % (money / 2);
+          snprintf_P(tutor, tutorLen,                         /**/
+                     PSTR("\nYOU HAVE\nBEEN ROBBED!\n"        /**/
+                          "\nTHE THIEVES\nSTOLE %4d$\n"       /**/
+                          "\nBUILD MORE\nSHERIFF\nPOSTS!\n"), /**/
+                     r);                                      /**/
+        } else {
+          /* Else inform that the sheriff saved the day. */
+          snprintf_P(tutor, tutorLen,                   /**/
+                     PSTR("\nTHE SHERIFF\nMANAGED TO\n" /**/
+                          "PREVENT A\nBAND OF\n"        /**/
+                          "BANDITS FROM\nSTEALING\n"    /**/
+                          "YOUR MONEY!"                 /**/
+                          ),                            /**/
+                     r);                                /**/
+        }
         tutorVisible = true;
         money -= r;
-      } else if ((spirituality < 100) && (!r) &&
-                 buildings[(uint8_t)(Building::IDs::church)].enabled) {
-        /* If the spirituality is low, simulate emigration. */
-        r = rand() % (population / 2);
-        snprintf_P(tutor, tutorLen,       /**/
-                   PSTR("\n%4d PEOPLE\n"  /**/
-                        "LOST FAITH\n"    /**/
-                        "IN LAGUNITA\n"   /**/
-                        "AND DECIDED\n"   /**/
-                        "TO FOUND\n"      /**/
-                        "THEIR OWN\n"     /**/
-                        "TOWN.\n"         /**/
-                        "BUILD MORE\n"    /**/
-                        "CHURCHES TO\n"   /**/
-                        "RISE FAITH!\n"), /**/
-                   r);                    /**/
+      } else if ((!r) && buildings[(uint8_t)(Building::IDs::church)].enabled) {
+        if (spirituality < 100) {
+          /* If the spirituality is low, simulate emigration. */
+          r = rand() % (population / 2);
+          snprintf_P(tutor, tutorLen,       /**/
+                     PSTR("\n%4d PEOPLE\n"  /**/
+                          "LOST FAITH\n"    /**/
+                          "IN LAGUNITA\n"   /**/
+                          "AND DECIDED\n"   /**/
+                          "TO FOUND\n"      /**/
+                          "THEIR OWN\n"     /**/
+                          "TOWN.\n"         /**/
+                          "BUILD MORE\n"    /**/
+                          "CHURCHES TO\n"   /**/
+                          "RISE FAITH!\n"), /**/
+                     r);                    /**/
+        } else {
+          /* Else inform that the church is bringing people together. */
+          snprintf_P(tutor, tutorLen,                    /**/
+                     PSTR("\nLAGUNITIANS\nLOVE LIVING\n" /**/
+                          "IN YOUR TOWN\nAND THEY\n"     /**/
+                          "NEVER FELT\nAS UNITED!\n"     /**/
+                          ),                             /**/
+                     r);                                 /**/
+        }
         tutorVisible = true;
         population -= r;
       } else {
