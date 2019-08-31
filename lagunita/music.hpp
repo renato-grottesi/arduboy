@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stdint.h>
-#include "ArduboyPlaytune.hpp"
+#include "ArduboyTones.hpp"
 #include "utility.hpp"
 
 /* Class that plays the game music. */
@@ -13,5 +13,5 @@ class Music {
   bool isPlaying() { return sound.playing(); };
 
  private:
-  ArduboyPlaytune sound;
+  ArduboyTones sound;
 };

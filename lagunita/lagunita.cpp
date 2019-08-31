@@ -9,7 +9,6 @@ void Lagunita::init() {
 
   // start the music
   arduboy.audio.begin();
-  music.init();
 }
 
 void Lagunita::loop() {
