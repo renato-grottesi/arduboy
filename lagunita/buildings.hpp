@@ -12,6 +12,9 @@ enum class Walkers : uint8_t { man, bird };
 /* Type of building that can be constructed by the player. */
 class Building {
  public:
+  /* This class cannot be constructed. */
+  Building() = delete;
+
   enum class IDs : uint8_t {
     empty,
     house,
@@ -62,8 +65,4 @@ class Building {
   static const uint8_t* bitmap(IDs id) { return bitmap((uint8_t)id); };
 
   static const uint8_t count() { return (uint8_t)IDs::count; }
-
- private:
-  /* Private empty constructor. */
-  Building() {}
 };
