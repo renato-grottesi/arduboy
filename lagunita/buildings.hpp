@@ -12,9 +12,6 @@ enum class Walkers : uint8_t { man, bird };
 /* Type of building that can be constructed by the player. */
 class Building {
  public:
-  /* This class cannot be constructed. */
-  Building() = delete;
-
   enum class IDs : uint8_t {
     empty,
     house,
@@ -36,6 +33,16 @@ class Building {
     bool enabled : 1;
     bool built : 1;
   };
+
+  /* Convenience functions for reading from PROGMEM */
+  void strncpyName(char dest[8]) const;
+  const uint8_t jobs() const;
+  const uint8_t cost() const;
+  const uint8_t width() const;
+  const uint8_t height() const;
+  const uint8_t maintenance() const;
+  const uint8_t profit() const;
+  const uint8_t* bitmap() const;
 
   /* Copies the building's name from PROGMEM to the destination string. */
   static void strncpyName(char dest[8], const uint8_t id);
@@ -65,4 +72,15 @@ class Building {
   static const uint8_t* bitmap(IDs id) { return bitmap((uint8_t)id); };
 
   static const uint8_t count() { return (uint8_t)IDs::count; }
+
+  const char name[8];
+  const uint8_t* const _bitmap;
+  const uint8_t _jobs;
+  const uint8_t _cost;
+  const uint8_t _width;
+  const uint8_t _height;
+  const uint8_t _maintenance;
+  const uint8_t _profit;
 };
+
+extern const Building buildings[(uint8_t)Building::IDs::count];
