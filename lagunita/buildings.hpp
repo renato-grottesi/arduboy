@@ -82,5 +82,3 @@ class Building {
   const uint8_t _maintenance;
   const uint8_t _profit;
 };
-
-extern const Building buildings[(uint8_t)Building::IDs::count];
