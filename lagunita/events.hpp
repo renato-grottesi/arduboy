@@ -8,6 +8,9 @@ enum class EventState : uint8_t { untriggered, justTriggered, triggered };
 /* Represent an immutable event. */
 class Events {
  public:
+  /* This class cannot be constructed. */
+  Events() = delete;
+
   /* Return the buildings that gets unlocked by this event. */
   static uint8_t buildingUnlocked(uint8_t id);
 
@@ -20,11 +23,7 @@ class Events {
       uint8_t id,
       uint16_t population,
       uint16_t money,
-      BuildingStatus buildings[(uint8_t)Building::IDs::count]);
+      Building::Status buildings[(uint8_t)Building::IDs::count]);
 
   static const uint8_t count = 13;
-
- private:
-  /* Private default constructor. */
-  Events(){};
 };

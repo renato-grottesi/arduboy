@@ -257,7 +257,7 @@ EventState Events::update(
     uint8_t id,
     uint16_t population,
     uint16_t money,
-    BuildingStatus buildings[(uint8_t)Building::IDs::count]) {
+    Building::Status buildings[(uint8_t)Building::IDs::count]) {
   switch (ev) {
     case EventState::untriggered:
       if (money >= pgm_read_word(&onMoney[id]) &&
