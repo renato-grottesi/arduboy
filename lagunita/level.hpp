@@ -23,9 +23,7 @@ class Level {
   Arduboy2Base& arduboy;
   Tinyfont& tinyfont;
 
-  BuildingStatus buildings[(uint8_t)Building::IDs::count] = {
-      {false, false},
-  };
+  BuildingStatus buildings[(uint8_t)Building::IDs::count] = {};
 
   const uint8_t* groundBmps[5] = {bmp_empty, bmp_ground, bmp_river, bmp_bridge};
   const uint8_t groundFrames[5] = {1, 1, 3, 1};
@@ -43,9 +41,7 @@ class Level {
   /* Use bit array to pack more fields in a byte. */
   struct {
     Building::IDs building;
-  } tiles[size] = {
-      {Building::IDs::empty},
-  };
+  } tiles[size] = {};
 
   uint16_t river_in = 0;  /*  X coordinate where the river goes into the lake */
   uint16_t river_out = 0; /* X coordinate where the river leaves the lake */
@@ -78,9 +74,7 @@ class Level {
 
   static const uint8_t tutorLen = 128; /* 5% of total RAM! */
   bool tutorVisible = false;
-  char tutor[tutorLen] = {
-      '\0',
-  };
+  char tutor[tutorLen] = {};
 
   uint16_t population = 0;
   bool inProgress = false;
