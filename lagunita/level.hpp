@@ -75,6 +75,7 @@ class Level {
 
   static const uint8_t tutorLen = 128; /* 5% of total RAM! */
   bool tutorVisible = false;
+  uint8_t tutorChars = 0;
   char tutor[tutorLen] = {};
 
   uint16_t population = 0;

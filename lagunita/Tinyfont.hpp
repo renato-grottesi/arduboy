@@ -39,7 +39,7 @@ class Tinyfont : public Print {
    *
    * \param x The X coordinate, in pixels, for the new location of the text
    * cursor. \param y The Y coordinate, in pixels, for the new location of the
-   * text cursor.
+   * text cursor. \param cl The max number of characters to print.
    *
    * \details
    * The location of the text cursor is set the the specified coordinates.
@@ -49,7 +49,7 @@ class Tinyfont : public Print {
    * the display. The cursor location will be the top left corner of the next
    * character written.
    */
-  void setCursor(int16_t x, int16_t y);
+  void setCursor(int16_t x, int16_t y, int16_t cl = -1);
 
   /** \brief
    * Get the X coordinate of the current text cursor position.
@@ -100,9 +100,11 @@ class Tinyfont : public Print {
   int16_t sWidth;
   int16_t sHeight;
 
-  int16_t cursorX;  //!< Default is 0.
-  int16_t baseX;    //!< needed for linebreak.
-  int16_t cursorY;  //!< Default is 0.
+  int16_t cursorX;      //!< Default is 0.
+  int16_t baseX;        //!< needed for linebreak.
+  int16_t cursorY;      //!< Default is 0.
+  int16_t charLimit;    //!< Default is -1.
+  int16_t charPrinted;  //!< Default is 0.
 
   uint8_t textColor;  // BLACK == 0, everything else is WHITE. Default is WHITE.
 

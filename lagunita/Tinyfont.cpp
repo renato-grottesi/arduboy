@@ -42,12 +42,16 @@ Tinyfont::Tinyfont(uint8_t* screenBuffer, int16_t width, int16_t height) {
   letterSpacing = 1;
 
   cursorX = cursorY = baseX = 0;
+  charLimit = -1;
+  charPrinted = 0;
   textColor = 1;
 
   maskText = false;
 }
 
 size_t Tinyfont::write(uint8_t c) {
+  if (charLimit >= 0 && charPrinted > charLimit)
+    return 1;
   if (c == '\n') {
     cursorX = baseX;        // cr
     cursorY += lineHeight;  // lf
@@ -65,6 +69,7 @@ size_t Tinyfont::write(uint8_t c) {
     printChar(c, cursorX, cursorY);
     cursorX += TINYFONT_WIDTH + letterSpacing;
   }
+  charPrinted++;
   return 1;
 }
 
@@ -127,9 +132,11 @@ void Tinyfont::drawByte(int16_t x, int16_t y, uint8_t pixels, uint8_t color) {
   }
 }
 
-void Tinyfont::setCursor(int16_t x, int16_t y) {
+void Tinyfont::setCursor(int16_t x, int16_t y, int16_t cl) {
   cursorX = baseX = x;
   cursorY = y;
+  charLimit = cl;
+  charPrinted = 0;
 }
 
 int16_t Tinyfont::getCursorX() const {

@@ -159,11 +159,19 @@ void Level::onInput(Input dir) {
                      happiness, safety, spirituality, environment);       /**/
           inStats = false;
         } else {
-          tutorVisible = false;
+          if (tutorChars >= strlen(tutor)) {
+            /* Pressing B when the text is all shown, closes the dialog. */
+            tutorVisible = false;
+          } else {
+            /* Pressing B while the text is animating, shows all the text. */
+            tutorChars = tutorLen;
+          }
         }
       } else {
         inStats = true;
         tutorVisible = true;
+        tutorChars = tutorLen; /* No text animation for stats. */
+
         snprintf_P(tutor, tutorLen,                                   /**/
                    PSTR("\nHOUSING\n%7d\nJOBS   FOOD\n%4d%7d\n"       /**/
                         "MAINTENANCE\n%7d $/s\nEARNINGS\n%4d $/s\n"), /**/
@@ -291,7 +299,7 @@ void Level::update() {
 
     if (!tutorVisible) {
       /* Random events happen every 60 to 120 seconds. */
-      if ((time - timeLastEvent) > (rand() % 60000) + 60000) {
+      if ((time - timeLastEvent) > (uint32_t)(rand() % 60000) + 60000) {
         timeLastEvent = time;
         uint16_t r = rand() % 2;
 
@@ -480,8 +488,13 @@ void Level::render() {
   if (tutorVisible) {
     arduboy.fillRect(32, 0, 64, 64, BLACK);
     arduboy.drawRoundRect(32, 0, 64, 64, 4, WHITE);
-    tinyfont.setCursor(35, 3);
+    tinyfont.setCursor(35, 3, tutorChars);
     tinyfont.print(tutor);
+    if (tutorChars < tutorLen) {
+      tutorChars++;
+    };
+  } else {
+    tutorChars = 0;
   }
 
   if (camera_off > 0) {
