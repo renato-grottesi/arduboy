@@ -23,6 +23,7 @@ class Building {
     church,
     sheriff,
     bank,
+    stable,
     weed,
     cactus,
     tree,

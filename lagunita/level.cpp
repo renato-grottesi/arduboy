@@ -23,7 +23,7 @@ void Level::init() {
   river_in = 5;
   river_out = size / 2;
 
-  for (uint8_t i = 0; i < (uint8_t)Building::IDs::count; i++) {
+  for (uint8_t i = 0; i < (uint8_t)Events::count; i++) {
     tutorials[i] = EventState::untriggered;
   }
 

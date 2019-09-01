@@ -3,20 +3,21 @@
 
 const Building buildings[(uint8_t)Building::IDs::count] PROGMEM = {
     // clang-format off
-    /* name, bitmap, jobs, cost, width, height, maintenance, profit */
-    {"CLEAR",   bmp_empty,   0,   4, 1, 1, 0,  0},
-    {"HOUSE",   bmp_house,   1,   5, 2, 2, 1,  0},
-    {"WATER",   bmp_water,   0,  10, 1, 3, 0,  1},
-    {"SALOON",  bmp_saloon,  8,  50, 3, 3, 0,  1},
-    {"FARM",    bmp_farm,    8,  20, 4, 2, 0, 10},
-    {"MILL",    bmp_mill,    1,  20, 1, 3, 0,  1},
-    {"MINE",    bmp_mine,   30, 100, 3, 3, 0, 30},
-    {"CHURCH",  bmp_church,  1, 150, 3, 3, 2,  0},
-    {"SHERIFF", bmp_sheriff, 2,  20, 2, 2, 2,  0},
-    {"BANK",    bmp_bank,    4,  50, 2, 2, 5,  0},
-    {"WEED",    bmp_weed,    0,   2, 1, 1, 0,  0},
-    {"CACTUS",  bmp_cactus,  0,   2, 1, 1, 0,  0},
-    {"TREE",    bmp_tree,    0,   4, 2, 2, 0,  0},
+    /* name,    bitmap,   jobs, cost, w, h, maintenance, profit */
+    {"CLEAR",   bmp_empty,   0,    4, 1, 1, 0,  0},
+    {"HOUSE",   bmp_house,   1,    5, 2, 2, 1,  0},
+    {"WATER",   bmp_water,   0,   10, 1, 3, 0,  1},
+    {"SALOON",  bmp_saloon,  8,   50, 3, 3, 0,  1},
+    {"FARM",    bmp_farm,    8,   20, 4, 2, 0, 10},
+    {"MILL",    bmp_mill,    1,   20, 1, 3, 0,  1},
+    {"MINE",    bmp_mine,   30,  100, 3, 3, 0, 30},
+    {"CHURCH",  bmp_church,  1,  150, 3, 3, 2,  0},
+    {"SHERIFF", bmp_sheriff, 2,   20, 2, 2, 2,  0},
+    {"BANK",    bmp_bank,    4,   50, 2, 2, 5,  0},
+    {"STABLE",  bmp_stable,  2,  200, 4, 3, 4,  0},
+    {"WEED",    bmp_weed,    0,    2, 1, 1, 0,  0},
+    {"CACTUS",  bmp_cactus,  0,    2, 1, 1, 0,  0},
+    {"TREE",    bmp_tree,    0,    4, 2, 2, 0,  0},
     // clang-format on
 };
 
