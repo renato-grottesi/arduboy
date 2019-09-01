@@ -66,7 +66,8 @@ class Level {
 
   uint16_t money = 999;
 
-  unsigned long timeToUpdate = 0;
+  unsigned long timeLastUpdate = 0;
+  unsigned long timeLastEvent = 0;
 
   EventState tutorials[Events::count] = {
       EventState::untriggered,

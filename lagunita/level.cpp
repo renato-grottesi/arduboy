@@ -36,7 +36,8 @@ void Level::init() {
   buildings[(uint8_t)(Building::IDs::house)].enabled = true;
   buildings[(uint8_t)(Building::IDs::house)].built = true;
 
-  timeToUpdate = millis();
+  timeLastUpdate = millis();
+  timeLastEvent = millis();
   arduboy.initRandomSeed();
 
   // Add some random vegetation
@@ -196,10 +197,10 @@ void Level::update() {
   }
 
   unsigned long time = millis();
-  if ((time - timeToUpdate) > 1000) {
+  if ((time - timeLastUpdate) > 1000) {
     uint16_t max_money = 2500;
     uint16_t earnings_ratio = ((population + 1) * 100) / (jobs + 1);
-    timeToUpdate = time;
+    timeLastUpdate = time;
     housing = 0;
     maintenance = 0;
     earnings = 0;
@@ -289,57 +290,61 @@ void Level::update() {
     }
 
     if (!tutorVisible) {
-      arduboy.initRandomSeed();
-      uint16_t r = rand() % 256;
+      /* Random events happen every 60 to 120 seconds. */
+      if ((time - timeLastEvent) > (rand() % 60000) + 60000) {
+        timeLastEvent = time;
+        uint16_t r = rand() % 2;
 
-      if ((!r) && buildings[(uint8_t)(Building::IDs::sheriff)].enabled) {
-        if (safety < 100) {
-          /* If the safety is low, simulate a robbery. */
-          r = rand() % (money / 2);
-          snprintf_P(tutor, tutorLen,                         /**/
-                     PSTR("\nYOU HAVE\nBEEN ROBBED!\n"        /**/
-                          "\nTHE THIEVES\nSTOLE %4d$\n"       /**/
-                          "\nBUILD MORE\nSHERIFF\nPOSTS!\n"), /**/
-                     r);                                      /**/
-        } else {
-          /* Else inform that the sheriff saved the day. */
-          snprintf_P(tutor, tutorLen,                   /**/
-                     PSTR("\nTHE SHERIFF\nMANAGED TO\n" /**/
-                          "PREVENT A\nBAND OF\n"        /**/
-                          "BANDITS FROM\nSTEALING\n"    /**/
-                          "YOUR MONEY!"                 /**/
-                          ),                            /**/
-                     r);                                /**/
+        if ((r == 0) && buildings[(uint8_t)(Building::IDs::sheriff)].enabled) {
+          if (safety < 100) {
+            /* If the safety is low, simulate a robbery. */
+            r = rand() % (money / 2);
+            snprintf_P(tutor, tutorLen,                         /**/
+                       PSTR("\nYOU HAVE\nBEEN ROBBED!\n"        /**/
+                            "\nTHE THIEVES\nSTOLE %4d$\n"       /**/
+                            "\nBUILD MORE\nSHERIFF\nPOSTS!\n"), /**/
+                       r);                                      /**/
+          } else {
+            /* Else inform that the sheriff saved the day. */
+            snprintf_P(tutor, tutorLen,                   /**/
+                       PSTR("\nTHE SHERIFF\nMANAGED TO\n" /**/
+                            "PREVENT A\nBAND OF\n"        /**/
+                            "BANDITS FROM\nSTEALING\n"    /**/
+                            "YOUR MONEY!"                 /**/
+                            ),                            /**/
+                       r);                                /**/
+          }
+          tutorVisible = true;
+          money -= r;
+        } else if ((r == 1) &&
+                   buildings[(uint8_t)(Building::IDs::church)].enabled) {
+          if (spirituality < 100) {
+            /* If the spirituality is low, simulate emigration. */
+            r = rand() % (population / 2);
+            snprintf_P(tutor, tutorLen,       /**/
+                       PSTR("\n%4d PEOPLE\n"  /**/
+                            "LOST FAITH\n"    /**/
+                            "IN LAGUNITA\n"   /**/
+                            "AND DECIDED\n"   /**/
+                            "TO FOUND\n"      /**/
+                            "THEIR OWN\n"     /**/
+                            "TOWN.\n"         /**/
+                            "BUILD MORE\n"    /**/
+                            "CHURCHES TO\n"   /**/
+                            "RISE FAITH!\n"), /**/
+                       r);                    /**/
+          } else {
+            /* Else inform that the church is bringing people together. */
+            snprintf_P(tutor, tutorLen,                    /**/
+                       PSTR("\nLAGUNITIANS\nLOVE LIVING\n" /**/
+                            "IN YOUR TOWN\nAND THEY\n"     /**/
+                            "NEVER FELT\nAS UNITED!\n"     /**/
+                            ),                             /**/
+                       r);                                 /**/
+          }
+          tutorVisible = true;
+          population -= r;
         }
-        tutorVisible = true;
-        money -= r;
-      } else if ((!r) && buildings[(uint8_t)(Building::IDs::church)].enabled) {
-        if (spirituality < 100) {
-          /* If the spirituality is low, simulate emigration. */
-          r = rand() % (population / 2);
-          snprintf_P(tutor, tutorLen,       /**/
-                     PSTR("\n%4d PEOPLE\n"  /**/
-                          "LOST FAITH\n"    /**/
-                          "IN LAGUNITA\n"   /**/
-                          "AND DECIDED\n"   /**/
-                          "TO FOUND\n"      /**/
-                          "THEIR OWN\n"     /**/
-                          "TOWN.\n"         /**/
-                          "BUILD MORE\n"    /**/
-                          "CHURCHES TO\n"   /**/
-                          "RISE FAITH!\n"), /**/
-                     r);                    /**/
-        } else {
-          /* Else inform that the church is bringing people together. */
-          snprintf_P(tutor, tutorLen,                    /**/
-                     PSTR("\nLAGUNITIANS\nLOVE LIVING\n" /**/
-                          "IN YOUR TOWN\nAND THEY\n"     /**/
-                          "NEVER FELT\nAS UNITED!\n"     /**/
-                          ),                             /**/
-                     r);                                 /**/
-        }
-        tutorVisible = true;
-        population -= r;
       } else {
         /* Check if any tutorial event is ready to trigger. */
         for (uint8_t t = 0; t < Events::count; t++) {
