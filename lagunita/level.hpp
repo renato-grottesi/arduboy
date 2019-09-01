@@ -23,7 +23,7 @@ class Level {
   Arduboy2Base& arduboy;
   Tinyfont& tinyfont;
 
-  BuildingStatus buildings[(uint8_t)Building::IDs::count] = {};
+  Building::Status buildings[(uint8_t)Building::IDs::count] = {};
 
   const uint8_t* groundBmps[5] = {bmp_empty, bmp_ground, bmp_river, bmp_bridge};
   const uint8_t groundFrames[5] = {1, 1, 3, 1};

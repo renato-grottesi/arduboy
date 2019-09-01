@@ -29,6 +29,11 @@ class Building {
     count
   };
 
+  struct Status {
+    bool enabled : 1;
+    bool built : 1;
+  };
+
   /* Copies the building's name from PROGMEM to the destination string. */
   static void strncpyName(char dest[8], const uint8_t id);
   static void strncpyName(char dest[8], IDs id) {
@@ -61,9 +66,4 @@ class Building {
  private:
   /* Private empty constructor. */
   Building() {}
-};
-
-struct BuildingStatus {
-  bool enabled : 1;
-  bool built : 1;
 };
