@@ -13,6 +13,7 @@ void Level::init() {
   safety = 0;
   spirituality = 0;
   environment = 0;
+  exports = 0;
   currBuil = Building::IDs::house;
   money = 999;
   tutor[0] = '\0';
@@ -39,8 +40,9 @@ void Level::init() {
   timeLastUpdate = millis();
   timeLastEvent = millis();
   arduboy.initRandomSeed();
+  srand(arduboy.generateRandomSeed());
 
-  // Add some random vegetation
+  /* Add some random vegetation. */
   uint8_t mask = 0x0f;
   for (uint8_t i = 0; i < size; i++) {
     tiles[i].building = Building::IDs::empty;
@@ -65,7 +67,12 @@ void Level::init() {
     }
   }
 
-  // Init the random walkers and birds
+  /* Exceptions for rivers and first tile that may overlap two trees. */
+  tiles[0].building = Building::IDs::empty;
+  tiles[river_in].building = Building::IDs::empty;
+  tiles[river_out].building = Building::IDs::empty;
+
+  /* Init the random walkers and birds */
   for (uint8_t i = 0; i < npc_count; i++) {
     walking[i] = rand() % ((uint16_t)size * 8);
     flying[i] = rand() % ((uint16_t)size * 8);
@@ -156,7 +163,8 @@ void Level::onInput(Input dir) {
           snprintf_P(tutor, tutorLen,                                     /**/
                      PSTR("\nHAPPINESS\n%4d %%\nSAFETY\n%4d %%\n"         /**/
                           "SPIRITUALITY\n%4d %%\nENVIRONMENT\n%4d %%\n"), /**/
-                     happiness, safety, spirituality, environment);       /**/
+                     happiness, safety, spirituality, environment,
+                     exports); /**/
           inStats = false;
         } else {
           if (tutorChars >= strlen(tutor)) {
@@ -172,10 +180,11 @@ void Level::onInput(Input dir) {
         tutorVisible = true;
         tutorChars = tutorLen; /* No text animation for stats. */
 
-        snprintf_P(tutor, tutorLen,                                   /**/
-                   PSTR("\nHOUSING\n%7d\nJOBS   FOOD\n%4d%7d\n"       /**/
-                        "MAINTENANCE\n%7d $/s\nEARNINGS\n%4d $/s\n"), /**/
-                   housing, jobs, food, maintenance, earnings);       /**/
+        snprintf_P(tutor, tutorLen,                                      /**/
+                   PSTR("\nHOUSING\n%7d\nJOBS   FOOD\n%4d%7d\n"          /**/
+                        "MAINTENANCE\n%7d $/s\nEARNINGS\n%4d $/s\n"      /**/
+                        "EXPORTS\n%4d $/s"),                             /**/
+                   housing, jobs, food, maintenance, earnings, exports); /**/
       }
       break;
     default:
@@ -213,11 +222,13 @@ void Level::update() {
     maintenance = 0;
     earnings = 0;
     environment = 0;
+    exports = 0;
     happiness = 0;
     spirituality = 0;
     safety = 0;
     jobs = 1;
     food = 1;
+    int16_t unemployed = population;
     for (uint8_t obj = 0; obj < size; obj++) {
       earnings += Building::profit(tiles[obj].building);
       maintenance += Building::maintenance(tiles[obj].building);
@@ -239,11 +250,11 @@ void Level::update() {
       if (tiles[obj].building == Building::IDs::sheriff) {
         safety++;
       }
-      if (tiles[obj].building == Building::IDs::farm) {
-        food += 33;
-      }
-      if (tiles[obj].building == Building::IDs::mill) {
+      if (tiles[obj].building == Building::IDs::farm && unemployed > 0) {
         food += 22;
+      }
+      if (tiles[obj].building == Building::IDs::mill && unemployed > 0) {
+        food += 11;
       }
       if (tiles[obj].building == Building::IDs::saloon) {
         happiness++;
@@ -253,6 +264,7 @@ void Level::update() {
           tiles[obj].building == Building::IDs::weed) {
         environment++;
       }
+      unemployed -= Building::jobs(tiles[obj].building);
     }
 
     money += (earnings * earnings_ratio) / 100;
@@ -260,10 +272,6 @@ void Level::update() {
       money -= maintenance;
     } else {
       money = 0;
-    }
-
-    if (money > max_money) {
-      money = max_money;
     }
 
     // Some vegetation for every 16 people
@@ -295,6 +303,16 @@ void Level::update() {
     }
     if (population > food) {
       population = food;
+    }
+
+    if (buildings[(uint8_t)(Building::IDs::stable)].built &&
+        (food > population)) {
+      /* If there is a stable, we can export surplus food for money. */
+      money += exports = (food - population);
+    }
+
+    if (money > max_money) {
+      money = max_money;
     }
 
     if (!tutorVisible) {

@@ -55,6 +55,7 @@ class Level {
   uint16_t safety;
   uint16_t spirituality;
   uint16_t environment;
+  uint16_t exports;
 
   // x coordinates for moving objects
   static const uint8_t npc_count = 16;
