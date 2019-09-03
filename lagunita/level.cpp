@@ -44,7 +44,7 @@ void Level::init() {
 
   /* Add some random vegetation. */
   uint8_t mask = 0x0f;
-  for (uint8_t i = 0; i < size; i++) {
+  for (uint16_t i = 0; i < size; i++) {
     tiles[i].building = Building::IDs::empty;
     uint8_t r = (rand() % 256) & mask;
     mask = 0x0f;
@@ -74,8 +74,8 @@ void Level::init() {
 
   /* Init the random walkers and birds */
   for (uint8_t i = 0; i < npc_count; i++) {
-    walking[i] = rand() % ((uint16_t)size * 8);
-    flying[i] = rand() % ((uint16_t)size * 8);
+    walking[i] = rand() % (size * 8);
+    flying[i] = rand() % (size * 8);
   }
 
   inProgress = true;
@@ -117,7 +117,7 @@ void Level::onInput(Input dir) {
           // Check if we are in the middle of another building that has to be
           // destroyed
           for (uint16_t i = 0; i < 4; i++) {
-            uint16_t lidx = (cidx + (uint16_t)size - i) % size;
+            uint16_t lidx = (cidx + size - i) % size;
             uint16_t ends = Building::width(tiles[lidx].building);
             if (((lidx + ends) % size) > cidx)
               tiles[lidx].building = Building::IDs::empty;
@@ -125,7 +125,7 @@ void Level::onInput(Input dir) {
         } else {
           // Check if we are in the middle of another building or tree
           for (uint16_t i = 0; i < 4; i++) {
-            uint16_t lidx = (cidx + (uint16_t)size - i) % size;
+            uint16_t lidx = (cidx + size - i) % size;
             uint16_t ends = Building::width(tiles[lidx].building);
             if (((lidx + ends) % size) > cidx) {
               Building::IDs id = tiles[lidx].building;
@@ -229,7 +229,7 @@ void Level::update() {
     jobs = 1;
     food = 1;
     int16_t unemployed = population;
-    for (uint8_t obj = 0; obj < size; obj++) {
+    for (uint16_t obj = 0; obj < size; obj++) {
       earnings += Building::profit(tiles[obj].building);
       maintenance += Building::maintenance(tiles[obj].building);
       jobs += Building::jobs(tiles[obj].building);
@@ -398,43 +398,48 @@ void Level::render() {
 
   for (uint8_t i = 0; i < npc_count; i++) {
     if (!(frame % 1)) {
-      flying[i] = (flying[i] + 1) % ((uint16_t)size * 8);
+      flying[i] = (flying[i] + 1) % (size * 8);
     }
 
-    // Flying objects
-    arduboy.drawBitmap(
-        (size + flying[i] - camera * 8 + x_off) % ((uint16_t)size * 8), 1 * 8,
-        &bmp_bird[((frame >> 2) % 4) * 8], 8, 8);
-  }
+    // Birds
+    arduboy.drawBitmap((size + flying[i] - camera * 8 + x_off) % (size * 8),
+                       1 * 8, &bmp_bird[((frame >> 2) % 4) * 8], 8, 8);
 
+    // Horses
+    if (buildings[(uint8_t)(Building::IDs::stable)].built) {
+      arduboy.drawBitmap(
+          (size + size / 2 + flying[i] - camera * 8 + x_off) % (size * 8),
+          6 + 4 * 8, &bmp_horse[((frame >> 2) % 4) * 16], 16, 8);
+    }
+  }
   uint8_t cowboys = population / 16;
   cowboys = cowboys > npc_count ? npc_count : cowboys;
   for (uint8_t i = 0; i < cowboys; i++) {
     if (!(frame % 4)) {
-      walking[i] = (walking[i] + 1) % ((uint16_t)size * 8);
+      walking[i] = (walking[i] + 1) % (size * 8);
     }
 
     // Walking objects
-    arduboy.drawBitmap(
-        (size + walking[i] - camera * 8 + x_off) % ((uint16_t)size * 8),
-        6 + 4 * 8, &bmp_man[((frame >> 3) % 4) * 8], 8, 8);
+    arduboy.drawBitmap((size + walking[i] - camera * 8 + x_off) % (size * 8),
+                       6 + 4 * 8, &bmp_man[((frame >> 3) % 4) * 8], 8, 8);
   }
 
   // Camera affected objects
   for (int8_t obj = -5; obj < 17; obj++) {
-    uint8_t moved = (obj + size + camera) % size;
+    uint16_t moved = (obj + size + camera) % size;
 
     const bool in_river = (moved == river_in || moved == river_out);
-    const uint8_t top = (uint8_t)(in_river ? Grounds::bridge : Grounds::empty);
-    const uint8_t low = (uint8_t)(in_river ? Grounds::river : Grounds::ground);
 
     // Area where characters walk
-    const uint8_t* bmp = groundBmps[top];
+    const uint8_t* bmp = (in_river ? bmp_bridge : bmp_empty);
     arduboy.drawBitmap(x_off + obj * 8, 4 * 8 + 4, bmp, 8, 8);
 
     // Lake shore area
-    uint8_t frames = groundFrames[low];
-    bmp = groundBmps[low] + 8 * ((frame >> 2) % frames);
+    static const uint8_t groundFrames[5] = {1, 1, 3, 1};
+    /* The river has 3 frames of animation while the ground has only 1. */
+    uint8_t frames = in_river ? 3 : 1;
+    bmp = in_river ? bmp_river : bmp_ground;
+    bmp = bmp + 8 * ((frame >> 2) % frames);
     arduboy.drawBitmap(x_off + obj * 8, 5 * 8, bmp, 8, 8);
 
     // Building area

@@ -3,12 +3,6 @@
 #include <stdint.h>
 #include "utility.hpp"
 
-/* Types of ground. */
-enum class Grounds : uint8_t { empty, ground, river, bridge };
-
-/* Types of objects that walk around the level. */
-enum class Walkers : uint8_t { man, bird };
-
 /* Type of building that can be constructed by the player. */
 class Building {
  public:

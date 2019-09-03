@@ -23,20 +23,17 @@ class Level {
   Arduboy2Base& arduboy;
   Tinyfont& tinyfont;
 
+  /* For each building we need know if it's enabled and if has been built. */
   Building::Status buildings[(uint8_t)Building::IDs::count] = {};
 
-  const uint8_t* groundBmps[5] = {bmp_empty, bmp_ground, bmp_river, bmp_bridge};
-  const uint8_t groundFrames[5] = {1, 1, 3, 1};
-  const uint8_t* walkersBmps[2] = {bmp_man, bmp_bird};
-
-  // Camera x position
+  /* Camera position and scrolling status. */
   uint16_t camera = 0;
   uint8_t camera_off = 0;
   uint8_t camera_sign = 0;
   uint8_t camera_scrolls = 0;
 
-  // Number of tiles
-  static const uint8_t size = 255;
+  /* Number of buildable tiles in the level. */
+  static const uint16_t size = 400;
 
   /* Use bit array to pack more fields in a byte. */
   struct {
