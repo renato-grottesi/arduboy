@@ -228,7 +228,6 @@ void Level::update() {
     safety = 0;
     jobs = 1;
     food = 1;
-    int16_t unemployed = population;
     for (uint16_t obj = 0; obj < size; obj++) {
       earnings += Building::profit(tiles[obj].building);
       maintenance += Building::maintenance(tiles[obj].building);
@@ -241,6 +240,9 @@ void Level::update() {
           }
         }
       }
+    }
+    int16_t unemployed = housing;
+    for (uint16_t obj = 0; obj < size; obj++) {
       if (tiles[obj].building == Building::IDs::bank) {
         max_money += 5000;
       }
@@ -401,15 +403,17 @@ void Level::render() {
       flying[i] = (flying[i] + 1) % (size * 8);
     }
 
+    int16_t pos = size + ((i % 2) ? (-flying[i]) : (flying[i]));
+
     // Birds
-    arduboy.drawBitmap((size + flying[i] - camera * 8 + x_off) % (size * 8),
-                       1 * 8, &bmp_bird[((frame >> 2) % 4) * 8], 8, 8);
+    drawing.drawBitmap((pos - camera * 8 + x_off) % (size * 8), 1 * 8,
+                       &bmp_bird[((frame >> 2) % 4) * 8], 8, 8, i % 2);
 
     // Horses
     if (buildings[(uint8_t)(Building::IDs::stable)].built) {
-      arduboy.drawBitmap(
-          (size + size / 2 + flying[i] - camera * 8 + x_off) % (size * 8),
-          6 + 4 * 8, &bmp_horse[((frame >> 2) % 4) * 16], 16, 8);
+      drawing.drawBitmap((size / 2 + pos - camera * 8 + x_off) % (size * 8),
+                         6 + 4 * 8, &bmp_horse[((frame >> 2) % 4) * 16], 16, 8,
+                         i % 2);
     }
   }
   uint8_t cowboys = population / 16;
@@ -419,9 +423,11 @@ void Level::render() {
       walking[i] = (walking[i] + 1) % (size * 8);
     }
 
+    int16_t pos = size + ((i % 2) ? (-walking[i]) : (walking[i]));
+
     // Walking objects
-    arduboy.drawBitmap((size + walking[i] - camera * 8 + x_off) % (size * 8),
-                       6 + 4 * 8, &bmp_man[((frame >> 3) % 4) * 8], 8, 8);
+    drawing.drawBitmap((pos - camera * 8 + x_off) % (size * 8), 6 + 4 * 8,
+                       &bmp_man[((frame >> 3) % 4) * 8], 8, 8, i % 2);
   }
 
   // Camera affected objects
