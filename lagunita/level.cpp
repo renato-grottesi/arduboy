@@ -221,7 +221,65 @@ static void setRGBled(uint8_t red, uint8_t green, uint8_t blue) {
   OCR1CL = green;
 }
 
+bool Level::canBuild() {
+  if (Building::IDs::empty == currBuil)
+    return true;
+
+  // Check if we are in the middle of another building or tree
+  uint16_t cidx = (camera + 7) % size;
+
+  for (uint16_t i = 0; i < 4; i++) {
+    uint16_t lidx = (cidx + size - i) % size;
+    uint16_t ends = Building::width(tiles[lidx].building);
+    if (((lidx + ends) % size) > cidx) {
+      Building::IDs id = tiles[lidx].building;
+      if (Building::IDs::weed != id && Building::IDs::cactus != id &&
+          Building::IDs::empty != id) {
+        return false;
+      }
+    }
+  }
+
+  // Check if there is another building or tree on the right
+  for (uint16_t i = 0; i < Building::width(currBuil); i++) {
+    Building::IDs id = tiles[(cidx + i) % size].building;
+    if (Building::IDs::weed != id && Building::IDs::cactus != id &&
+        Building::IDs::empty != id) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+void Level::findFirstAvailableSpot(int8_t dir) {
+  uint16_t start = camera;
+
+  do {
+    if (canBuild()) {
+      camera_off = 4;
+      break;
+    }
+    camera += dir;
+    camera %= size;
+  } while (camera != start);
+}
+
 void Level::update() {
+  unsigned long time = millis();
+
+  if (arduboy.justPressed(LEFT_BUTTON)) {
+    if (lastPressed == LEFT_BUTTON && camera_off)
+      findFirstAvailableSpot(-1);
+    lastPressed = LEFT_BUTTON;
+  }
+
+  if (arduboy.justPressed(RIGHT_BUTTON)) {
+    if (lastPressed == RIGHT_BUTTON && camera_off)
+      findFirstAvailableSpot(+1);
+    lastPressed = RIGHT_BUTTON;
+  }
+
   if (!tutorVisible && (camera_off == 0)) {
     bool left = arduboy.pressed(LEFT_BUTTON);
     bool right = arduboy.pressed(RIGHT_BUTTON);
@@ -248,7 +306,6 @@ void Level::update() {
     }
   }
 
-  unsigned long time = millis();
   if ((time - timeLastUpdate) > 100) {
     uint16_t max_money = 2500;
     timeLastUpdate = time;
