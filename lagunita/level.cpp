@@ -234,7 +234,7 @@ void Level::update() {
       jobs += Building::jobs(tiles[obj].building);
       if (tiles[obj].building == Building::IDs::house) {
         housing += 4;
-        for (int16_t i = (obj + size - 16); i < (obj + size + 16); i++) {
+        for (uint16_t i = (obj + size - 16); i < (obj + size + 16); i++) {
           if (tiles[i % size].building == Building::IDs::water) {
             housing += 4;
           }
@@ -441,7 +441,6 @@ void Level::render() {
     arduboy.drawBitmap(x_off + obj * 8, 4 * 8 + 4, bmp, 8, 8);
 
     // Lake shore area
-    static const uint8_t groundFrames[5] = {1, 1, 3, 1};
     /* The river has 3 frames of animation while the ground has only 1. */
     uint8_t frames = in_river ? 3 : 1;
     bmp = in_river ? bmp_river : bmp_ground;
