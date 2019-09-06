@@ -223,7 +223,13 @@ static void setRGBled(uint8_t red, uint8_t green, uint8_t blue) {
 
 void Level::update() {
   if (!tutorVisible && (camera_off == 0)) {
-    if (arduboy.pressed(LEFT_BUTTON)) {
+    bool left = arduboy.pressed(LEFT_BUTTON);
+    bool right = arduboy.pressed(RIGHT_BUTTON);
+    if (left && right) {
+      // Scroll back to the center position
+      camera /= 2;
+      camera_scrolls = 0;
+    } else if (left) {
       if (camera == 0) {
         camera = size - 1;
       } else {
@@ -232,7 +238,7 @@ void Level::update() {
       camera_off = 8;
       camera_scrolls = camera_scrolls < 32 ? camera_scrolls + 1 : 32;
       camera_sign = 0;
-    } else if (arduboy.pressed(RIGHT_BUTTON)) {
+    } else if (right) {
       camera = (camera + 1) % size;
       camera_off = 8;
       camera_scrolls = camera_scrolls < 32 ? camera_scrolls + 1 : 32;
