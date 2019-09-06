@@ -211,6 +211,15 @@ static void update_statistic(uint8_t& statistic,
     statistic++;
 }
 
+static void setRGBled(uint8_t red, uint8_t green, uint8_t blue) {
+  // Use timer 1 OC1A/OC1B *and* OC1C
+  TCCR1A = _BV(COM1A1) | _BV(COM1A0) | _BV(COM1B1) | _BV(COM1B0) | _BV(COM1C1) |
+           _BV(COM1C0) | _BV(WGM10);
+  OCR1AL = blue;
+  OCR1BL = red;
+  OCR1CL = green;
+}
+
 void Level::update() {
   if (!tutorVisible && (camera_off == 0)) {
     if (arduboy.pressed(LEFT_BUTTON)) {
@@ -319,6 +328,10 @@ void Level::update() {
     update_statistic(safety, 100, sheriffs, population);
 
     uint16_t stats = (environment + happiness + spirituality + safety) / 4;
+    uint8_t ledval =
+        min(min(min(environment, happiness), spirituality), safety) / 4;
+    setRGBled(25 - ledval, ledval, 0);
+
     uint16_t max_housing = (housing * stats) / 100;
 
     max_housing = max_housing > jobs ? jobs : max_housing;
