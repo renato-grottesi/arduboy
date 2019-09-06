@@ -200,14 +200,15 @@ static void update_statistic(uint8_t& statistic,
   uint16_t numerator = count * multiplier;
 
   if (denominator < multiplier || numerator >= denominator) {
-    statistic = 100;
+    if (statistic < 100)
+      statistic++;
     return;
   }
 
-  while (uint32_t(100) * numerator < uint32_t(statistic) * denominator)
+  if (uint32_t(100) * numerator < uint32_t(statistic) * denominator)
     statistic--;
-  while (uint32_t(100) * numerator >= uint32_t(statistic + 1) * denominator &&
-         statistic < 100)
+  if (uint32_t(100) * numerator >= uint32_t(statistic + 1) * denominator &&
+      statistic < 100)
     statistic++;
 }
 
@@ -242,7 +243,7 @@ void Level::update() {
   }
 
   unsigned long time = millis();
-  if ((time - timeLastUpdate) > 1000) {
+  if ((time - timeLastUpdate) > 100) {
     uint16_t max_money = 2500;
     timeLastUpdate = time;
     housing = 0;
@@ -311,13 +312,6 @@ void Level::update() {
       unemployed -= Building::jobs(tiles[obj].building);
     }
 
-    money += earnings;
-    if (money > maintenance) {
-      money -= maintenance;
-    } else {
-      money = 0;
-    }
-
     // Some vegetation for every 16 people
     update_statistic(environment, 16, vegetation, population);
     // A saloon for every 24 people
@@ -327,11 +321,24 @@ void Level::update() {
     // A sheriff for every 100 people
     update_statistic(safety, 100, sheriffs, population);
 
-    uint16_t stats = (environment + happiness + spirituality + safety) / 4;
+    // Use the minimum of all four statistics to change the RGB led color
     uint8_t ledval =
         min(min(min(environment, happiness), spirituality), safety) / 4;
     setRGBled(25 - ledval, ledval, 0);
 
+    if (++ticks < 10)
+      return;
+    ticks = 0;
+
+    money += earnings;
+    if (money > maintenance) {
+      money -= maintenance;
+    } else {
+      money = 0;
+    }
+
+    uint16_t stats =
+        (uint16_t(environment) + happiness + spirituality + safety) / 4;
     uint16_t max_housing = (housing * stats) / 100;
 
     max_housing = max_housing > jobs ? jobs : max_housing;
