@@ -441,6 +441,30 @@ void Level::render() {
                        &bmp_man[((frame >> 3) % 4) * 8], 8, 8, i % 2);
   }
 
+  // Draw mountains
+  static const uint8_t topsvisible = 8;
+  static const uint8_t topwidth = WIDTH / topsvisible;
+  static const uint8_t ntops = size / topsvisible;
+  static const uint16_t fudge = 1024;
+
+  int16_t mountainpos = camera * 8 - x_off;
+  int16_t offset = mountainpos / topwidth;
+  int16_t shift = -mountainpos % topwidth - topwidth;
+
+  for (int8_t i = -1; i <= ntops; i++) {
+    uint8_t val1 = pgm_read_byte(fudge + offset % ntops);
+    int16_t x1 = (val1 >> 4) + shift;
+    int16_t y1 = (val1 & 0xf) + 12;
+
+    offset++;
+    shift += topwidth;
+    uint8_t val2 = pgm_read_byte(fudge + offset % ntops);
+    int16_t x2 = (val2 >> 4) + shift;
+    int16_t y2 = (val2 & 0xf) + 12;
+
+    arduboy.drawLine(x1, y1, x2, y2, WHITE);
+  }
+
   // Camera affected objects
   for (int8_t obj = -5; obj < 17; obj++) {
     uint16_t moved = (obj + size + camera) % size;
