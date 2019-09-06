@@ -9,10 +9,10 @@ void Level::init() {
   jobs = 0;
   earnings = 0;
   maintenance = 0;
-  happiness = 0;
-  safety = 0;
-  spirituality = 0;
-  environment = 0;
+  happiness = 100;
+  safety = 100;
+  spirituality = 100;
+  environment = 100;
   exports = 0;
   currBuil = Building::IDs::house;
   money = 999;
@@ -192,6 +192,25 @@ void Level::onInput(Input dir) {
   }
 }
 
+static void update_statistic(uint8_t& statistic,
+                             uint8_t multiplier,
+                             uint16_t count,
+                             uint16_t denominator) {
+  // Assume numerator <= size and multiplier < 65536 / size
+  uint16_t numerator = count * multiplier;
+
+  if (denominator < multiplier || numerator >= denominator) {
+    statistic = 100;
+    return;
+  }
+
+  while (uint32_t(100) * numerator < uint32_t(statistic) * denominator)
+    statistic--;
+  while (uint32_t(100) * numerator >= uint32_t(statistic + 1) * denominator &&
+         statistic < 100)
+    statistic++;
+}
+
 void Level::update() {
   if (!tutorVisible && (camera_off == 0)) {
     if (arduboy.pressed(LEFT_BUTTON)) {
@@ -221,11 +240,11 @@ void Level::update() {
     housing = 0;
     maintenance = 0;
     earnings = 0;
-    environment = 0;
+    uint16_t vegetation = 0;
+    uint16_t churches = 0;
+    uint16_t sheriffs = 0;
+    uint16_t saloons = 0;
     exports = 0;
-    happiness = 0;
-    spirituality = 0;
-    safety = 0;
     jobs = 1;
     food = 1;
     for (uint16_t obj = 0; obj < size; obj++) {
@@ -247,10 +266,10 @@ void Level::update() {
         max_money += 5000;
       }
       if (tiles[obj].building == Building::IDs::church) {
-        spirituality++;
+        churches++;
       }
       if (tiles[obj].building == Building::IDs::sheriff) {
-        safety++;
+        sheriffs++;
       }
       if (tiles[obj].building == Building::IDs::farm && unemployed > 0) {
         food += 22;
@@ -259,12 +278,12 @@ void Level::update() {
         food += 11;
       }
       if (tiles[obj].building == Building::IDs::saloon) {
-        happiness++;
+        saloons++;
       }
       if (tiles[obj].building == Building::IDs::tree ||
           tiles[obj].building == Building::IDs::cactus ||
           tiles[obj].building == Building::IDs::weed) {
-        environment++;
+        vegetation++;
       }
       unemployed -= Building::jobs(tiles[obj].building);
     }
@@ -277,25 +296,17 @@ void Level::update() {
     }
 
     // Some vegetation for every 16 people
-    environment =
-        (population / 16) ? (environment * 1000) / (population * 10 / 16) : 100;
-    environment = environment < 100 ? environment : 100;
+    update_statistic(environment, 16, vegetation, population);
     // A saloon for every 24 people
-    happiness =
-        (population / 24) ? (happiness * 1000) / (population * 10 / 24) : 100;
-    happiness = happiness < 100 ? happiness : 100;
+    update_statistic(happiness, 24, saloons, population);
     // A church for every 100 people
-    spirituality = (population / 100)
-                       ? (spirituality * 1000) / (population * 10 / 100)
-                       : 100;
-    spirituality = spirituality < 100 ? spirituality : 100;
+    update_statistic(spirituality, 100, churches, population);
     // A sheriff for every 100 people
-    safety =
-        (population / 100) ? (safety * 1000) / (population * 10 / 100) : 100;
-    safety = safety < 100 ? safety : 100;
+    update_statistic(safety, 100, sheriffs, population);
 
     uint16_t stats = (environment + happiness + spirituality + safety) / 4;
     uint16_t max_housing = (housing * stats) / 100;
+
     max_housing = max_housing > jobs ? jobs : max_housing;
 
     if (population < max_housing) {

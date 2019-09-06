@@ -50,11 +50,12 @@ class Level {
   uint16_t food;
   uint16_t earnings;
   uint16_t maintenance;
-  uint16_t happiness;
-  uint16_t safety;
-  uint16_t spirituality;
-  uint16_t environment;
   uint16_t exports;
+
+  uint8_t happiness;
+  uint8_t safety;
+  uint8_t spirituality;
+  uint8_t environment;
 
   // x coordinates for moving objects
   static const uint8_t npc_count = 16;
