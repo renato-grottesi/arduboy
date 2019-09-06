@@ -235,7 +235,6 @@ void Level::update() {
   unsigned long time = millis();
   if ((time - timeLastUpdate) > 1000) {
     uint16_t max_money = 2500;
-    uint16_t earnings_ratio = ((population + 1) * 100) / (jobs + 1);
     timeLastUpdate = time;
     housing = 0;
     maintenance = 0;
@@ -248,7 +247,6 @@ void Level::update() {
     jobs = 1;
     food = 1;
     for (uint16_t obj = 0; obj < size; obj++) {
-      earnings += Building::profit(tiles[obj].building);
       maintenance += Building::maintenance(tiles[obj].building);
       jobs += Building::jobs(tiles[obj].building);
       if (tiles[obj].building == Building::IDs::house) {
@@ -260,7 +258,23 @@ void Level::update() {
         }
       }
     }
+
     int16_t unemployed = housing;
+
+    /* First loop to allocate workers to produce food. */
+    for (uint16_t obj = 0; obj < size; obj++) {
+      if (tiles[obj].building == Building::IDs::farm && unemployed > 0) {
+        food += 22;
+        earnings += Building::profit(tiles[obj].building);
+      }
+      if (tiles[obj].building == Building::IDs::mill && unemployed > 0) {
+        food += 11;
+        earnings += Building::profit(tiles[obj].building);
+      }
+      unemployed -= Building::jobs(tiles[obj].building);
+    }
+
+    /* Second loop to allocate workers to other buildings. */
     for (uint16_t obj = 0; obj < size; obj++) {
       if (tiles[obj].building == Building::IDs::bank) {
         max_money += 5000;
@@ -271,11 +285,11 @@ void Level::update() {
       if (tiles[obj].building == Building::IDs::sheriff) {
         sheriffs++;
       }
-      if (tiles[obj].building == Building::IDs::farm && unemployed > 0) {
-        food += 22;
-      }
-      if (tiles[obj].building == Building::IDs::mill && unemployed > 0) {
-        food += 11;
+      if ((tiles[obj].building == Building::IDs::water ||
+           tiles[obj].building == Building::IDs::saloon ||
+           tiles[obj].building == Building::IDs::mine) &&
+          unemployed > 0) {
+        earnings += Building::profit(tiles[obj].building);
       }
       if (tiles[obj].building == Building::IDs::saloon) {
         saloons++;
@@ -288,7 +302,7 @@ void Level::update() {
       unemployed -= Building::jobs(tiles[obj].building);
     }
 
-    money += (earnings * earnings_ratio) / 100;
+    money += earnings;
     if (money > maintenance) {
       money -= maintenance;
     } else {
@@ -489,7 +503,8 @@ void Level::render() {
     bmp = Building::bitmap(id);
     uint8_t w = Building::width(id);
     uint8_t h = Building::height(id);
-    arduboy.drawBitmap(x_off + obj * 8, (4 - h) * 8 + 6, bmp, w * 8, h * 8);
+    uint8_t y = (4 - h) * 8 + 6;
+    drawing.drawBitmapAlpha(x_off + obj * 8, y, bmp, w * 8, h * 8);
   }
 
   uint8_t sel = (uint8_t)(currBuil);

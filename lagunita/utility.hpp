@@ -46,6 +46,15 @@ class Drawing {
                           uint8_t w,
                           uint8_t h);
 
+  /* Draw a bitmap that is transparent from the top
+     down to the first white pixel.
+   */
+  void drawBitmapAlpha(int16_t x,
+                       int16_t y,
+                       const uint8_t* bitmap,
+                       uint8_t w,
+                       uint8_t h);
+
  private:
   uint8_t* sBuffer;
 };
