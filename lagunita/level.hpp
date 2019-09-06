@@ -33,8 +33,9 @@ class Level {
   uint8_t camera_sign = 0;
   uint8_t camera_scrolls = 0;
 
-  /* Number of buildable tiles in the level. */
-  static const uint16_t size = 400;
+  /* Number of buildable tiles in the level. Should be a power of two to avoid
+   * expensive division operations. */
+  static const uint16_t size = 512;
 
   /* Use bit array to pack more fields in a byte. */
   struct {
