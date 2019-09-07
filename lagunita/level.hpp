@@ -37,7 +37,7 @@ class Level {
    * expensive division operations. */
   static const uint16_t size = 512;
 
-  /* Use bit array to pack more fields in a byte. */
+  /* Potentially use bit array to pack more fields in a byte. */
   struct {
     Building::IDs building;
   } tiles[size] = {};

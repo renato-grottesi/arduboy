@@ -39,14 +39,13 @@ void Level::init() {
 
   timeLastUpdate = millis();
   timeLastEvent = millis();
-  arduboy.initRandomSeed();
   srand(arduboy.generateRandomSeed());
 
   /* Add some random vegetation. */
   uint8_t mask = 0x0f;
   for (uint16_t i = 0; i < size; i++) {
     tiles[i].building = Building::IDs::empty;
-    uint8_t r = (rand() % 256) & mask;
+    uint8_t r = rand() & mask;
     mask = 0x0f;
     switch (r) {
       case 1:
@@ -602,10 +601,9 @@ void Level::render() {
   char tmp_str[16];
 
   tinyfont.setCursor(0, 0);
-  Building::strncpyName(tmp_str, sel);
-  tinyfont.print(tmp_str);
+  tinyfont.print(Building::name(sel));
   tinyfont.setCursor(0, 5);
-  tinyfont.print(itoa(5 * Building::cost(sel), tmp_str, 10));
+  tinyfont.print(5 * Building::cost(sel));
 
   snprintf_P(tmp_str, 16, PSTR("%9d$"), money);
   tinyfont.setCursor(78, 0);

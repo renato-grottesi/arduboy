@@ -21,8 +21,8 @@ const Building buildings[(uint8_t)Building::IDs::count] PROGMEM = {
     // clang-format on
 };
 
-void Building::strncpyName(char dest[8]) const {
-  strncpy_P(dest, name, 8);
+__FlashStringHelper* Building::name() const {
+  return (__FlashStringHelper*)(_name);
 }
 
 const uint8_t Building::jobs() const {
@@ -53,34 +53,34 @@ const uint8_t* Building::bitmap() const {
   return pgm_read_ptr(&_bitmap);
 }
 
-void Building::strncpyName(char dest[8], const uint8_t id) {
-  buildings[(uint8_t)id].strncpyName(dest);
+__FlashStringHelper* Building::name(const uint8_t id) {
+  return buildings[id].name();
 }
 
 const uint8_t Building::jobs(const uint8_t id) {
-  return buildings[(uint8_t)id].jobs();
+  return buildings[id].jobs();
 }
 
 const uint8_t Building::cost(const uint8_t id) {
-  return buildings[(uint8_t)id].cost();
+  return buildings[id].cost();
 }
 
 const uint8_t Building::width(const uint8_t id) {
-  return buildings[(uint8_t)id].width();
+  return buildings[id].width();
 }
 
 const uint8_t Building::height(const uint8_t id) {
-  return buildings[(uint8_t)id].height();
+  return buildings[id].height();
 }
 
 const uint8_t Building::maintenance(const uint8_t id) {
-  return buildings[(uint8_t)id].maintenance();
+  return buildings[id].maintenance();
 }
 
 const uint8_t Building::profit(const uint8_t id) {
-  return buildings[(uint8_t)id].profit();
+  return buildings[id].profit();
 }
 
 const uint8_t* Building::bitmap(const uint8_t id) {
-  return buildings[(uint8_t)id].bitmap();
+  return buildings[id].bitmap();
 }
