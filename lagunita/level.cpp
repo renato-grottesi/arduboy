@@ -200,20 +200,94 @@ static void update_statistic(uint8_t& statistic,
   uint16_t numerator = count * multiplier;
 
   if (denominator < multiplier || numerator >= denominator) {
-    statistic = 100;
+    if (statistic < 100)
+      statistic++;
     return;
   }
 
-  while (uint32_t(100) * numerator < uint32_t(statistic) * denominator)
+  if (uint32_t(100) * numerator < uint32_t(statistic) * denominator)
     statistic--;
-  while (uint32_t(100) * numerator >= uint32_t(statistic + 1) * denominator &&
-         statistic < 100)
+  if (uint32_t(100) * numerator >= uint32_t(statistic + 1) * denominator &&
+      statistic < 100)
     statistic++;
 }
 
+static void setRGBled(uint8_t red, uint8_t green, uint8_t blue) {
+  // Use timer 1 OC1A/OC1B *and* OC1C
+  TCCR1A = _BV(COM1A1) | _BV(COM1A0) | _BV(COM1B1) | _BV(COM1B0) | _BV(COM1C1) |
+           _BV(COM1C0) | _BV(WGM10);
+  OCR1AL = blue;
+  OCR1BL = red;
+  OCR1CL = green;
+}
+
+bool Level::canBuild() {
+  if (Building::IDs::empty == currBuil)
+    return true;
+
+  // Check if we are in the middle of another building or tree
+  uint16_t cidx = (camera + 7) % size;
+
+  for (uint16_t i = 0; i < 4; i++) {
+    uint16_t lidx = (cidx + size - i) % size;
+    uint16_t ends = Building::width(tiles[lidx].building);
+    if (((lidx + ends) % size) > cidx) {
+      Building::IDs id = tiles[lidx].building;
+      if (Building::IDs::weed != id && Building::IDs::cactus != id &&
+          Building::IDs::empty != id) {
+        return false;
+      }
+    }
+  }
+
+  // Check if there is another building or tree on the right
+  for (uint16_t i = 0; i < Building::width(currBuil); i++) {
+    Building::IDs id = tiles[(cidx + i) % size].building;
+    if (Building::IDs::weed != id && Building::IDs::cactus != id &&
+        Building::IDs::empty != id) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+void Level::findFirstAvailableSpot(int8_t dir) {
+  uint16_t start = camera;
+
+  do {
+    if (canBuild()) {
+      camera_off = 4;
+      break;
+    }
+    camera += dir;
+    camera %= size;
+  } while (camera != start);
+}
+
 void Level::update() {
+  unsigned long time = millis();
+
+  if (arduboy.justPressed(LEFT_BUTTON)) {
+    if (lastPressed == LEFT_BUTTON && camera_off)
+      findFirstAvailableSpot(-1);
+    lastPressed = LEFT_BUTTON;
+  }
+
+  if (arduboy.justPressed(RIGHT_BUTTON)) {
+    if (lastPressed == RIGHT_BUTTON && camera_off)
+      findFirstAvailableSpot(+1);
+    lastPressed = RIGHT_BUTTON;
+  }
+
   if (!tutorVisible && (camera_off == 0)) {
-    if (arduboy.pressed(LEFT_BUTTON)) {
+    bool left = arduboy.pressed(LEFT_BUTTON);
+    bool right = arduboy.pressed(RIGHT_BUTTON);
+    if (left && right) {
+      // Scroll back to the center position
+      camera /= 2;
+      camera_scrolls = 0;
+    } else if (left) {
       if (camera == 0) {
         camera = size - 1;
       } else {
@@ -222,7 +296,7 @@ void Level::update() {
       camera_off = 8;
       camera_scrolls = camera_scrolls < 32 ? camera_scrolls + 1 : 32;
       camera_sign = 0;
-    } else if (arduboy.pressed(RIGHT_BUTTON)) {
+    } else if (right) {
       camera = (camera + 1) % size;
       camera_off = 8;
       camera_scrolls = camera_scrolls < 32 ? camera_scrolls + 1 : 32;
@@ -232,8 +306,7 @@ void Level::update() {
     }
   }
 
-  unsigned long time = millis();
-  if ((time - timeLastUpdate) > 1000) {
+  if ((time - timeLastUpdate) > 100) {
     uint16_t max_money = 2500;
     timeLastUpdate = time;
     housing = 0;
@@ -302,13 +375,6 @@ void Level::update() {
       unemployed -= Building::jobs(tiles[obj].building);
     }
 
-    money += earnings;
-    if (money > maintenance) {
-      money -= maintenance;
-    } else {
-      money = 0;
-    }
-
     // Some vegetation for every 16 people
     update_statistic(environment, 16, vegetation, population);
     // A saloon for every 24 people
@@ -318,7 +384,24 @@ void Level::update() {
     // A sheriff for every 100 people
     update_statistic(safety, 100, sheriffs, population);
 
-    uint16_t stats = (environment + happiness + spirituality + safety) / 4;
+    // Use the minimum of all four statistics to change the RGB led color
+    uint8_t ledval =
+        min(min(min(environment, happiness), spirituality), safety) / 4;
+    setRGBled(25 - ledval, ledval, 0);
+
+    if (++ticks < 10)
+      return;
+    ticks = 0;
+
+    money += earnings;
+    if (money > maintenance) {
+      money -= maintenance;
+    } else {
+      money = 0;
+    }
+
+    uint16_t stats =
+        (uint16_t(environment) + happiness + spirituality + safety) / 4;
     uint16_t max_housing = (housing * stats) / 100;
 
     max_housing = max_housing > jobs ? jobs : max_housing;

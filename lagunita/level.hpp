@@ -66,6 +66,8 @@ class Level {
   Building::IDs currBuil = Building::IDs::house;
 
   uint16_t money = 999;
+  uint8_t ticks = 0;
+  uint8_t lastPressed = 0;
 
   unsigned long timeLastUpdate = 0;
   unsigned long timeLastEvent = 0;
@@ -82,4 +84,7 @@ class Level {
   uint16_t population = 0;
   bool inProgress = false;
   bool inStats = false;
+
+  void findFirstAvailableSpot(int8_t dir);
+  bool canBuild();
 };
