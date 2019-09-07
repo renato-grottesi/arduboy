@@ -130,17 +130,18 @@ void Lagunita::render() {
   // render the menus
   switch (currentMenu) {
     case Menus::main:
-      tinyfont.setCursor(42, 20);
+      arduboy.drawBitmap(4, 4, bmp_lagunita, 105, 16);
+      tinyfont.setCursor(42, 50 - 6 * 3);
       if (level.isInProgress()) {
         tinyfont.print(F("RESUME"));
       } else {
         tinyfont.print(F("PLAY"));
       }
-      tinyfont.setCursor(42, 30);
+      tinyfont.setCursor(42, 50 - 6 * 2);
       tinyfont.print(F("CREDITS"));
-      tinyfont.setCursor(42, 40);
+      tinyfont.setCursor(42, 50 - 6 * 1);
       tinyfont.print(F("HELP"));
-      tinyfont.setCursor(42, 50);
+      tinyfont.setCursor(42, 50 - 6 * 0);
       if (arduboy.audio.enabled()) {
         tinyfont.print(F("AUDIO: ON"));
       } else {
@@ -148,16 +149,16 @@ void Lagunita::render() {
       }
       switch (currentMainSelection) {
         case MainSelections::play:
-          arduboy.drawBitmap(32, 18, bmp_bullet, 8, 8);
+          arduboy.drawBitmap(32, 48 - 6 * 3, bmp_bullet, 8, 8);
           break;
         case MainSelections::credits:
-          arduboy.drawBitmap(32, 28, bmp_bullet, 8, 8);
+          arduboy.drawBitmap(32, 48 - 6 * 2, bmp_bullet, 8, 8);
           break;
         case MainSelections::help:
-          arduboy.drawBitmap(32, 38, bmp_bullet, 8, 8);
+          arduboy.drawBitmap(32, 48 - 6 * 1, bmp_bullet, 8, 8);
           break;
         case MainSelections::audio:
-          arduboy.drawBitmap(32, 48, bmp_bullet, 8, 8);
+          arduboy.drawBitmap(32, 48 - 6 * 0, bmp_bullet, 8, 8);
           break;
       }
       break;
