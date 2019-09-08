@@ -181,92 +181,84 @@ void Lagunita::render() {
       break;
     case Menus::lost:
       tinyfont.setCursor(2, 0);
-      tinyfont.print(F(                              /**/
-                       "                         \n" /**/
-                       "      UNFORTUNATELY      \n" /**/
-                       "      YOU RUN OUT        \n" /**/
-                       "      OF MONEY.          \n" /**/
-                       "                         \n" /**/
-                       "      REMEMBER TO        \n" /**/
-                       "      CHECK THE          \n" /**/
-                       "      STATISTICS         \n" /**/
-                       "      WHILE PLAYING      \n" /**/
-                       "                         \n" /**/
-                       "      TRY AGAIN!         \n" /**/
-                       "                         \n" /**/
-                       "                         \n" /**/
+      tinyfont.print(F(                         /**/
+                       "\n"                     /**/
+                       "      UNFORTUNATELY\n"  /**/
+                       "      YOU RUN OUT\n"    /**/
+                       "      OF MONEY.\n"      /**/
+                       "\n"                     /**/
+                       "      REMEMBER TO\n"    /**/
+                       "      CHECK THE\n"      /**/
+                       "      STATISTICS\n"     /**/
+                       "      WHILE PLAYING!\n" /**/
+                       "\n"                     /**/
+                       "      TRY AGAIN!\n"     /**/
                        ));
       break;
     case Menus::credits:
       tinyfont.setCursor(2, 0);
-      tinyfont.print(F(                              /**/
-                       "                         \n" /**/
-                       "LAGUNITA WAS CREATED BY  \n" /**/
-                       "    RENATO GROTTESI      \n" /**/
-                       "                         \n" /**/
-                       "PROGRAMMING              \n" /**/
-                       "    RENATO GROTTESI      \n" /**/
-                       "    GUUS SLIEPEN         \n" /**/
-                       "                         \n" /**/
-                       "MUSIC BY                 \n" /**/
-                       "    JOAKIM SIMONSSON     \n" /**/
-                       "                         \n" /**/
-                       "                         \n" /**/
-                       "                         \n" /**/
+      tinyfont.print(F(                            /**/
+                       "\n"                        /**/
+                       "LAGUNITA WAS CREATED BY\n" /**/
+                       "    RENATO GROTTESI\n"     /**/
+                       "\n"                        /**/
+                       "PROGRAMMING\n"             /**/
+                       "    RENATO GROTTESI\n"     /**/
+                       "    GUUS SLIEPEN\n"        /**/
+                       "\n"                        /**/
+                       "MUSIC BY\n"                /**/
+                       "    JOAKIM SIMONSSON\n"    /**/
                        ));
       break;
     case Menus::help:
       tinyfont.setCursor(2, 0);
       switch (help_page) {
         case 0:
-          tinyfont.print(F(                              /**/
-                           "BUILD A WILD WEST TOWN   \n" /**/
-                           "ON THE SHORE OF LAKE     \n" /**/
-                           "LAGUNITA WITH AS MANY    \n" /**/
-                           "CITIZENS AS POSSIBLE.    \n" /**/
-                           "                         \n" /**/
-                           "INCREASE YOUR PROFIT TO  \n" /**/
-                           "KEEP UNLOCKING NEW AND   \n" /**/
-                           "EXCITING BUILDINGS.      \n" /**/
-                           "                         \n" /**/
-                           "PRESS THE RIGHT ARROW    \n" /**/
-                           "FOR MORE INSTRUCTIONS    \n" /**/
-                           "OR B TO GO BACK.         \n" /**/
-                           "                         \n" /**/
+          tinyfont.print(F(                            /**/
+                           "BUILD A WILD WEST TOWN\n"  /**/
+                           "ON THE SHORE OF LAKE\n"    /**/
+                           "LAGUNITA WITH AS MANY\n"   /**/
+                           "CITIZENS AS POSSIBLE.\n"   /**/
+                           "\n"                        /**/
+                           "INCREASE YOUR PROFIT TO\n" /**/
+                           "KEEP UNLOCKING NEW AND\n"  /**/
+                           "EXCITING BUILDINGS.\n"     /**/
+                           "\n"                        /**/
+                           "PRESS THE RIGHT ARROW\n"   /**/
+                           "FOR MORE INSTRUCTIONS\n"   /**/
+                           "OR B TO GO BACK.\n"        /**/
                            ));
           break;
         case 1:
-          tinyfont.print(F(                              /**/
-                           "YOU CAN MOVE AROUND THE  \n" /**/
-                           "LEVEL WITH THE LEFT AND  \n" /**/
-                           "RIGHT ARROWS. LONG PRESS \n" /**/
-                           "FOR FAST SCROLLING.      \n" /**/
-                           "DOUBLE CLICK TO MOVE TO  \n" /**/
-                           "NEXT AVAILABLE SPOT TO   \n" /**/
-                           "BUILD THE CURRENTLY      \n" /**/
-                           "SELECTED BUILDING.       \n" /**/
-                           "PRESS BOTH TO RECENTER.  \n" /**/
-                           "                         \n" /**/
-                           "PRESS THE RIGHT ARROW    \n" /**/
-                           "FOR MORE INSTRUCTIONS.   \n" /**/
-                           "                         \n" /**/
+          tinyfont.print(F(                             /**/
+                           "YOU CAN MOVE AROUND THE\n"  /**/
+                           "LEVEL WITH THE LEFT AND\n"  /**/
+                           "RIGHT ARROWS. LONG PRESS\n" /**/
+                           "FOR FAST SCROLLING.\n"      /**/
+                           "DOUBLE CLICK TO MOVE TO\n"  /**/
+                           "NEXT AVAILABLE SPOT TO\n"   /**/
+                           "BUILD THE CURRENTLY\n"      /**/
+                           "SELECTED BUILDING.\n"       /**/
+                           "PRESS BOTH TO RECENTER.\n"  /**/
+                           "\n"                         /**/
+                           "PRESS THE RIGHT ARROW\n"    /**/
+                           "FOR MORE INSTRUCTIONS.\n"   /**/
                            ));
           break;
         case 2:
           tinyfont.print(F(                              /**/
-                           "PRESS THE UP AND DOWN    \n" /**/
-                           "ARROWS TO CHANGE THE     \n" /**/
+                           "PRESS THE UP AND DOWN\n"     /**/
+                           "ARROWS TO CHANGE THE\n"      /**/
                            "CURRENTLY SELECTED ACTION\n" /**/
-                           "OR BUILDING.             \n" /**/
-                           "                         \n" /**/
-                           "PRESS A TO DO THE ACTION \n" /**/
-                           "OR BUILD THE BUILDING.   \n" /**/
-                           "                         \n" /**/
-                           "PRESS B TO CHECK THE     \n" /**/
-                           "STATISTICS.              \n" /**/
-                           "                         \n" /**/
-                           "PRESS B TO GO BACK.      \n" /**/
-                           "                         \n" /**/
+                           "OR BUILDING.\n"              /**/
+                           "\n"                          /**/
+                           "PRESS A TO DO THE ACTION\n"  /**/
+                           "OR BUILD THE BUILDING.\n"    /**/
+                           "\n"                          /**/
+                           "PRESS B TO CHECK THE\n"      /**/
+                           "STATISTICS.\n"               /**/
+                           "\n"                          /**/
+                           "PRESS B TO GO BACK.\n"       /**/
                            ));
           break;
         default:
@@ -279,3 +271,22 @@ void Lagunita::render() {
   // tell the arduboy to swap buffers
   arduboy.display();
 }
+
+#if 0
+      /* Template for full screen messages. */
+      tinyfont.print(F(                              /**/
+                       "                         \n" /**/
+                       "                         \n" /**/
+                       "                         \n" /**/
+                       "                         \n" /**/
+                       "                         \n" /**/
+                       "                         \n" /**/
+                       "                         \n" /**/
+                       "                         \n" /**/
+                       "                         \n" /**/
+                       "                         \n" /**/
+                       "                         \n" /**/
+                       "                         \n" /**/
+                       "                         \n" /**/
+                       ));
+#endif
