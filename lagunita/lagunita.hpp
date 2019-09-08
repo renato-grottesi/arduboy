@@ -20,8 +20,7 @@ class Lagunita {
 
   Arduboy2Base arduboy;
   Drawing drawing = {arduboy.sBuffer};
-  Tinyfont tinyfont = {arduboy.sBuffer, Arduboy2Base::width(),
-                       Arduboy2Base::height()};
+  Tinyfont tinyfont = {arduboy.sBuffer, Arduboy2Base::width(), Arduboy2Base::height()};
   Music music = {arduboy};
   Level level = {arduboy, tinyfont, drawing};
   Menus currentMenu = Menus::main;

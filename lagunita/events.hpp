@@ -23,7 +23,7 @@ class Events {
       uint8_t id,
       uint16_t population,
       uint16_t money,
-      Building::Status buildings[(uint8_t)Building::IDs::count]);
+      Building::Status buildings[static_cast<uint8_t>(Building::IDs::count)]);
 
   static const uint8_t count = 14;
 };

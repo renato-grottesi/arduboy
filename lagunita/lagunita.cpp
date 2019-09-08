@@ -156,9 +156,9 @@ void Lagunita::render() {
       tinyfont.print(F("HELP"));
       tinyfont.setCursor(bl_x + 10, bl_y - 6 * 0);
       if (arduboy.audio.enabled()) {
-        tinyfont.print(F("AUDIO: ON"));
+        tinyfont.print(F("MUSIC"));
       } else {
-        tinyfont.print(F("AUDIO: OFF"));
+        tinyfont.print(F("MUTED"));
       }
       switch (currentMainSelection) {
         case MainSelections::play:

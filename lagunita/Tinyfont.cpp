@@ -75,15 +75,14 @@ size_t Tinyfont::write(uint8_t c) {
 
 void Tinyfont::printChar(char c, int16_t x, int16_t y) {
   // no need to draw at all if we're offscreen
-  if (x + TINYFONT_WIDTH <= 0 || x > sWidth - 1 || y + TINYFONT_HEIGHT <= 0 ||
-      y > sHeight - 1)
+  if (x + TINYFONT_WIDTH <= 0 || x > sWidth - 1 || y + TINYFONT_HEIGHT <= 0 || y > sHeight - 1)
     return;
 
   // check if char is available
-  if (((uint8_t)c) < 32 || ((uint8_t)c) > 255)
-    c = (char)127;
+  if ((static_cast<uint8_t>(c) < 32) || (static_cast<uint8_t>(c) > 255))
+    c = static_cast<char>(127);
 
-  uint8_t cval = ((uint8_t)c) - 32;
+  uint8_t cval = static_cast<uint8_t>(c) - 32;
 
   // layout lowercase letters
   if (cval >= 65 && cval <= 90)
@@ -115,17 +114,17 @@ void Tinyfont::printChar(char c, int16_t x, int16_t y) {
 }
 
 void Tinyfont::drawByte(int16_t x, int16_t y, uint8_t pixels, uint8_t color) {
-  uint8_t row = (uint8_t)y / 8;
+  uint8_t row = static_cast<uint8_t>(y) / 8;
 
   // check if byte needs to be seperated
-  if (((uint8_t)y) % 8 == 0) {
-    uint8_t col = (uint8_t)x % sWidth;
+  if ((static_cast<uint8_t>(y) % 8) == 0) {
+    uint8_t col = static_cast<uint8_t>(x) % sWidth;
     if (color == 0)
       sBuffer[col + row * sWidth] &= ~pixels;
     else
       sBuffer[col + row * sWidth] |= pixels;
   } else {
-    uint8_t d = (uint8_t)y % 8;
+    uint8_t d = static_cast<uint8_t>(y) % 8;
 
     drawByte(x, row * 8, pixels << d, color);
     drawByte(x, (row + 1) * 8, pixels >> (8 - d), color);

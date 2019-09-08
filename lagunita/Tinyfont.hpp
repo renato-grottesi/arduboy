@@ -21,8 +21,8 @@ class Tinyfont : public Print {
  public:
   Tinyfont(uint8_t* screenBuffer,
            int16_t width,
-           int16_t height);  //!< Needs to be initialized with a screenBuffer
-                             //!< where the height is a multiple of 8.
+           int16_t height);       //!< Needs to be initialized with a screenBuffer
+                                  //!< where the height is a multiple of 8.
   virtual size_t write(uint8_t);  // used by the Arduino Print class
 
   /** \brief

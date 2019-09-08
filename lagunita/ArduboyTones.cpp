@@ -49,13 +49,12 @@ static volatile uint8_t* tonesStart;
 static volatile uint8_t* tonesIndex;
 
 // array of frequencies used by the music
-static const unsigned int frequencies[] PROGMEM = {
-    0,   73,  82,  87,  98,  110, 131, 147, 165, 175, 196, 220,
-    247, 262, 294, 330, 349, 392, 440, 494, 523, 587, 659};
+static const unsigned int frequencies[] PROGMEM = {0,   73,  82,  87,  98,  110, 131, 147,
+                                                   165, 175, 196, 220, 247, 262, 294, 330,
+                                                   349, 392, 440, 494, 523, 587, 659};
 
 // array of note durations used by the music
-static const unsigned int durations[] PROGMEM = {0,   136, 272, 409,
-                                                 545, 818, 1090};
+static const unsigned int durations[] PROGMEM = {0, 136, 272, 409, 545, 818, 1090};
 
 ArduboyTones::ArduboyTones(bool (*outEn)()) {
   outputEnabled = outEn;
@@ -65,14 +64,14 @@ ArduboyTones::ArduboyTones(bool (*outEn)()) {
 }
 
 void ArduboyTones::tones(const uint8_t* tones) {
-  bitWrite(TIMSK3, OCIE3A, 0);  // disable the output compare match interrupt
+  bitWrite(TIMSK3, OCIE3A, 0);                // disable the output compare match interrupt
   tonesStart = tonesIndex = (uint8_t*)tones;  // set to start of sequence array
   nextTone();                                 // start playing
 }
 
 void ArduboyTones::noTone() {
-  bitWrite(TIMSK3, OCIE3A, 0);  // disable the output compare match interrupt
-  TCCR3B = 0;                   // stop the counter
+  bitWrite(TIMSK3, OCIE3A, 0);        // disable the output compare match interrupt
+  TCCR3B = 0;                         // stop the counter
   bitClear(TONE_PIN_PORT, TONE_PIN);  // set the pin low
   tonesPlaying = false;
 }
@@ -117,7 +116,7 @@ void ArduboyTones::nextTone() {
     // A right shift is used to divide by 512 for efficency.
     // For durations in milliseconds it should actually be a divide by 500,
     // so durations will by shorter by 2.34% of what is specified.
-    toggleCount = ((long)dur * freq) >> 9;
+    toggleCount = (static_cast<long>(dur) * freq) >> 9;
   } else {
     toggleCount = 1;  // indicate no duration
   }

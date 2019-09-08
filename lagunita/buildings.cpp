@@ -1,7 +1,7 @@
 #include "buildings.hpp"
 #include "bitmaps.hpp"
 
-const Building buildings[(uint8_t)Building::IDs::count] PROGMEM = {
+const Building buildings[static_cast<uint8_t>(Building::IDs::count)] PROGMEM = {
     // clang-format off
     /* name,    bitmap,   jobs, cost, w, h, maintenance, profit */
     {"CLEAR",   bmp_empty,   0,    4, 1, 1, 0,  0},
@@ -22,7 +22,7 @@ const Building buildings[(uint8_t)Building::IDs::count] PROGMEM = {
 };
 
 const __FlashStringHelper* Building::name() const {
-  return (__FlashStringHelper*)(_name);
+  return reinterpret_cast<const __FlashStringHelper*>(_name);
 }
 
 const uint8_t Building::jobs() const {

@@ -24,18 +24,18 @@ void Level::init() {
   river_in = 5;
   river_out = size / 2;
 
-  for (uint8_t i = 0; i < (uint8_t)Events::count; i++) {
+  for (uint8_t i = 0; i < static_cast<uint8_t>(Events::count); i++) {
     tutorials[i] = EventState::untriggered;
   }
 
-  for (uint8_t i = 0; i < (uint8_t)Building::IDs::count; i++) {
+  for (uint8_t i = 0; i < static_cast<uint8_t>(Building::IDs::count); i++) {
     buildings[i].enabled = false;
     buildings[i].built = false;
   }
 
   /* Make an exception for the house */
-  buildings[(uint8_t)(Building::IDs::house)].enabled = true;
-  buildings[(uint8_t)(Building::IDs::house)].built = true;
+  buildings[static_cast<uint8_t>(Building::IDs::house)].enabled = true;
+  buildings[static_cast<uint8_t>(Building::IDs::house)].built = true;
 
   timeLastUpdate = millis();
   timeLastEvent = millis();
@@ -89,7 +89,7 @@ void Level::onInput(Input dir) {
   if (tutorVisible && (dir != Input::b)) {
     return;
   }
-  uint8_t sel = (uint8_t)(currBuil);
+  uint8_t sel = static_cast<uint8_t>(currBuil);
   switch (dir) {
     case Input::up:
       do {
@@ -97,17 +97,17 @@ void Level::onInput(Input dir) {
           sel = Building::count() - 1;
         else
           sel--;
-        currBuil = (Building::IDs)(sel);
+        currBuil = static_cast<Building::IDs>(sel);
       } while (buildings[sel].enabled == false);
       break;
     case Input::down:
       do {
         sel = (sel + 1) % Building::count();
-        currBuil = (Building::IDs)(sel);
+        currBuil = static_cast<Building::IDs>(sel);
       } while (buildings[sel].enabled == false);
       break;
     case Input::a: {
-      uint8_t idx = (uint8_t)(currBuil);
+      uint8_t idx = static_cast<uint8_t>(currBuil);
       if (money >= (Building::cost(idx) * 5)) {
         uint16_t cidx = (camera + 7) % size;
         bool replace = true;
@@ -151,7 +151,7 @@ void Level::onInput(Input dir) {
           }
 
           tiles[cidx].building = currBuil;
-          buildings[(uint8_t)currBuil].built = true;
+          buildings[static_cast<uint8_t>(currBuil)].built = true;
           money -= Building::cost(idx) * 5;
         }
       }
@@ -159,11 +159,10 @@ void Level::onInput(Input dir) {
     case Input::b:
       if (tutorVisible) {
         if (inStats) {
-          snprintf_P(tutor, tutorLen,                                     /**/
-                     PSTR("\nHAPPINESS\n%4d %%\nSAFETY\n%4d %%\n"         /**/
-                          "SPIRITUALITY\n%4d %%\nENVIRONMENT\n%4d %%\n"), /**/
-                     happiness, safety, spirituality, environment,
-                     exports); /**/
+          snprintf_P(tutor, tutorLen,                                        /**/
+                     PSTR("\nHAPPINESS\n%4d %%\nSAFETY\n%4d %%\n"            /**/
+                          "SPIRITUALITY\n%4d %%\nENVIRONMENT\n%4d %%\n"),    /**/
+                     happiness, safety, spirituality, environment, exports); /**/
           inStats = false;
         } else {
           if (tutorChars >= strlen(tutor)) {
@@ -204,17 +203,20 @@ static void update_statistic(uint8_t& statistic,
     return;
   }
 
-  if (uint32_t(100) * numerator < uint32_t(statistic) * denominator)
+  if (static_cast<uint32_t>(100) * numerator < static_cast<uint32_t>(statistic) * denominator) {
     statistic--;
-  if (uint32_t(100) * numerator >= uint32_t(statistic + 1) * denominator &&
-      statistic < 100)
+  }
+  if (static_cast<uint32_t>(100) * numerator >=
+          static_cast<uint32_t>(statistic + 1) * denominator &&
+      statistic < 100) {
     statistic++;
+  }
 }
 
 static void setRGBled(uint8_t red, uint8_t green, uint8_t blue) {
   // Use timer 1 OC1A/OC1B *and* OC1C
-  TCCR1A = _BV(COM1A1) | _BV(COM1A0) | _BV(COM1B1) | _BV(COM1B0) | _BV(COM1C1) |
-           _BV(COM1C0) | _BV(WGM10);
+  TCCR1A = _BV(COM1A1) | _BV(COM1A0) | _BV(COM1B1) | _BV(COM1B0) | _BV(COM1C1) | _BV(COM1C0) |
+           _BV(WGM10);
   OCR1AL = blue;
   OCR1BL = red;
   OCR1CL = green;
@@ -384,8 +386,7 @@ void Level::update() {
     update_statistic(safety, 100, sheriffs, population);
 
     // Use the minimum of all four statistics to change the RGB led color
-    uint8_t ledval =
-        min(min(min(environment, happiness), spirituality), safety) / 4;
+    uint8_t ledval = min(min(min(environment, happiness), spirituality), safety) / 4;
     setRGBled(25 - ledval, ledval, 0);
 
     if (++ticks < 10)
@@ -400,7 +401,7 @@ void Level::update() {
     }
 
     uint16_t stats =
-        (uint16_t(environment) + happiness + spirituality + safety) / 4;
+        (static_cast<uint16_t>(environment) + happiness + spirituality + safety) / 4;
     uint16_t max_housing = (housing * stats) / 100;
 
     max_housing = max_housing > jobs ? jobs : max_housing;
@@ -414,8 +415,7 @@ void Level::update() {
       population = food;
     }
 
-    if (buildings[(uint8_t)(Building::IDs::stable)].built &&
-        (food > population)) {
+    if (buildings[static_cast<uint8_t>(Building::IDs::stable)].built && (food > population)) {
       /* If there is a stable, we can export surplus food for money. */
       money += exports = (food - population);
     }
@@ -426,11 +426,11 @@ void Level::update() {
 
     if (!tutorVisible) {
       /* Random events happen every 60 to 120 seconds. */
-      if ((time - timeLastEvent) > (uint32_t)(rand() % 60000) + 60000) {
+      if ((time - timeLastEvent) > static_cast<uint32_t>(rand() % 60000) + 60000) {
         timeLastEvent = time;
         uint16_t r = rand() % 2;
 
-        if ((r == 0) && buildings[(uint8_t)(Building::IDs::sheriff)].enabled) {
+        if ((r == 0) && buildings[static_cast<uint8_t>(Building::IDs::sheriff)].enabled) {
           if (safety < 100) {
             /* If the safety is low, simulate a robbery. */
             r = rand() % (money / 2);
@@ -451,8 +451,7 @@ void Level::update() {
           }
           tutorVisible = true;
           money -= r;
-        } else if ((r == 1) &&
-                   buildings[(uint8_t)(Building::IDs::church)].enabled) {
+        } else if ((r == 1) && buildings[static_cast<uint8_t>(Building::IDs::church)].enabled) {
           if (spirituality < 100) {
             /* If the spirituality is low, simulate emigration. */
             r = rand() % (population / 2);
@@ -483,8 +482,7 @@ void Level::update() {
       } else {
         /* Check if any tutorial event is ready to trigger. */
         for (uint8_t t = 0; t < Events::count; t++) {
-          tutorials[t] =
-              Events::update(tutorials[t], t, population, money, buildings);
+          tutorials[t] = Events::update(tutorials[t], t, population, money, buildings);
           if (tutorials[t] == EventState::justTriggered) {
             uint8_t b = Events::buildingUnlocked(t);
             buildings[b].enabled = true;
@@ -503,7 +501,7 @@ void Level::render() {
   static uint8_t frame = 0;
   frame++;
 
-  int8_t x_off = (camera_sign ? (1) : (-1)) * ((int8_t)(camera_off));
+  int8_t x_off = (camera_sign ? (1) : (-1)) * (static_cast<int8_t>(camera_off));
 
   for (uint8_t i = 0; i < npc_count; i++) {
     if (!(frame % 1)) {
@@ -517,10 +515,9 @@ void Level::render() {
                        &bmp_bird[((frame >> 2) % 4) * 8], 8, 8, i % 2);
 
     // Horses
-    if (buildings[(uint8_t)(Building::IDs::stable)].built) {
-      drawing.drawBitmap((size / 2 + pos - camera * 8 + x_off) % (size * 8),
-                         6 + 4 * 8, &bmp_horse[((frame >> 2) % 4) * 16], 16, 8,
-                         i % 2);
+    if (buildings[static_cast<uint8_t>(Building::IDs::stable)].built) {
+      drawing.drawBitmap((size / 2 + pos - camera * 8 + x_off) % (size * 8), 6 + 4 * 8,
+                         &bmp_horse[((frame >> 2) % 4) * 16], 16, 8, i % 2);
     }
   }
   uint8_t cowboys = population / 16;
@@ -581,7 +578,7 @@ void Level::render() {
     // Building area
     Building::IDs b = tiles[moved].building;
 
-    uint8_t id = (uint8_t)(b);
+    uint8_t id = static_cast<uint8_t>(b);
     bmp = Building::bitmap(id);
     uint8_t w = Building::width(id);
     uint8_t h = Building::height(id);
@@ -589,7 +586,7 @@ void Level::render() {
     drawing.drawBitmapAlpha(x_off + obj * 8, y, bmp, w * 8, h * 8);
   }
 
-  uint8_t sel = (uint8_t)(currBuil);
+  uint8_t sel = static_cast<uint8_t>(currBuil);
 
   // Current selection
   for (uint8_t tile = 7; tile < 7 + (Building::width(sel)); tile++) {

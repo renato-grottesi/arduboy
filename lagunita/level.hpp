@@ -25,7 +25,7 @@ class Level {
   Drawing& drawing;
 
   /* For each building we need know if it's enabled and if has been built. */
-  Building::Status buildings[(uint8_t)Building::IDs::count] = {};
+  Building::Status buildings[static_cast<uint8_t>(Building::IDs::count)] = {};
 
   /* Camera position and scrolling status. */
   uint16_t camera = 0;

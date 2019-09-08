@@ -266,12 +266,12 @@ EventState Events::update(
     uint8_t id,
     uint16_t population,
     uint16_t money,
-    Building::Status buildings[(uint8_t)Building::IDs::count]) {
+    Building::Status buildings[static_cast<uint8_t>(Building::IDs::count)]) {
   switch (ev) {
     case EventState::untriggered:
       if (money >= pgm_read_word(&onMoney[id]) &&
           population >= pgm_read_word(&onPopulation[id]) &&
-          buildings[(uint8_t)(pgm_read_byte(&dependsOn[id]))].built) {
+          buildings[static_cast<uint8_t>(pgm_read_byte(&dependsOn[id]))].built) {
         return EventState::justTriggered;
       } else {
         return EventState::untriggered;
