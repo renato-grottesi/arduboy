@@ -114,6 +114,12 @@ void Lagunita::update() {
       if (arduboy.justPressed(A_BUTTON) || arduboy.justPressed(B_BUTTON)) {
         currentMenu = Menus::main;
       }
+      if (arduboy.justPressed(RIGHT_BUTTON)) {
+        help_page++;
+      }
+      if (arduboy.justPressed(LEFT_BUTTON)) {
+        help_page--;
+      }
       break;
     case Menus::lost:
       if (arduboy.justPressed(A_BUTTON) || arduboy.justPressed(B_BUTTON)) {
@@ -129,19 +135,26 @@ void Lagunita::render() {
 
   // render the menus
   switch (currentMenu) {
-    case Menus::main:
-      arduboy.drawBitmap(4, 4, bmp_lagunita, 105, 16);
-      tinyfont.setCursor(42, 50 - 6 * 3);
+    case Menus::main: {
+      static uint8_t frame = 0;
+      frame++;
+      const uint8_t bl_y = 24;
+      const uint8_t bl_x = 2;
+      arduboy.drawBitmap((128 - 105) / 2, 4 * 8, bmp_lagunita, 105, 16);
+      arduboy.drawBitmap(0, 5 * 8, bmp_cactus, 8, 8);
+      arduboy.drawBitmap(128 - 8, 5 * 8, bmp_weed, 8, 8);
+      drawing.waterReflection(frame / 2);
+      tinyfont.setCursor(bl_x + 10, bl_y - 6 * 3);
       if (level.isInProgress()) {
         tinyfont.print(F("RESUME"));
       } else {
         tinyfont.print(F("PLAY"));
       }
-      tinyfont.setCursor(42, 50 - 6 * 2);
+      tinyfont.setCursor(bl_x + 10, bl_y - 6 * 2);
       tinyfont.print(F("CREDITS"));
-      tinyfont.setCursor(42, 50 - 6 * 1);
+      tinyfont.setCursor(bl_x + 10, bl_y - 6 * 1);
       tinyfont.print(F("HELP"));
-      tinyfont.setCursor(42, 50 - 6 * 0);
+      tinyfont.setCursor(bl_x + 10, bl_y - 6 * 0);
       if (arduboy.audio.enabled()) {
         tinyfont.print(F("AUDIO: ON"));
       } else {
@@ -149,19 +162,20 @@ void Lagunita::render() {
       }
       switch (currentMainSelection) {
         case MainSelections::play:
-          arduboy.drawBitmap(32, 48 - 6 * 3, bmp_bullet, 8, 8);
+          arduboy.drawBitmap(bl_x, bl_y - 2 - 6 * 3, bmp_bullet, 8, 8);
           break;
         case MainSelections::credits:
-          arduboy.drawBitmap(32, 48 - 6 * 2, bmp_bullet, 8, 8);
+          arduboy.drawBitmap(bl_x, bl_y - 2 - 6 * 2, bmp_bullet, 8, 8);
           break;
         case MainSelections::help:
-          arduboy.drawBitmap(32, 48 - 6 * 1, bmp_bullet, 8, 8);
+          arduboy.drawBitmap(bl_x, bl_y - 2 - 6 * 1, bmp_bullet, 8, 8);
           break;
         case MainSelections::audio:
-          arduboy.drawBitmap(32, 48 - 6 * 0, bmp_bullet, 8, 8);
+          arduboy.drawBitmap(bl_x, bl_y - 2 - 6 * 0, bmp_bullet, 8, 8);
           break;
       }
       break;
+    }
     case Menus::game:
       level.render();
       break;
@@ -203,21 +217,62 @@ void Lagunita::render() {
       break;
     case Menus::help:
       tinyfont.setCursor(2, 0);
-      tinyfont.print(F(                              /**/
-                       "      CONSTRUCT A        \n" /**/
-                       "      TOWN AROUND        \n" /**/
-                       "      THE LAGUNITA       \n" /**/
-                       "      LAKE WITH AS       \n" /**/
-                       "      MANY CITIZENS      \n" /**/
-                       "      AS POSSILE.        \n" /**/
-                       "      MAXIMIZE YOUR      \n" /**/
-                       "      PROFIT TO          \n" /**/
-                       "      UNLOCK NEW         \n" /**/
-                       "      BUILDINGS AND      \n" /**/
-                       "      HAVE FUN           \n" /**/
-                       "      PLAYING!           \n" /**/
-                       "                         \n" /**/
-                       ));
+      switch (help_page) {
+        case 0:
+          tinyfont.print(F(                              /**/
+                           "BUILD A WILD WEST TOWN   \n" /**/
+                           "ON THE SHORE OF LAKE     \n" /**/
+                           "LAGUNITA WITH AS MANY    \n" /**/
+                           "CITIZENS AS POSSIBLE.    \n" /**/
+                           "                         \n" /**/
+                           "INCREASE YOUR PROFIT TO  \n" /**/
+                           "KEEP UNLOCKING NEW AND   \n" /**/
+                           "EXCITING BUILDINGS.      \n" /**/
+                           "                         \n" /**/
+                           "PRESS THE RIGHT ARROW    \n" /**/
+                           "FOR MORE INSTRUCTIONS    \n" /**/
+                           "OR B TO GO BACK.         \n" /**/
+                           "                         \n" /**/
+                           ));
+          break;
+        case 1:
+          tinyfont.print(F(                              /**/
+                           "YOU CAN MOVE AROUND THE  \n" /**/
+                           "LEVEL WITH THE LEFT AND  \n" /**/
+                           "RIGHT ARROWS. LONG PRESS \n" /**/
+                           "FOR FAST SCROLLING.      \n" /**/
+                           "DOUBLE CLICK TO MOVE TO  \n" /**/
+                           "NEXT AVAILABLE SPOT TO   \n" /**/
+                           "BUILD THE CURRENTLY      \n" /**/
+                           "SELECTED BUILDING.       \n" /**/
+                           "PRESS BOTH TO RECENTER.  \n" /**/
+                           "                         \n" /**/
+                           "PRESS THE RIGHT ARROW    \n" /**/
+                           "FOR MORE INSTRUCTIONS.   \n" /**/
+                           "                         \n" /**/
+                           ));
+          break;
+        case 2:
+          tinyfont.print(F(                              /**/
+                           "PRESS THE UP AND DOWN    \n" /**/
+                           "ARROWS TO CHANGE THE     \n" /**/
+                           "CURRENTLY SELECTED ACTION\n" /**/
+                           "OR BUILDING.             \n" /**/
+                           "                         \n" /**/
+                           "PRESS A TO DO THE ACTION \n" /**/
+                           "OR BUILD THE BUILDING.   \n" /**/
+                           "                         \n" /**/
+                           "PRESS B TO CHECK THE     \n" /**/
+                           "STATISTICS.              \n" /**/
+                           "                         \n" /**/
+                           "PRESS B TO GO BACK.      \n" /**/
+                           "                         \n" /**/
+                           ));
+          break;
+        default:
+          help_page = 0;
+          currentMenu = Menus::main;
+      }
       break;
   }
 

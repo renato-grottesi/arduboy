@@ -55,6 +55,9 @@ class Drawing {
                        uint8_t w,
                        uint8_t h);
 
+  /* Lake reflection effect. */
+  void waterReflection(uint8_t frame);
+
  private:
   uint8_t* sBuffer;
 };

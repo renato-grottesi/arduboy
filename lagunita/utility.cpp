@@ -172,3 +172,37 @@ void Drawing::drawBitmapAlpha(int16_t x,
     }
   }
 }
+
+/* Lake reflection effect. */
+void Drawing::waterReflection(uint8_t frame) {
+  for (uint16_t y = 0; y < 2; y++) {
+    for (uint16_t x = 0; x < WIDTH; x++) {
+      uint8_t dst_col = 0x00;
+
+      uint8_t mirror[3] = {
+          sBuffer[(5 - y) * WIDTH + x - (x == 0 ? 0 : 1)],
+          sBuffer[(5 - y) * WIDTH + x],
+          sBuffer[(5 - y) * WIDTH + x + (x == (WIDTH - 1) ? 0 : 1)]};
+      uint8_t src_col = 0x00;
+
+      src_col = mirror[((frame >> 3) + 0) % 3];
+      dst_col |= (src_col & 0x80) >> 7;
+      src_col = mirror[((frame >> 3) + 1) % 3];
+      dst_col |= (src_col & 0x40) >> 5;
+      src_col = mirror[((frame >> 3) + 2) % 3];
+      dst_col |= (src_col & 0x20) >> 3;
+      src_col = mirror[((frame >> 3) + 1) % 3];
+      dst_col |= (src_col & 0x10) >> 1;
+      src_col = mirror[((frame >> 3) + 0) % 3];
+      dst_col |= (src_col & 0x08) << 1;
+      src_col = mirror[((frame >> 3) + 1) % 3];
+      dst_col |= (src_col & 0x04) << 3;
+      src_col = mirror[((frame >> 3) + 2) % 3];
+      dst_col |= (src_col & 0x02) << 5;
+      src_col = mirror[((frame >> 3) + 1) % 3];
+      dst_col |= (src_col & 0x01) << 7;
+
+      sBuffer[(6 + y) * WIDTH + x] = dst_col;
+    }
+  }
+}

@@ -31,7 +31,7 @@ class Building {
   };
 
   /* Convenience functions for reading from PROGMEM */
-  __FlashStringHelper* name() const;
+  const __FlashStringHelper* name() const;
   const uint8_t jobs() const;
   const uint8_t cost() const;
   const uint8_t width() const;
@@ -41,8 +41,8 @@ class Building {
   const uint8_t* bitmap() const;
 
   /* Copies the building's name from PROGMEM to the destination string. */
-  static __FlashStringHelper* name(const uint8_t id);
-  static __FlashStringHelper* name(IDs id) { return name((uint8_t)id); };
+  static const __FlashStringHelper* name(const uint8_t id);
+  static const __FlashStringHelper* name(IDs id) { return name((uint8_t)id); };
   /* How many jobs the building offer. */
   static const uint8_t jobs(const uint8_t id);
   static const uint8_t jobs(IDs id) { return jobs((uint8_t)id); };

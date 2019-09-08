@@ -16,12 +16,14 @@ class Lagunita {
  private:
   enum class Menus : uint8_t { main, game, credits, help, lost };
   enum class MainSelections : uint8_t { play, credits, help, audio };
+  uint8_t help_page = 0;
 
   Arduboy2Base arduboy;
+  Drawing drawing = {arduboy.sBuffer};
   Tinyfont tinyfont = {arduboy.sBuffer, Arduboy2Base::width(),
                        Arduboy2Base::height()};
   Music music = {arduboy};
-  Level level = {arduboy, tinyfont};
+  Level level = {arduboy, tinyfont, drawing};
   Menus currentMenu = Menus::main;
   MainSelections currentMainSelection = MainSelections::play;
 };

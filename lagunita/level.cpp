@@ -612,37 +612,7 @@ void Level::render() {
   tinyfont.setCursor(78, 5);
   tinyfont.print(tmp_str);
 
-  /* Lake reflection effect. */
-  for (uint16_t y = 0; y < 2; y++) {
-    for (uint16_t x = 0; x < WIDTH; x++) {
-      uint8_t dst_col = 0x00;
-
-      uint8_t mirror[3] = {
-          arduboy.sBuffer[(5 - y) * WIDTH + x - (x == 0 ? 0 : 1)],
-          arduboy.sBuffer[(5 - y) * WIDTH + x],
-          arduboy.sBuffer[(5 - y) * WIDTH + x + (x == (WIDTH - 1) ? 0 : 1)]};
-      uint8_t src_col = 0x00;
-
-      src_col = mirror[((frame >> 3) + 0) % 3];
-      dst_col |= (src_col & 0x80) >> 7;
-      src_col = mirror[((frame >> 3) + 1) % 3];
-      dst_col |= (src_col & 0x40) >> 5;
-      src_col = mirror[((frame >> 3) + 2) % 3];
-      dst_col |= (src_col & 0x20) >> 3;
-      src_col = mirror[((frame >> 3) + 1) % 3];
-      dst_col |= (src_col & 0x10) >> 1;
-      src_col = mirror[((frame >> 3) + 0) % 3];
-      dst_col |= (src_col & 0x08) << 1;
-      src_col = mirror[((frame >> 3) + 1) % 3];
-      dst_col |= (src_col & 0x04) << 3;
-      src_col = mirror[((frame >> 3) + 2) % 3];
-      dst_col |= (src_col & 0x02) << 5;
-      src_col = mirror[((frame >> 3) + 1) % 3];
-      dst_col |= (src_col & 0x01) << 7;
-
-      arduboy.sBuffer[(6 + y) * WIDTH + x] = dst_col;
-    }
-  }
+  drawing.waterReflection(frame / 2);
 
   if (tutorVisible) {
     arduboy.fillRect(32, 0, 64, 64, BLACK);

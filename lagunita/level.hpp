@@ -7,8 +7,8 @@
 
 class Level {
  public:
-  Level(Arduboy2Base& arduboy, Tinyfont& tinyfont)
-      : arduboy(arduboy), tinyfont(tinyfont), drawing(arduboy.sBuffer) {}
+  Level(Arduboy2Base& arduboy, Tinyfont& tinyfont, Drawing& drawing)
+      : arduboy(arduboy), tinyfont(tinyfont), drawing(drawing) {}
 
   void init();
   bool isInProgress() { return inProgress; };
@@ -22,7 +22,7 @@ class Level {
  private:
   Arduboy2Base& arduboy;
   Tinyfont& tinyfont;
-  Drawing drawing;
+  Drawing& drawing;
 
   /* For each building we need know if it's enabled and if has been built. */
   Building::Status buildings[(uint8_t)Building::IDs::count] = {};

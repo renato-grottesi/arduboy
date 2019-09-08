@@ -21,7 +21,7 @@ const Building buildings[(uint8_t)Building::IDs::count] PROGMEM = {
     // clang-format on
 };
 
-__FlashStringHelper* Building::name() const {
+const __FlashStringHelper* Building::name() const {
   return (__FlashStringHelper*)(_name);
 }
 
@@ -53,7 +53,7 @@ const uint8_t* Building::bitmap() const {
   return pgm_read_ptr(&_bitmap);
 }
 
-__FlashStringHelper* Building::name(const uint8_t id) {
+const __FlashStringHelper* Building::name(const uint8_t id) {
   return buildings[id].name();
 }
 
