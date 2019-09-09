@@ -35,32 +35,76 @@ void Lagunita::update() {
       if (arduboy.justPressed(UP_BUTTON)) {
         switch (currentMainSelection) {
           case MainSelections::play:
-            currentMainSelection = MainSelections::audio;
+            currentMainSelection = MainSelections::help;
             break;
           case MainSelections::credits:
-            currentMainSelection = MainSelections::play;
+            currentMainSelection = MainSelections::audio;
             break;
           case MainSelections::help:
             currentMainSelection = MainSelections::credits;
             break;
           case MainSelections::audio:
-            currentMainSelection = MainSelections::help;
+            currentMainSelection = MainSelections::load;
+            break;
+          case MainSelections::load:
+            currentMainSelection = MainSelections::play;
             break;
         }
       }
       if (arduboy.justPressed(DOWN_BUTTON)) {
         switch (currentMainSelection) {
           case MainSelections::play:
-            currentMainSelection = MainSelections::credits;
+            currentMainSelection = MainSelections::load;
             break;
           case MainSelections::credits:
             currentMainSelection = MainSelections::help;
             break;
           case MainSelections::help:
-            currentMainSelection = MainSelections::audio;
+            currentMainSelection = MainSelections::play;
             break;
           case MainSelections::audio:
+            currentMainSelection = MainSelections::credits;
+            break;
+          case MainSelections::load:
+            currentMainSelection = MainSelections::audio;
+            break;
+        }
+      }
+      if (arduboy.justPressed(RIGHT_BUTTON)) {
+        switch (currentMainSelection) {
+          case MainSelections::play:
+            currentMainSelection = MainSelections::credits;
+            break;
+          case MainSelections::credits:
             currentMainSelection = MainSelections::play;
+            break;
+          case MainSelections::help:
+            currentMainSelection = MainSelections::load;
+            break;
+          case MainSelections::audio:
+            currentMainSelection = MainSelections::help;
+            break;
+          case MainSelections::load:
+            currentMainSelection = MainSelections::help;
+            break;
+        }
+      }
+      if (arduboy.justPressed(LEFT_BUTTON)) {
+        switch (currentMainSelection) {
+          case MainSelections::play:
+            currentMainSelection = MainSelections::credits;
+            break;
+          case MainSelections::credits:
+            currentMainSelection = MainSelections::play;
+            break;
+          case MainSelections::help:
+            currentMainSelection = MainSelections::load;
+            break;
+          case MainSelections::audio:
+            currentMainSelection = MainSelections::help;
+            break;
+          case MainSelections::load:
+            currentMainSelection = MainSelections::help;
             break;
         }
       }
@@ -80,6 +124,9 @@ void Lagunita::update() {
             break;
           case MainSelections::audio:
             arduboy.audio.toggle();
+            break;
+          case MainSelections::load:
+            /*TODO*/
             break;
         }
       }
@@ -138,40 +185,59 @@ void Lagunita::render() {
     case Menus::main: {
       static uint8_t frame = 0;
       frame++;
-      const uint8_t bl_y = 24;
-      const uint8_t bl_x = 2;
+      const uint8_t bl_y = 21;
+      const uint8_t bl_x_l = 4;
+      const uint8_t bl_x_r = 54;
+      const uint8_t post_len = 104;
       arduboy.drawBitmap((128 - 105) / 2, 4 * 8, bmp_lagunita, 105, 16);
       arduboy.drawBitmap(0, 5 * 8, bmp_cactus, 8, 8);
       arduboy.drawBitmap(128 - 8, 5 * 8, bmp_weed, 8, 8);
+      arduboy.drawRoundRect(bl_x_l - 2, 6, 46, 22, 4);
+      arduboy.drawRoundRect(bl_x_r - 2, 6, 46, 22, 4);
+      arduboy.drawFastHLine(0, 1, post_len);
+      arduboy.drawFastHLine(0, 2, post_len);
+      arduboy.drawCircle(bl_x_l + 5, 4, 1);
+      arduboy.drawCircle(bl_x_l + 36, 4, 1);
+      arduboy.drawCircle(bl_x_r + 5, 4, 1);
+      arduboy.drawCircle(bl_x_r + 36, 4, 1);
+      arduboy.drawBitmap(post_len, 0, bmp_decor, 16, 16);
+
       drawing.waterReflection(frame / 2);
-      tinyfont.setCursor(bl_x + 10, bl_y - 6 * 3);
+
+      tinyfont.setCursor(bl_x_l + 10, bl_y - 6 * 2);
       if (level.isInProgress()) {
         tinyfont.print(F("RESUME"));
       } else {
         tinyfont.print(F("PLAY"));
       }
-      tinyfont.setCursor(bl_x + 10, bl_y - 6 * 2);
-      tinyfont.print(F("CREDITS"));
-      tinyfont.setCursor(bl_x + 10, bl_y - 6 * 1);
-      tinyfont.print(F("HELP"));
-      tinyfont.setCursor(bl_x + 10, bl_y - 6 * 0);
+      tinyfont.setCursor(bl_x_l + 10, bl_y - 6 * 1);
+      tinyfont.print(F("LOAD"));
+      tinyfont.setCursor(bl_x_l + 10, bl_y - 6 * 0);
       if (arduboy.audio.enabled()) {
         tinyfont.print(F("MUSIC"));
       } else {
         tinyfont.print(F("MUTED"));
       }
+      tinyfont.setCursor(bl_x_r + 10, bl_y - 6 * 2);
+      tinyfont.print(F("ABOUT"));
+      tinyfont.setCursor(bl_x_r + 10, bl_y - 6 * 1);
+      tinyfont.print(F("HELP"));
+
       switch (currentMainSelection) {
         case MainSelections::play:
-          arduboy.drawBitmap(bl_x, bl_y - 2 - 6 * 3, bmp_bullet, 8, 8);
+          arduboy.drawBitmap(bl_x_l + 1, bl_y - 3 - 6 * 2, bmp_bullet, 8, 8);
           break;
         case MainSelections::credits:
-          arduboy.drawBitmap(bl_x, bl_y - 2 - 6 * 2, bmp_bullet, 8, 8);
+          arduboy.drawBitmap(bl_x_r + 1, bl_y - 3 - 6 * 2, bmp_bullet, 8, 8);
           break;
         case MainSelections::help:
-          arduboy.drawBitmap(bl_x, bl_y - 2 - 6 * 1, bmp_bullet, 8, 8);
+          arduboy.drawBitmap(bl_x_r + 1, bl_y - 3 - 6 * 1, bmp_bullet, 8, 8);
           break;
         case MainSelections::audio:
-          arduboy.drawBitmap(bl_x, bl_y - 2 - 6 * 0, bmp_bullet, 8, 8);
+          arduboy.drawBitmap(bl_x_l + 1, bl_y - 3 - 6 * 0, bmp_bullet, 8, 8);
+          break;
+        case MainSelections::load:
+          arduboy.drawBitmap(bl_x_l + 1, bl_y - 3 - 6 * 1, bmp_bullet, 8, 8);
           break;
       }
       break;
