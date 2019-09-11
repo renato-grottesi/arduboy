@@ -151,6 +151,11 @@ void Level::onInput(Input dir) {
           }
 
           tiles[cidx].building = currBuil;
+          /* If a building just got built, let's show some hints about it. */
+          if (!buildings[static_cast<uint8_t>(currBuil)].built) {
+            strncpy_P(tutor, Building::description(currBuil), tutorLen);
+            tutorVisible = true;
+          }
           buildings[static_cast<uint8_t>(currBuil)].built = true;
           money -= Building::cost(idx) * 5;
         }
@@ -317,7 +322,6 @@ void Level::update() {
     uint16_t churches = 0;
     uint16_t sheriffs = 0;
     uint16_t saloons = 0;
-    exports = 0;
     jobs = 1;
     food = 1;
     for (uint16_t obj = 0; obj < size; obj++) {
@@ -333,44 +337,39 @@ void Level::update() {
       }
     }
 
-    int16_t unemployed = housing;
+    int16_t unemployed = population;
 
     /* First loop to allocate workers to produce food. */
     for (uint16_t obj = 0; obj < size; obj++) {
-      if (tiles[obj].building == Building::IDs::farm && unemployed > 0) {
+      if ((tiles[obj].building == Building::IDs::farm) && (unemployed > 0)) {
         food += 22;
         earnings += Building::profit(tiles[obj].building);
-      }
-      if (tiles[obj].building == Building::IDs::mill && unemployed > 0) {
+        unemployed -= Building::jobs(tiles[obj].building);
+      } else if ((tiles[obj].building == Building::IDs::mill) && (unemployed > 0)) {
         food += 11;
         earnings += Building::profit(tiles[obj].building);
+        unemployed -= Building::jobs(tiles[obj].building);
       }
-      unemployed -= Building::jobs(tiles[obj].building);
     }
 
     /* Second loop to allocate workers to other buildings. */
     for (uint16_t obj = 0; obj < size; obj++) {
       if (tiles[obj].building == Building::IDs::bank) {
         max_money += 5000;
-      }
-      if (tiles[obj].building == Building::IDs::church) {
+      } else if (tiles[obj].building == Building::IDs::church) {
         churches++;
-      }
-      if (tiles[obj].building == Building::IDs::sheriff) {
+      } else if (tiles[obj].building == Building::IDs::sheriff) {
         sheriffs++;
-      }
-      if ((tiles[obj].building == Building::IDs::water ||
-           tiles[obj].building == Building::IDs::saloon ||
-           tiles[obj].building == Building::IDs::mine) &&
-          unemployed > 0) {
+      } else if ((tiles[obj].building == Building::IDs::water ||
+                  tiles[obj].building == Building::IDs::saloon ||
+                  tiles[obj].building == Building::IDs::mine) &&
+                 unemployed > 0) {
         earnings += Building::profit(tiles[obj].building);
-      }
-      if (tiles[obj].building == Building::IDs::saloon) {
+      } else if (tiles[obj].building == Building::IDs::saloon) {
         saloons++;
-      }
-      if (tiles[obj].building == Building::IDs::tree ||
-          tiles[obj].building == Building::IDs::cactus ||
-          tiles[obj].building == Building::IDs::weed) {
+      } else if (tiles[obj].building == Building::IDs::tree ||
+                 tiles[obj].building == Building::IDs::cactus ||
+                 tiles[obj].building == Building::IDs::weed) {
         vegetation++;
       }
       unemployed -= Building::jobs(tiles[obj].building);
@@ -417,8 +416,10 @@ void Level::update() {
 
     if (buildings[static_cast<uint8_t>(Building::IDs::stable)].built && (food > population)) {
       /* If there is a stable, we can export surplus food for money. */
-      money += exports = (food - population);
+      exports = food - population;
     }
+
+    money += exports;
 
     if (money > max_money) {
       money = max_money;

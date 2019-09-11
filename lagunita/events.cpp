@@ -164,7 +164,6 @@ const char templ[] PROGMEM =
     "            \n"  /**/
     "            \n"  /**/
     "            \n"  /**/
-    "            \n"  /**/
     "            \n"; /**/
 #endif
 

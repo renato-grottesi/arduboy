@@ -40,7 +40,7 @@ class Building {
   const uint8_t profit() const;
   const uint8_t* bitmap() const;
 
-  /* Copies the building's name from PROGMEM to the destination string. */
+  /* Building's name. */
   static const __FlashStringHelper* name(const uint8_t id);
   static const __FlashStringHelper* name(IDs id) { return name(static_cast<uint8_t>(id)); };
   /* How many jobs the building offer. */
@@ -64,6 +64,9 @@ class Building {
   /* Pointer to the bitmap. */
   static const uint8_t* bitmap(const uint8_t id);
   static const uint8_t* bitmap(IDs id) { return bitmap(static_cast<uint8_t>(id)); };
+  /* Building's description in PROGMEM. */
+  static const char* description(const uint8_t id);
+  static const char* description(IDs id) { return description(static_cast<uint8_t>(id)); };
 
   static const uint8_t count() { return static_cast<uint8_t>(IDs::count); }
 

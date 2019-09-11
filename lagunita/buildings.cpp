@@ -84,3 +84,154 @@ const uint8_t Building::profit(const uint8_t id) {
 const uint8_t* Building::bitmap(const uint8_t id) {
   return buildings[id].bitmap();
 }
+
+const char textHouse[] PROGMEM =
+    "HOUSES NEAR\n"  /**/
+    "VEGETATION\n"   /**/
+    "ATTRACT MORE\n" /**/
+    "PEOPLE.\n";     /**/
+const char textFarm[] PROGMEM =
+    "WORKERS ARE\n"  /**/
+    "ALLOCATED\n"    /**/
+    "TO FARMS\n"     /**/
+    "FIRST.\n"       /**/
+    "IF YOU BUILD\n" /**/
+    "TOO MANY,\n"    /**/
+    "OTHER JOBS\n"   /**/
+    "WILL NOT BE\n"  /**/
+    "TAKEN\n";       /**/
+const char textWater[] PROGMEM =
+    "WATER TOWERS\n" /**/
+    "CAN HELP\n"     /**/
+    "IRRIGATING\n"   /**/
+    "THE FIELDS\n"   /**/
+    "IN NEARBY\n"    /**/
+    "FARMS AS\n"     /**/
+    "WELL.\n";       /**/
+const char textSaloon[] PROGMEM =
+    "SALOONS\n"      /**/
+    "INCREASE THE\n" /**/
+    "HAPPINES OF\n"  /**/
+    "LAGUNITIANS.\n" /**/
+    "PRESS THE B\n"  /**/
+    "BUTTON TO\n"    /**/
+    "CHECK THE\n"    /**/
+    "STATISTIC\n"    /**/
+    "REPORT!\n";     /**/
+const char textMine[] PROGMEM =
+    "MINES ARE\n"     /**/
+    "GREAT TO\n"      /**/
+    "INCREASE THE\n"  /**/
+    "AVAILABLE\n"     /**/
+    "JOBS AND THE\n"  /**/
+    "INCOME, BUT\n"   /**/
+    "THEY MAY\n"      /**/
+    "HURT THE\n"      /**/
+    "ENVIRONMENT.\n"; /**/
+const char textBank[] PROGMEM =
+    "EACH BANK\n"    /**/
+    "INCREASES\n"    /**/
+    "THE MAXIMUM\n"  /**/
+    "MONEY YOU\n"    /**/
+    "CAN STORE,\n"   /**/
+    "BUT THEY\n"     /**/
+    "ATTRACT MORE\n" /**/
+    "THIEVES.\n";    /**/
+const char textSheriff[] PROGMEM =
+    "REMEMBER TO\n"   /**/
+    "CHECK THE\n"     /**/
+    "STATISTICS\n"    /**/
+    "TO KNOW WHEN\n"  /**/
+    "THE SECURITY\n"  /**/
+    "IS LOW AND\n"    /**/
+    "IT'S TIME TO\n"  /**/
+    "BUILD A NEW\n"   /**/
+    "SHERIFF POST\n"; /**/
+const char textMill[] PROGMEM =
+    "MILLS REFINE\n" /**/
+    "SEEDS FROM\n"   /**/
+    "NEARBY FARMS\n" /**/
+    "INTO FLOWER,\n" /**/
+    "SO THEY ARE\n"  /**/
+    "QUITE MORE\n"   /**/
+    "EFFECTIVE\n"    /**/
+    "WHEN PLACED\n"  /**/
+    "NEAR FARMS.\n"; /**/
+const char textChurch[] PROGMEM =
+    "CHURCHS KEEP\n" /**/
+    "LAGUNITAS\n"    /**/
+    "TOGETHER,\n"    /**/
+    "BUT THE\n"      /**/
+    "CLERICS DO\n"   /**/
+    "NOT LIKE\n"     /**/
+    "TO BE AROUND\n" /**/
+    "TOO NOISY\n"    /**/
+    "BUILDINGS.\n";  /**/
+const char textEmpty[] PROGMEM =
+    "NOW YOU CAN\n"   /**/
+    "CLEAR ANY\n"     /**/
+    "TYPE OF\n"       /**/
+    "VEGETATION\n"    /**/
+    "AND ANY TYPE\n"  /**/
+    "OF BUILDING.\n"; /**/
+const char textTree[] PROGMEM =
+    "TREES AROUND\n" /**/
+    "CHURCHES AND\n" /**/
+    "HOUSES MAKE\n"  /**/
+    "THEM MORE\n"    /**/
+    "ATTRACTIVE.\n"; /**/
+const char textCactus[] PROGMEM =
+    "DID YOU KNOW\n" /**/
+    "THAT THE\n"     /**/
+    "PLURAL FORM\n"  /**/
+    "OF CACTUS\n"    /**/
+    "IS CACTI?\n";   /**/
+const char textWeed[] PROGMEM =
+    "PLANTING\n"    /**/
+    "WEED IS A\n"   /**/
+    "GREAT WAY\n"   /**/
+    "TO PAY YOUR\n" /**/
+    "CO2 QUOTA.\n"; /**/
+const char textStable[] PROGMEM =
+    "EACH STABLE\n" /**/
+    "ALLOWS YOU\n"  /**/
+    "TO EXPORT\n"   /**/
+    "ADDITIONAL\n"  /**/
+    "EXCEEDING\n"   /**/
+    "FOOD.\n"       /**/
+    "PRESS B TO\n"  /**/
+    "CHECK YOUR\n"  /**/
+    "EXPORTS.\n";   /**/
+#if 0
+const char templ[] PROGMEM = 
+    "            \n"  /**/
+    "            \n"  /**/
+    "            \n"  /**/
+    "            \n"  /**/
+    "            \n"  /**/
+    "            \n"  /**/
+    "            \n"  /**/
+    "            \n"  /**/
+    "            \n"; /**/
+#endif
+
+const char* const descriptions[static_cast<uint8_t>(Building::IDs::count)] PROGMEM = {
+    textEmpty,   /* EMPTY   */
+    textHouse,   /* HOUSE   */
+    textWater,   /* WATER   */
+    textSaloon,  /* SALOON  */
+    textFarm,    /* FARM    */
+    textMill,    /* MILL    */
+    textMine,    /* MINE    */
+    textChurch,  /* CHURCH  */
+    textSheriff, /* SHERIFF */
+    textBank,    /* BANK    */
+    textStable,  /* STABLE  */
+    textWeed,    /* WEED    */
+    textCactus,  /* CACTUS  */
+    textTree,    /* TREE    */
+};
+
+const char* Building::description(const uint8_t id) {
+  return pgm_read_ptr(&(descriptions[id]));
+}
