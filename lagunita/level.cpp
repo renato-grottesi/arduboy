@@ -39,7 +39,6 @@ void Level::init() {
 
   timeLastUpdate = millis();
   timeLastEvent = millis();
-  srand(arduboy.generateRandomSeed());
 
   /* Add some random vegetation. */
   uint8_t mask = 0x0f;
@@ -540,6 +539,7 @@ void Level::render() {
                          &bmp_horse[((frame >> 2) % 4) * 16], 16, 8, i % 2);
     }
   }
+
   uint8_t cowboys = population / 16;
   cowboys = cowboys > npc_count ? npc_count : cowboys;
   for (uint8_t i = 0; i < cowboys; i++) {
@@ -614,7 +614,17 @@ void Level::render() {
     arduboy.drawBitmap(tile * 8, 0, bmp, 8, 8);
   }
 
-  // Two lines of GUI
+  for (uint8_t i = 0; i < npc_count; i++) {
+    int16_t pos = size + ((i % 2) ? (-flying[i]) : (flying[i]));
+
+    // Tumbleweed
+    int16_t y_off = ((frame >> 3) % 8) - 4;
+    y_off = (y_off < 0) ? (-y_off) : (y_off);
+    drawing.drawBitmap((size / 4 + pos - camera * 8 + x_off) % (size * 8), 4 * 8 + y_off,
+                       &bmp_tumbleweed[((frame >> 3) % 8) * 8], 8, 8);
+  }
+
+  // GUI
   char tmp_str[16];
 
   tinyfont.setCursor(0, 0);

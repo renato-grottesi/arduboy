@@ -1,6 +1,9 @@
 #include "lagunita.hpp"
 
 void Lagunita::init() {
+  // initialize the random seed with noise
+  srand(arduboy.generateRandomSeed());
+
   // initiate arduboy instance
   arduboy.begin();
 
@@ -201,6 +204,12 @@ void Lagunita::render() {
       arduboy.drawCircle(bl_x_r + 5, 4, 1);
       arduboy.drawCircle(bl_x_r + 36, 4, 1);
       arduboy.drawBitmap(post_len, 0, bmp_decor, 16, 16);
+
+      // Tumbleweed
+      weed = (weed < 256) ? (weed + 1) : -rand() % 256;
+      int16_t y_off = ((frame >> 3) % 16) - 8;
+      y_off = (y_off < 0) ? (-y_off) : (y_off);
+      drawing.drawBitmap(weed, 4 * 8 + y_off, &bmp_tumbleweed[((frame >> 3) % 8) * 8], 8, 8);
 
       drawing.waterReflection(frame / 2);
 
