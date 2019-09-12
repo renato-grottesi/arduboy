@@ -46,7 +46,10 @@ void Level::init() {
   for (uint16_t i = 0; i < size; i++) {
     tiles[i].building = Building::IDs::empty;
     uint8_t r = rand() & mask;
-    mask = 0x0f;
+    /* Leave some empty space around the starting area. */
+    if (i > 8 && i < size - 8) {
+      mask = 0x0f;
+    }
     switch (r) {
       case 1:
         tiles[i].building = Building::IDs::cactus;
@@ -62,6 +65,7 @@ void Level::init() {
         mask = 0x00;
         break;
       default:
+        tiles[i].building = Building::IDs::empty;
         break;
     }
   }
@@ -108,7 +112,10 @@ void Level::onInput(Input dir) {
       break;
     case Input::a: {
       uint8_t idx = static_cast<uint8_t>(currBuil);
-      if (money >= (Building::cost(idx) * 5)) {
+      if (money < (Building::cost(idx) * 5)) {
+        snprintf_P(tutor, tutorLen, PSTR("\nYOU HAVE\nNOT ENOUGH\nMONEY TO\nBUILD."));
+        tutorVisible = true;
+      } else {
         uint16_t cidx = (camera + 7) % size;
         bool replace = true;
 
@@ -128,8 +135,14 @@ void Level::onInput(Input dir) {
             uint16_t ends = Building::width(tiles[lidx].building);
             if (((lidx + ends) % size) > cidx) {
               Building::IDs id = tiles[lidx].building;
-              if (Building::IDs::weed != id && Building::IDs::cactus != id &&
-                  Building::IDs::empty != id) {
+              if (Building::IDs::tree == id) {
+                snprintf_P(tutor, tutorLen, PSTR("\nYOU CANNOT\nBUILD OVER A\nTREE."));
+                tutorVisible = true;
+                replace = false;
+              } else if (Building::IDs::weed != id && Building::IDs::cactus != id &&
+                         Building::IDs::empty != id) {
+                snprintf_P(tutor, tutorLen, PSTR("\nYOU CANNOT\nBUILD OVER A\nBUILDING."));
+                tutorVisible = true;
                 replace = false;
               }
             }
@@ -138,8 +151,14 @@ void Level::onInput(Input dir) {
           // Check if there is another building or tree on the right
           for (uint16_t i = 0; i < Building::width(currBuil); i++) {
             Building::IDs id = tiles[(cidx + i) % size].building;
-            if (Building::IDs::weed != id && Building::IDs::cactus != id &&
-                Building::IDs::empty != id) {
+            if (Building::IDs::tree == id) {
+              snprintf_P(tutor, tutorLen, PSTR("\nYOU CANNOT\nBUILD OVER A\nTREE."));
+              tutorVisible = true;
+              replace = false;
+            } else if (Building::IDs::weed != id && Building::IDs::cactus != id &&
+                       Building::IDs::empty != id) {
+              snprintf_P(tutor, tutorLen, PSTR("\nYOU CANNOT\nBUILD OVER A\nBUILDING."));
+              tutorVisible = true;
               replace = false;
             }
           }
