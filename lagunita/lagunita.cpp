@@ -207,7 +207,7 @@ void Lagunita::render() {
 
       // Tumbleweed
       weed = (weed < 256) ? (weed + 1) : -rand() % 256;
-      int16_t y_off = ((frame >> 3) % 16) - 8;
+      int16_t y_off = ((frame >> 2) % 16) - 8;
       y_off = (y_off < 0) ? (-y_off) : (y_off);
       drawing.drawBitmap(weed, 4 * 8 + y_off, &bmp_tumbleweed[((frame >> 3) % 8) * 8], 8, 8);
 

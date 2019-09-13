@@ -270,7 +270,7 @@ EventState Events::update(
     case EventState::untriggered:
       if (money >= pgm_read_word(&onMoney[id]) &&
           population >= pgm_read_word(&onPopulation[id]) &&
-          buildings[static_cast<uint8_t>(pgm_read_byte(&dependsOn[id]))].built) {
+          (buildings[static_cast<uint8_t>(pgm_read_byte(&dependsOn[id]))].built > 0)) {
         return EventState::justTriggered;
       } else {
         return EventState::untriggered;

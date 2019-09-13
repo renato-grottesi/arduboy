@@ -30,12 +30,12 @@ void Level::init() {
 
   for (uint8_t i = 0; i < static_cast<uint8_t>(Building::IDs::count); i++) {
     buildings[i].enabled = false;
-    buildings[i].built = false;
+    buildings[i].built = 0;
   }
 
   /* Make an exception for the house */
   buildings[static_cast<uint8_t>(Building::IDs::house)].enabled = true;
-  buildings[static_cast<uint8_t>(Building::IDs::house)].built = true;
+  buildings[static_cast<uint8_t>(Building::IDs::house)].built = 1;
 
   timeLastUpdate = millis();
   timeLastEvent = millis();
@@ -124,8 +124,13 @@ void Level::onInput(Input dir) {
           for (uint16_t i = 0; i < 4; i++) {
             uint16_t lidx = (cidx + size - i) % size;
             uint16_t ends = Building::width(tiles[lidx].building);
-            if (((lidx + ends) % size) > cidx)
+            if (((lidx + ends) % size) > cidx) {
+              uint8_t del_b = static_cast<uint8_t>(tiles[lidx].building);
+              if (buildings[del_b].built > 0) {
+                buildings[del_b].built--;
+              }
               tiles[lidx].building = Building::IDs::empty;
+            }
           }
         } else {
           // Check if we are in the middle of another building or tree
@@ -165,16 +170,21 @@ void Level::onInput(Input dir) {
         if (replace) {
           // Destroy everything on the path of this building
           for (uint16_t i = 0; i < Building::width(currBuil); i++) {
+            uint8_t del_b = static_cast<uint8_t>(tiles[(cidx + i) % size].building);
+            if (buildings[del_b].built > 0) {
+              buildings[del_b].built--;
+            }
             tiles[(cidx + i) % size].building = Building::IDs::empty;
           }
 
           tiles[cidx].building = currBuil;
           /* If a building just got built, let's show some hints about it. */
-          if (!buildings[static_cast<uint8_t>(currBuil)].built) {
+          if (0 == buildings[static_cast<uint8_t>(currBuil)].built) {
             strncpy_P(tutor, Building::description(currBuil), tutorLen);
             tutorVisible = true;
           }
-          buildings[static_cast<uint8_t>(currBuil)].built = true;
+          buildings[static_cast<uint8_t>(currBuil)].built =
+              min(buildings[static_cast<uint8_t>(currBuil)].built + 1, 1024);
           money -= Building::cost(idx) * 5;
         }
       }
@@ -374,17 +384,11 @@ void Level::update() {
     for (uint16_t obj = 0; obj < size; obj++) {
       if (tiles[obj].building == Building::IDs::bank) {
         max_money += 5000;
-      } else if (tiles[obj].building == Building::IDs::church) {
-        churches++;
-      } else if (tiles[obj].building == Building::IDs::sheriff) {
-        sheriffs++;
       } else if ((tiles[obj].building == Building::IDs::water ||
                   tiles[obj].building == Building::IDs::saloon ||
                   tiles[obj].building == Building::IDs::mine) &&
                  unemployed > 0) {
         earnings += Building::profit(tiles[obj].building);
-      } else if (tiles[obj].building == Building::IDs::saloon) {
-        saloons++;
       } else if (tiles[obj].building == Building::IDs::tree ||
                  tiles[obj].building == Building::IDs::cactus ||
                  tiles[obj].building == Building::IDs::weed) {
@@ -392,6 +396,10 @@ void Level::update() {
       }
       unemployed -= Building::jobs(tiles[obj].building);
     }
+
+    saloons = buildings[static_cast<uint8_t>(Building::IDs::saloon)].built;
+    churches = buildings[static_cast<uint8_t>(Building::IDs::church)].built;
+    sheriffs = buildings[static_cast<uint8_t>(Building::IDs::sheriff)].built;
 
     // Some vegetation for every 16 people
     update_statistic(environment, 16, vegetation, population);
@@ -432,10 +440,9 @@ void Level::update() {
       population = food;
     }
 
-    if (buildings[static_cast<uint8_t>(Building::IDs::stable)].built && (food > population)) {
-      /* If there is a stable, we can export surplus food for money. */
-      exports = food - population;
-    }
+    /* Export food-population and cap it for 10*each stable. */
+    exports = min((food - population),
+                  (buildings[static_cast<uint8_t>(Building::IDs::stable)].built) * 10);
 
     money += exports;
 
@@ -533,8 +540,8 @@ void Level::render() {
     drawing.drawBitmap((pos - camera * 8 + x_off) % (size * 8), 1 * 8,
                        &bmp_bird[((frame >> 2) % 4) * 8], 8, 8, i % 2);
 
-    // Horses
-    if (buildings[static_cast<uint8_t>(Building::IDs::stable)].built) {
+    // Draw two horses for each stable
+    if (buildings[static_cast<uint8_t>(Building::IDs::stable)].built * 2 > i) {
       drawing.drawBitmap((size / 2 + pos - camera * 8 + x_off) % (size * 8), 6 + 4 * 8,
                          &bmp_horse[((frame >> 2) % 4) * 16], 16, 8, i % 2);
     }

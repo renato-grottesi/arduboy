@@ -26,8 +26,8 @@ class Building {
   };
 
   struct Status {
-    bool enabled : 1;
-    bool built : 1;
+    uint16_t built : 10;  // max 1023 buildings
+    bool enabled : 1;     // one bit enabled
   };
 
   /* Convenience functions for reading from PROGMEM */
