@@ -348,6 +348,7 @@ void Level::update() {
     earnings = 0;
     uint16_t vegetation = 0;
     uint16_t churches = 0;
+    int16_t churches_effectivity = 0;
     uint16_t sheriffs = 0;
     uint16_t saloons = 0;
     jobs = 1;
@@ -360,6 +361,15 @@ void Level::update() {
         for (uint16_t i = (obj + size - 16); i < (obj + size + 16); i++) {
           if (tiles[i % size].building == Building::IDs::water) {
             housing += 4;
+            break;
+          }
+        }
+        for (uint16_t i = (obj + size - 8); i < (obj + size + 16); i++) {
+          Building::IDs bld = tiles[i % size].building;
+          if (bld == Building::IDs::tree || bld == Building::IDs::cactus ||
+              bld == Building::IDs::weed) {
+            housing += 2;
+            break;
           }
         }
       }
@@ -373,10 +383,24 @@ void Level::update() {
         food += 22;
         earnings += Building::profit(tiles[obj].building);
         unemployed -= Building::jobs(tiles[obj].building);
+        /* If a water tower is close increase food production. */
+        for (uint16_t i = (obj + size - 6); i < (obj + size + 16); i++) {
+          if (tiles[i % size].building == Building::IDs::water) {
+            food += 11;
+            break;
+          }
+        }
       } else if ((tiles[obj].building == Building::IDs::mill) && (unemployed > 0)) {
         food += 11;
         earnings += Building::profit(tiles[obj].building);
         unemployed -= Building::jobs(tiles[obj].building);
+        /* If a farm is close increase food production. */
+        for (uint16_t i = (obj + size - 6); i < (obj + size + 16); i++) {
+          if (tiles[i % size].building == Building::IDs::farm) {
+            food += 11;
+            break;
+          }
+        }
       }
     }
 
@@ -393,6 +417,21 @@ void Level::update() {
                  tiles[obj].building == Building::IDs::cactus ||
                  tiles[obj].building == Building::IDs::weed) {
         vegetation++;
+      } else if (tiles[obj].building == Building::IDs::church) {
+        /* If vegetation is close increase effectivity. */
+        /* If noisy buildings are close decrease effectivity. */
+        for (uint16_t i = (obj + size - 8); i < (obj + size + 16); i++) {
+          Building::IDs bld = tiles[i % size].building;
+          if (bld == Building::IDs::cactus || bld == Building::IDs::weed) {
+            churches_effectivity += 4;
+          } else if (bld == Building::IDs::tree) {
+            churches_effectivity += 8;
+          } else if (bld == Building::IDs::stable || bld == Building::IDs::bank) {
+            churches_effectivity -= 16;
+          } else if (bld == Building::IDs::saloon || bld == Building::IDs::mine) {
+            churches_effectivity -= 32;
+          }
+        }
       }
       unemployed -= Building::jobs(tiles[obj].building);
     }
@@ -401,14 +440,25 @@ void Level::update() {
     churches = buildings[static_cast<uint8_t>(Building::IDs::church)].built;
     sheriffs = buildings[static_cast<uint8_t>(Building::IDs::sheriff)].built;
 
+    /* Mines hurts environment. */
+    if (vegetation > buildings[static_cast<uint8_t>(Building::IDs::mine)].built * 10) {
+      vegetation -= buildings[static_cast<uint8_t>(Building::IDs::mine)].built * 10;
+    } else {
+      vegetation = 0;
+    }
+
     // Some vegetation for every 16 people
     update_statistic(environment, 16, vegetation, population);
     // A saloon for every 24 people
     update_statistic(happiness, 24, saloons, population);
     // A church for every 100 people
-    update_statistic(spirituality, 100, churches, population);
-    // A sheriff for every 100 people
-    update_statistic(safety, 100, sheriffs, population);
+    int32_t church_corrected = (static_cast<int32_t>(population) - churches_effectivity) > 0
+                                   ? population - churches_effectivity
+                                   : population;
+    update_statistic(spirituality, 100, churches, church_corrected);
+    // A sheriff for every 100 people with a penalty for banks
+    uint16_t bank_penalty = 32 * buildings[static_cast<uint8_t>(Building::IDs::bank)].built;
+    update_statistic(safety, 100, sheriffs, population + bank_penalty);
 
     // Use the minimum of all four statistics to change the RGB led color
     uint8_t ledval = min(min(min(environment, happiness), spirituality), safety) / 4;
