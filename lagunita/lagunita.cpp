@@ -116,6 +116,8 @@ void Lagunita::update() {
           case MainSelections::play:
             if (!level.isInProgress()) {
               level.init();
+            } else {
+              level.resume();
             }
             currentMenu = Menus::game;
             break;
@@ -137,21 +139,18 @@ void Lagunita::update() {
       break;
     case Menus::game:
       level.update();
-      if (level.gameOver()) {
+      if (level.isPaused()) {
+        currentMenu = Menus::main;
+      } else if (level.gameOver()) {
+        level.quit();
         currentMenu = Menus::lost;
-        level.pause();
-        break;
-      }
-      if (arduboy.justPressed(UP_BUTTON)) {
+      } else if (arduboy.justPressed(UP_BUTTON)) {
         level.onInput(Input::up);
-      }
-      if (arduboy.justPressed(DOWN_BUTTON)) {
+      } else if (arduboy.justPressed(DOWN_BUTTON)) {
         level.onInput(Input::down);
-      }
-      if (arduboy.justPressed(A_BUTTON)) {
+      } else if (arduboy.justPressed(A_BUTTON)) {
         level.onInput(Input::a);
-      }
-      if (arduboy.justPressed(B_BUTTON)) {
+      } else if (arduboy.justPressed(B_BUTTON)) {
         level.onInput(Input::b);
       }
       break;

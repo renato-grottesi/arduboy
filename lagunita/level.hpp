@@ -11,13 +11,18 @@ class Level {
       : arduboy(arduboy), tinyfont(tinyfont), drawing(drawing) {}
 
   void init();
+
   bool isInProgress() { return inProgress; };
+  bool gameOver() { return (earnings <= maintenance) && (money < 100); };
+  void quit() { inProgress = false; }
+
+  bool isPaused() { return inPause; };
+  void pause() { inPause = true; };
+  void resume() { inPause = false; };
 
   void update();
   void onInput(Input dir);
   void render();
-  bool gameOver() { return (earnings <= maintenance) && (money < 100); };
-  void pause() { inProgress = false; };
 
  private:
   Arduboy2Base& arduboy;
@@ -83,6 +88,7 @@ class Level {
 
   uint16_t population = 0;
   bool inProgress = false;
+  bool inPause = false;
   bool inStats = false;
 
   void findFirstAvailableSpot(int8_t dir);

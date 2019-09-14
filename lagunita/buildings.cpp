@@ -5,6 +5,7 @@ const Building buildings[static_cast<uint8_t>(Building::IDs::count)] PROGMEM = {
     // clang-format off
     /* name,    bitmap,   jobs, cost, w, h, maintenance, profit */
     {"CLEAR",   bmp_empty,   0,    4, 1, 1, 0,  0},
+    {"PAUSE",   bmp_empty,   0,    0, 1, 1, 0,  0},
     {"HOUSE",   bmp_house,   0,    5, 2, 2, 1,  0},
     {"WATER",   bmp_water,   0,   10, 1, 3, 0,  1},
     {"SALOON",  bmp_saloon,  8,   50, 3, 3, 0,  1},

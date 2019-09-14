@@ -37,6 +37,9 @@ void Level::init() {
   buildings[static_cast<uint8_t>(Building::IDs::house)].enabled = true;
   buildings[static_cast<uint8_t>(Building::IDs::house)].built = 1;
 
+  /* Make exception for actions */
+  buildings[static_cast<uint8_t>(Building::IDs::back)].enabled = true;
+
   timeLastUpdate = millis();
   timeLastEvent = millis();
 
@@ -81,6 +84,7 @@ void Level::init() {
   }
 
   inProgress = true;
+  resume();
 }
 
 void Level::onInput(Input dir) {
@@ -114,6 +118,8 @@ void Level::onInput(Input dir) {
       if (money < (Building::cost(idx) * 5)) {
         snprintf_P(tutor, tutorLen, PSTR("\nYOU HAVE\nNOT ENOUGH\nMONEY TO\nBUILD."));
         tutorVisible = true;
+      } else if (Building::IDs::back == currBuil) {
+        pause();
       } else {
         uint16_t cidx = (camera + 7) % size;
         bool replace = true;
