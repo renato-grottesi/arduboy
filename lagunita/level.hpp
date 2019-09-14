@@ -24,6 +24,9 @@ class Level {
   void onInput(Input dir);
   void render();
 
+  void load(uint16_t start);
+  void save(uint16_t start);
+
  private:
   Arduboy2Base& arduboy;
   Tinyfont& tinyfont;

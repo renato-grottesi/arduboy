@@ -38,38 +38,64 @@ void Lagunita::update() {
       if (arduboy.justPressed(UP_BUTTON)) {
         switch (currentMainSelection) {
           case MainSelections::play:
-            currentMainSelection = MainSelections::help;
+            currentMainSelection = MainSelections::audio;
+            break;
+          case MainSelections::load:
+            currentMainSelection = MainSelections::play;
+            break;
+          case MainSelections::save:
+            if (canLoad()) {
+              currentMainSelection = MainSelections::load;
+            } else {
+              currentMainSelection = MainSelections::play;
+            }
             break;
           case MainSelections::credits:
-            currentMainSelection = MainSelections::audio;
+            if (canSave()) {
+              currentMainSelection = MainSelections::save;
+            } else if (canLoad()) {
+              currentMainSelection = MainSelections::load;
+            } else {
+              currentMainSelection = MainSelections::play;
+            }
             break;
           case MainSelections::help:
             currentMainSelection = MainSelections::credits;
             break;
           case MainSelections::audio:
-            currentMainSelection = MainSelections::load;
-            break;
-          case MainSelections::load:
-            currentMainSelection = MainSelections::play;
+            currentMainSelection = MainSelections::help;
             break;
         }
       }
       if (arduboy.justPressed(DOWN_BUTTON)) {
         switch (currentMainSelection) {
           case MainSelections::play:
-            currentMainSelection = MainSelections::load;
+            if (canLoad()) {
+              currentMainSelection = MainSelections::load;
+            } else if (canSave()) {
+              currentMainSelection = MainSelections::save;
+            } else {
+              currentMainSelection = MainSelections::credits;
+            }
+            break;
+          case MainSelections::load:
+            if (canSave()) {
+              currentMainSelection = MainSelections::save;
+            } else {
+              currentMainSelection = MainSelections::credits;
+            }
+            break;
+          case MainSelections::save:
+            currentMainSelection = MainSelections::credits;
             break;
           case MainSelections::credits:
             currentMainSelection = MainSelections::help;
             break;
           case MainSelections::help:
-            currentMainSelection = MainSelections::play;
+            currentMainSelection = MainSelections::audio;
             break;
           case MainSelections::audio:
-            currentMainSelection = MainSelections::credits;
-            break;
-          case MainSelections::load:
-            currentMainSelection = MainSelections::audio;
+            currentMainSelection = MainSelections::play;
             break;
         }
       }
@@ -78,17 +104,30 @@ void Lagunita::update() {
           case MainSelections::play:
             currentMainSelection = MainSelections::credits;
             break;
+          case MainSelections::load:
+            currentMainSelection = MainSelections::help;
+            break;
+          case MainSelections::save:
+            currentMainSelection = MainSelections::audio;
+            break;
           case MainSelections::credits:
             currentMainSelection = MainSelections::play;
             break;
           case MainSelections::help:
-            currentMainSelection = MainSelections::load;
+            if (canLoad()) {
+              currentMainSelection = MainSelections::load;
+            } else {
+              currentMainSelection = MainSelections::play;
+            }
             break;
           case MainSelections::audio:
-            currentMainSelection = MainSelections::help;
-            break;
-          case MainSelections::load:
-            currentMainSelection = MainSelections::help;
+            if (canSave()) {
+              currentMainSelection = MainSelections::save;
+            } else if (canLoad()) {
+              currentMainSelection = MainSelections::load;
+            } else {
+              currentMainSelection = MainSelections::play;
+            }
             break;
         }
       }
@@ -97,17 +136,30 @@ void Lagunita::update() {
           case MainSelections::play:
             currentMainSelection = MainSelections::credits;
             break;
+          case MainSelections::load:
+            currentMainSelection = MainSelections::help;
+            break;
+          case MainSelections::save:
+            currentMainSelection = MainSelections::audio;
+            break;
           case MainSelections::credits:
             currentMainSelection = MainSelections::play;
             break;
           case MainSelections::help:
-            currentMainSelection = MainSelections::load;
+            if (canLoad()) {
+              currentMainSelection = MainSelections::load;
+            } else {
+              currentMainSelection = MainSelections::play;
+            }
             break;
           case MainSelections::audio:
-            currentMainSelection = MainSelections::help;
-            break;
-          case MainSelections::load:
-            currentMainSelection = MainSelections::help;
+            if (canSave()) {
+              currentMainSelection = MainSelections::save;
+            } else if (canLoad()) {
+              currentMainSelection = MainSelections::load;
+            } else {
+              currentMainSelection = MainSelections::play;
+            }
             break;
         }
       }
@@ -131,7 +183,10 @@ void Lagunita::update() {
             arduboy.audio.toggle();
             break;
           case MainSelections::load:
-            /*TODO*/
+            load();
+            break;
+          case MainSelections::save:
+            save();
             break;
         }
       }
@@ -219,17 +274,23 @@ void Lagunita::render() {
         tinyfont.print(F("PLAY"));
       }
       tinyfont.setCursor(bl_x_l + 10, bl_y - 6 * 1);
-      tinyfont.print(F("LOAD"));
+      if (canLoad()) {
+        tinyfont.print(F("LOAD"));
+      }
       tinyfont.setCursor(bl_x_l + 10, bl_y - 6 * 0);
-      if (arduboy.audio.enabled()) {
-        tinyfont.print(F("MUSIC"));
-      } else {
-        tinyfont.print(F("MUTED"));
+      if (canSave()) {
+        tinyfont.print(F("SAVE"));
       }
       tinyfont.setCursor(bl_x_r + 10, bl_y - 6 * 2);
       tinyfont.print(F("ABOUT"));
       tinyfont.setCursor(bl_x_r + 10, bl_y - 6 * 1);
       tinyfont.print(F("HELP"));
+      tinyfont.setCursor(bl_x_r + 10, bl_y - 6 * 0);
+      if (arduboy.audio.enabled()) {
+        tinyfont.print(F("MUSIC"));
+      } else {
+        tinyfont.print(F("MUTED"));
+      }
 
       switch (currentMainSelection) {
         case MainSelections::play:
@@ -242,10 +303,13 @@ void Lagunita::render() {
           arduboy.drawBitmap(bl_x_r + 1, bl_y - 3 - 6 * 1, bmp_bullet, 8, 8);
           break;
         case MainSelections::audio:
-          arduboy.drawBitmap(bl_x_l + 1, bl_y - 3 - 6 * 0, bmp_bullet, 8, 8);
+          arduboy.drawBitmap(bl_x_r + 1, bl_y - 3 - 6 * 0, bmp_bullet, 8, 8);
           break;
         case MainSelections::load:
           arduboy.drawBitmap(bl_x_l + 1, bl_y - 3 - 6 * 1, bmp_bullet, 8, 8);
+          break;
+        case MainSelections::save:
+          arduboy.drawBitmap(bl_x_l + 1, bl_y - 3 - 6 * 0, bmp_bullet, 8, 8);
           break;
       }
       break;
@@ -364,3 +428,34 @@ void Lagunita::render() {
                        "                         \n" /**/
                        ));
 #endif
+
+void Lagunita::load() {
+  const uint16_t loc = EEPROM_STORAGE_SPACE_START;
+
+  level.load(loc + 8);
+}
+
+void Lagunita::save() {
+  const uint16_t loc = EEPROM_STORAGE_SPACE_START;
+  EEPROM.update(loc + 0, 'L');
+  EEPROM.update(loc + 1, 'A');
+  EEPROM.update(loc + 2, 'G');
+  EEPROM.update(loc + 3, '0');
+  EEPROM.update(loc + 4, '0');
+
+  level.save(loc + 8);
+}
+
+bool Lagunita::canSave() {
+  return level.isInProgress();
+}
+
+bool Lagunita::canLoad() {
+  const uint16_t loc = EEPROM_STORAGE_SPACE_START;
+  uint8_t h0 = EEPROM.read(loc + 0);
+  uint8_t h1 = EEPROM.read(loc + 1);
+  uint8_t h2 = EEPROM.read(loc + 2);
+  uint8_t h3 = EEPROM.read(loc + 3);
+  uint8_t h4 = EEPROM.read(loc + 4);
+  return h0 == 'L' && h1 == 'A' && h2 == 'G' && h3 == '0' && h4 == '0';
+}

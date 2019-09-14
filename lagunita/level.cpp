@@ -1,5 +1,19 @@
 #include "level.hpp"
 
+void Level::load(uint16_t start) {
+  uint8_t* raw = reinterpret_cast<uint8_t*>(this);
+  for (uint16_t loc = 0; loc < sizeof(this); loc++) {
+    raw[loc] = EEPROM.read(start + loc);
+  }
+}
+
+void Level::save(uint16_t start) {
+  uint8_t* raw = reinterpret_cast<uint8_t*>(this);
+  for (uint16_t loc = 0; loc < sizeof(this); loc++) {
+    EEPROM.update(start + loc, raw[loc]);
+  }
+}
+
 void Level::init() {
   camera = 0;
   camera_off = 0;

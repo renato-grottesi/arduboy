@@ -13,9 +13,15 @@ class Lagunita {
   void update();
   void render();
 
+  bool canSave();
+  bool canLoad();
+
+  void save();
+  void load();
+
  private:
   enum class Menus : uint8_t { main, game, credits, help, lost };
-  enum class MainSelections : uint8_t { play, load, credits, help, audio };
+  enum class MainSelections : uint8_t { play, load, save, credits, help, audio };
   uint8_t help_page = 0;
   int16_t weed = 0;
 
