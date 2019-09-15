@@ -56,6 +56,10 @@ size_t Tinyfont::write(uint8_t c) {
     cursorX = baseX;        // cr
     cursorY += lineHeight;  // lf
   }
+  // check for space
+  else if (c == ' ') {
+    cursorX += TINYFONT_WIDTH + 1;
+  }
   // check for tab
   else if (c == '\t') {
     cursorX += TINYFONT_WIDTH + 5;
@@ -106,10 +110,14 @@ void Tinyfont::printChar(char c, int16_t x, int16_t y) {
     }
 
     if (maskText) {
-      drawByte(x + i, y, 0x0f, (textColor == 0) ? 1 : 0);
+      drawByte(x + i, y - 1, 0x3f, (textColor == 0) ? 1 : 0);
     }
 
     drawByte(x + i, y, colData, textColor);
+  }
+
+  if (maskText) {
+    drawByte(x + 4, y - 1, 0x3f, (textColor == 0) ? 1 : 0);
   }
 }
 

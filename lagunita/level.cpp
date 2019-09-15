@@ -54,8 +54,7 @@ void Level::init() {
   buildings[static_cast<uint8_t>(Building::IDs::back)].enabled = true;
   buildings[static_cast<uint8_t>(Building::IDs::back)].built = 1;
 
-  timeLastUpdate = millis();
-  timeLastEvent = millis();
+  frameNextEvent = 2048 + (rand() & 2047);
 
   /* Add some random vegetation. */
   uint8_t mask = 0x0f;
@@ -115,9 +114,8 @@ void Level::onInput(Input dir) {
     return;
   }
   uint8_t sel = static_cast<uint8_t>(currBuil);
-  unsigned long time = millis();
-  bool doubleClick = (time - timeLastInput) < 400;
-  timeLastInput = time;
+  bool doubleClick = (frame - frameLastInput) < 12;
+  frameLastInput = frame;
   switch (dir) {
     case Input::up:
       if (lastPressed == Input::up && doubleClick) {
@@ -140,7 +138,7 @@ void Level::onInput(Input dir) {
           sel = (sel == 0) ? (Building::count() - 1) : sel - 1;
         }
 
-        timeLastInput = 0;
+        frameLastInput = 0;
       } else {
         do {
           sel = (sel == 0) ? (Building::count() - 1) : sel - 1;
@@ -170,7 +168,7 @@ void Level::onInput(Input dir) {
           sel = (sel + 1) % Building::count();
         }
 
-        timeLastInput = 0;
+        frameLastInput = 0;
       } else {
         do {
           sel = (sel + 1) % Building::count();
@@ -183,14 +181,14 @@ void Level::onInput(Input dir) {
     case Input::left:
       if (lastPressed == Input::left && doubleClick) {
         findFirstAvailableSpot(-1);
-        timeLastInput = 0;
+        frameLastInput = 0;
       }
       lastPressed = Input::left;
       break;
     case Input::right:
       if (lastPressed == Input::right && doubleClick) {
         findFirstAvailableSpot(+1);
-        timeLastInput = 0;
+        frameLastInput = 0;
       }
       lastPressed = Input::right;
       break;
@@ -401,8 +399,14 @@ void Level::findFirstAvailableSpot(int8_t dir) {
   } while (camera != start);
 }
 
+void Level::nextDay() {
+  days++;
+}
+
 void Level::update() {
-  unsigned long time = millis();
+  frame++;
+  if (frame % dayLength == 0)
+    nextDay();
 
   if (!tutorVisible && (camera_off == 0)) {
     bool left = arduboy.pressed(LEFT_BUTTON);
@@ -432,10 +436,9 @@ void Level::update() {
 
   static uint8_t updateProgress = 0;
 
-  if ((time - timeLastUpdate) > 100) {
+  if ((frame % (fps / 8)) == 0) {
     updateProgress = (updateProgress + 1) % 8;
     uint16_t max_money = 2500;
-    timeLastUpdate = time;
     housing = 0;
     maintenance = 0;
     earnings = 0;
@@ -619,9 +622,8 @@ void Level::update() {
     uint8_t ledval = min(min(min(environment, happiness), spirituality), safety) / 4;
     setRGBled(25 - ledval, ledval, 0);
 
-    if (++ticks < 10)
+    if (frame % fps)
       return;
-    ticks = 0;
 
     money += earnings;
     if (money > maintenance) {
@@ -658,9 +660,10 @@ void Level::update() {
 
     if (!tutorVisible) {
       /* Random events happen every 60 to 120 seconds. */
-      if ((time - timeLastEvent) > static_cast<uint32_t>(rand() % 60000) + 60000) {
-        timeLastEvent = time;
-        uint16_t r = rand() % 2;
+      if (frame == frameNextEvent) {
+        uint16_t r = rand();
+        frameNextEvent = frame + 2048 + (rand() & 2047);
+        r = (r / 2048) % 2;
 
         if ((r == 0) && buildings[static_cast<uint8_t>(Building::IDs::sheriff)].enabled) {
           if (safety < 100) {
@@ -729,11 +732,110 @@ void Level::update() {
   }
 }
 
-void Level::render() {
-  static uint8_t frame = 0;
-  frame++;
+static const uint8_t PROGMEM dither[9][4] = {
+    {0b00000000, 0b00000000, 0b00000000, 0b00000000},
+    {0b10001000, 0b00000000, 0b00000000, 0b00000000},
+    {0b10001000, 0b00000000, 0b00100010, 0b00000000},
+    {0b10101010, 0b00000000, 0b00100010, 0b00000000},
+    {0b10101010, 0b00000000, 0b10101010, 0b00000000},
+    {0b10101010, 0b01000100, 0b10101010, 0b00000000},
+    {0b10101010, 0b01000100, 0b10101010, 0b00010001},
+    {0b10101010, 0b01010101, 0b10101010, 0b00010001},
+    {0b10101010, 0b01010101, 0b10101010, 0b01010101},
+};
 
+static uint8_t getDither(int8_t duskLevel, uint8_t x) {
+  if (duskLevel < 0)
+    duskLevel = 0;
+  if (duskLevel > 8)
+    duskLevel = 8;
+  return pgm_read_byte(&dither[duskLevel][x & 3]);
+}
+
+void Level::renderBackground(uint16_t frame) {
+  // Draw mountains
   int8_t x_off = (camera_sign ? (1) : (-1)) * (static_cast<int8_t>(camera_off));
+
+  static const uint8_t topsvisible = 8;
+  static const uint8_t topwidth = WIDTH / topsvisible;
+  static const uint8_t ntops = size / topsvisible;
+  static const uint16_t fudge = 1024;
+
+  int16_t mountainpos = camera * 8 - x_off;
+  int16_t offset = mountainpos / topwidth;
+  int16_t shift = -mountainpos % topwidth - topwidth;
+
+  uint8_t timeOfDay = frame / (dayLength / 256);
+  bool day = timeOfDay < 0x80;
+  arduboy.invert(day);
+  timeOfDay &= 0x7f;
+  int8_t duskLevel = -64;
+  if (timeOfDay < 0xc)
+    duskLevel = 0x8 - timeOfDay;
+  else if (timeOfDay > 0x74)
+    duskLevel = timeOfDay - 0x77;
+
+  for (int8_t i = -1; i <= ntops; i++) {
+    uint8_t val1 = pgm_read_byte(fudge + offset % ntops);
+    int16_t x0 = (val1 >> 4) + shift;
+    int16_t y0 = (val1 & 0xf) + 12;
+
+    offset++;
+    shift += topwidth;
+    uint8_t val2 = pgm_read_byte(fudge + offset % ntops);
+    int16_t x1 = (val2 >> 4) + shift;
+    int16_t y1 = (val2 & 0xf) + 12;
+
+    /* Bresenham's algorithm for shallow lines going from left to right.
+     * We use it to determine the height of the mountains, which we use
+     * to draw both the mountain ridge and the sky above it during dawn
+     * and dusk.
+     */
+    {
+      int16_t dx, dy;
+      dx = x1 - x0;
+      dy = abs(y1 - y0);
+
+      int16_t err = dx / 2;
+      int8_t ystep;
+
+      if (y0 < y1) {
+        ystep = 1;
+      } else {
+        ystep = -1;
+      }
+
+      for (; x0 < x1; x0++) {
+        if (x0 >= 0) {
+          if (x0 >= 128)
+            break;
+          for (uint8_t y = 0; y < 4; y++) {
+            if (y0 < y * 8) {
+              // do nothing
+            } else if (y0 < y * 8 + 8) {
+              uint8_t mask = (255 >> (8 - (y0 & 7)));
+              arduboy.sBuffer[x0 + y * 128] =
+                  (getDither(duskLevel + (day ? -y : y), x0) & mask) | (1 << (y0 & 7));
+            } else {
+              arduboy.sBuffer[x0 + y * 128] = getDither(duskLevel + (day ? -y : y), x0);
+            }
+          }
+        }
+
+        err -= dy;
+        if (err < 0) {
+          y0 += ystep;
+          err += dx;
+        }
+      }
+    }
+  }
+}
+
+void Level::render() {
+  int8_t x_off = (camera_sign ? (1) : (-1)) * (static_cast<int8_t>(camera_off));
+
+  renderBackground(frame);
 
   if (tutorVisible) {
     drawing.excludeVerticalBar(32, 32 + 64);
@@ -769,30 +871,6 @@ void Level::render() {
     // Walking objects
     drawing.drawBitmap((pos - camera * 8 + x_off) % (size * 8), 6 + 4 * 8,
                        &bmp_man[((frame >> 3) % 4) * 8], 8, 8, i % 2);
-  }
-
-  // Draw mountains
-  static const uint8_t topsvisible = 8;
-  static const uint8_t topwidth = WIDTH / topsvisible;
-  static const uint8_t ntops = size / topsvisible;
-  static const uint16_t fudge = 1024;
-
-  int16_t mountainpos = camera * 8 - x_off;
-  int16_t offset = mountainpos / topwidth;
-  int16_t shift = -mountainpos % topwidth - topwidth;
-
-  for (int8_t i = -1; i <= ntops; i++) {
-    uint8_t val1 = pgm_read_byte(fudge + offset % ntops);
-    int16_t x1 = (val1 >> 4) + shift;
-    int16_t y1 = (val1 & 0xf) + 12;
-
-    offset++;
-    shift += topwidth;
-    uint8_t val2 = pgm_read_byte(fudge + offset % ntops);
-    int16_t x2 = (val2 >> 4) + shift;
-    int16_t y2 = (val2 & 0xf) + 12;
-
-    arduboy.drawLine(x1, y1, x2, y2, WHITE);
   }
 
   // Camera affected objects
@@ -845,6 +923,7 @@ void Level::render() {
   // GUI
   char tmp_str[16];
 
+  tinyfont.maskText = true;
   tinyfont.setCursor(1, 1);
   tinyfont.print(Building::name(sel));
   tinyfont.setCursor(1, 6);
@@ -871,6 +950,7 @@ void Level::render() {
   snprintf_P(tmp_str, 16, PSTR("%9dP"), population);
   tinyfont.setCursor(78, 6);
   tinyfont.print(tmp_str);
+  tinyfont.maskText = false;
 
   drawing.waterReflection(frame / 2);
 
