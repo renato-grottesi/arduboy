@@ -9,7 +9,6 @@ class Building {
  public:
   enum class IDs : uint8_t {
     empty,
-    back,
     house,
     water,
     saloon,
@@ -23,6 +22,7 @@ class Building {
     weed,
     cactus,
     tree,
+    back,
     count
   };
 

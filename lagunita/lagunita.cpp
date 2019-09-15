@@ -431,8 +431,9 @@ void Lagunita::render() {
 
 void Lagunita::load() {
   const uint16_t loc = EEPROM_STORAGE_SPACE_START;
-
   level.load(loc + 8);
+  level.resume();
+  currentMenu = Menus::game;
 }
 
 void Lagunita::save() {
