@@ -236,7 +236,7 @@ static const Building::IDs unlocks[Events::count] PROGMEM = {
 };
 
 static const Building::IDs dependsOn[Events::count] PROGMEM = {
-    Building::IDs::house,   /* HOUSE   */
+    Building::IDs::back,    /* HOUSE   */
     Building::IDs::house,   /* FARM    */
     Building::IDs::farm,    /* WATER   */
     Building::IDs::water,   /* SALOON  */

@@ -47,12 +47,12 @@ void Level::init() {
     buildings[i].built = 0;
   }
 
-  /* Make an exception for the house */
+  /* Enable building houses as it's the first building that unlock others. */
   buildings[static_cast<uint8_t>(Building::IDs::house)].enabled = true;
-  buildings[static_cast<uint8_t>(Building::IDs::house)].built = 1;
 
-  /* Make exception for actions */
+  /* Make exceptions for the action that allows to go back to main menu.*/
   buildings[static_cast<uint8_t>(Building::IDs::back)].enabled = true;
+  buildings[static_cast<uint8_t>(Building::IDs::back)].built = 1;
 
   timeLastUpdate = millis();
   timeLastEvent = millis();
@@ -102,30 +102,89 @@ void Level::init() {
 }
 
 void Level::onInput(Input dir) {
-  // Let the camera scrolling complete
-  if (camera_off > 0) {
-    return;
-  }
   // If there is a tutorial displayed, only allow the b button
   if (tutorVisible && (dir != Input::b)) {
     return;
   }
   uint8_t sel = static_cast<uint8_t>(currBuil);
+  unsigned long time = millis();
+  bool doubleClick = (time - timeLastInput) < 400;
+  timeLastInput = time;
   switch (dir) {
     case Input::up:
-      do {
-        if (sel == 0)
-          sel = Building::count() - 1;
-        else
-          sel--;
-        currBuil = static_cast<Building::IDs>(sel);
-      } while (buildings[sel].enabled == false);
+      if (lastPressed == Input::up && doubleClick) {
+        /* undo last up. */
+        sel = (sel + 1) % Building::count();
+
+        /* find next category up. */
+        if (sel >= Building::NATURE) {
+          sel = Building::SERVICES;
+        } else if (sel >= Building::SERVICES) {
+          sel = Building::HOUSING;
+        } else if (sel >= Building::HOUSING) {
+          sel = Building::ACTIONS;
+        } else {
+          sel = Building::NATURE;
+        }
+
+        /* find previously available building */
+        while (buildings[sel].enabled == false) {
+          sel = (sel == 0) ? (Building::count() - 1) : sel - 1;
+        }
+
+        timeLastInput = 0;
+      } else {
+        do {
+          sel = (sel == 0) ? (Building::count() - 1) : sel - 1;
+        } while (buildings[sel].enabled == false);
+      }
+      currBuil = static_cast<Building::IDs>(sel);
+      lastPressed = Input::up;
       break;
     case Input::down:
-      do {
-        sel = (sel + 1) % Building::count();
-        currBuil = static_cast<Building::IDs>(sel);
-      } while (buildings[sel].enabled == false);
+      if (lastPressed == Input::down && doubleClick) {
+        /* undo last down. */
+        sel = (sel == 0) ? (Building::count() - 1) : sel - 1;
+
+        /* find next category down. */
+        if (sel < Building::HOUSING) {
+          sel = Building::HOUSING;
+        } else if (sel < Building::SERVICES) {
+          sel = Building::SERVICES;
+        } else if (sel < Building::NATURE) {
+          sel = Building::NATURE;
+        } else {
+          sel = Building::ACTIONS;
+        }
+
+        /* find next available building */
+        while (buildings[sel].enabled == false) {
+          sel = (sel + 1) % Building::count();
+        }
+
+        timeLastInput = 0;
+      } else {
+        do {
+          sel = (sel + 1) % Building::count();
+        } while (buildings[sel].enabled == false);
+      }
+
+      currBuil = static_cast<Building::IDs>(sel);
+      lastPressed = Input::down;
+      break;
+    case Input::left:
+      if (lastPressed == Input::left && doubleClick) {
+        findFirstAvailableSpot(-1);
+        timeLastInput = 0;
+      }
+      lastPressed = Input::left;
+      break;
+    case Input::right:
+      if (lastPressed == Input::right && doubleClick) {
+        findFirstAvailableSpot(+1);
+        timeLastInput = 0;
+      }
+      lastPressed = Input::right;
       break;
     case Input::a: {
       uint8_t idx = static_cast<uint8_t>(currBuil);
@@ -208,7 +267,9 @@ void Level::onInput(Input dir) {
           money -= Building::cost(idx) * 5;
         }
       }
-    } break;
+      lastPressed = Input::a;
+      break;
+    }
     case Input::b:
       if (tutorVisible) {
         if (inStats) {
@@ -237,6 +298,7 @@ void Level::onInput(Input dir) {
                         "EXPORTS\n%4d $/s"),                             /**/
                    housing, jobs, food, maintenance, earnings, exports); /**/
       }
+      lastPressed = Input::b;
       break;
     default:
       break;
@@ -321,18 +383,6 @@ void Level::findFirstAvailableSpot(int8_t dir) {
 
 void Level::update() {
   unsigned long time = millis();
-
-  if (arduboy.justPressed(LEFT_BUTTON)) {
-    if (lastPressed == LEFT_BUTTON && camera_off)
-      findFirstAvailableSpot(-1);
-    lastPressed = LEFT_BUTTON;
-  }
-
-  if (arduboy.justPressed(RIGHT_BUTTON)) {
-    if (lastPressed == RIGHT_BUTTON && camera_off)
-      findFirstAvailableSpot(+1);
-    lastPressed = RIGHT_BUTTON;
-  }
 
   if (!tutorVisible && (camera_off == 0)) {
     bool left = arduboy.pressed(LEFT_BUTTON);

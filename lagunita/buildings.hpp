@@ -8,23 +8,37 @@
 class Building {
  public:
   enum class IDs : uint8_t {
+    /* actions */
     empty,
+    back,
+    /* housing*/
     house,
     water,
     saloon,
     farm,
     mill,
     mine,
+    /* services */
     church,
     sheriff,
     bank,
     stable,
+    /* nature */
     weed,
     cactus,
     tree,
-    back,
-    count
+    /* specials */
+    count,
+    actions = empty,
+    housing = house,
+    services = church,
+    nature = weed,
   };
+
+  static const uint8_t ACTIONS = static_cast<uint8_t>(IDs::actions);
+  static const uint8_t HOUSING = static_cast<uint8_t>(IDs::housing);
+  static const uint8_t SERVICES = static_cast<uint8_t>(IDs::services);
+  static const uint8_t NATURE = static_cast<uint8_t>(IDs::nature);
 
   struct Status {
     uint16_t built : 10;  // max 1023 buildings

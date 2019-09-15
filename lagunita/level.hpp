@@ -75,8 +75,8 @@ class Level {
 
   uint16_t money = 999;
   uint8_t ticks = 0;
-  uint8_t lastPressed = 0;
-
+  Input lastPressed = Input::a;
+  unsigned long timeLastInput = 0;
   unsigned long timeLastUpdate = 0;
   unsigned long timeLastEvent = 0;
 

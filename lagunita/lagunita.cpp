@@ -193,7 +193,6 @@ void Lagunita::update() {
 
       break;
     case Menus::game:
-      level.update();
       if (level.isPaused()) {
         currentMenu = Menus::main;
       } else if (level.gameOver()) {
@@ -203,11 +202,16 @@ void Lagunita::update() {
         level.onInput(Input::up);
       } else if (arduboy.justPressed(DOWN_BUTTON)) {
         level.onInput(Input::down);
+      } else if (arduboy.justPressed(LEFT_BUTTON)) {
+        level.onInput(Input::left);
+      } else if (arduboy.justPressed(RIGHT_BUTTON)) {
+        level.onInput(Input::right);
       } else if (arduboy.justPressed(A_BUTTON)) {
         level.onInput(Input::a);
       } else if (arduboy.justPressed(B_BUTTON)) {
         level.onInput(Input::b);
       }
+      level.update();
       break;
     case Menus::credits:
       if (arduboy.justPressed(A_BUTTON) || arduboy.justPressed(B_BUTTON)) {

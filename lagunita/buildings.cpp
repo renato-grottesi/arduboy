@@ -5,6 +5,7 @@ const Building buildings[static_cast<uint8_t>(Building::IDs::count)] PROGMEM = {
     // clang-format off
     /* name,    bitmap,   jobs, cost, w, h, maintenance, profit */
     {"CLEAR",   bmp_empty,   0,    4, 1, 1, 0,  0},
+    {"PAUSE",   bmp_empty,   0,    0, 1, 1, 0,  0},
     {"HOUSE",   bmp_house,   0,    5, 2, 2, 1,  0},
     {"WATER",   bmp_water,   0,   10, 1, 3, 0,  1},
     {"SALOON",  bmp_saloon,  8,   50, 3, 3, 0,  1},
@@ -18,7 +19,6 @@ const Building buildings[static_cast<uint8_t>(Building::IDs::count)] PROGMEM = {
     {"WEED",    bmp_weed,    0,    2, 1, 1, 0,  0},
     {"CACTUS",  bmp_cactus,  0,    2, 1, 1, 0,  0},
     {"TREE",    bmp_tree,    0,    4, 2, 2, 0,  0},
-    {"PAUSE",   bmp_empty,   0,    0, 1, 1, 0,  0},
     // clang-format on
 };
 
@@ -87,10 +87,14 @@ const uint8_t* Building::bitmap(const uint8_t id) {
 }
 
 const char textHouse[] PROGMEM =
-    "HOUSES NEAR\n"  /**/
-    "VEGETATION\n"   /**/
-    "ATTRACT MORE\n" /**/
-    "PEOPLE.\n";     /**/
+    "HOUSES ARE\n"    /**/
+    "NECESSARY TO\n"  /**/
+    "INCREASE THE\n"  /**/
+    "POPULATION.\n\n" /**/
+    "HOUSES NEAR\n"   /**/
+    "VEGETATION\n"    /**/
+    "ATTRACT MORE\n"  /**/
+    "PEOPLE.\n";      /**/
 const char textFarm[] PROGMEM =
     "WORKERS ARE\n"  /**/
     "ALLOCATED\n"    /**/
@@ -100,7 +104,7 @@ const char textFarm[] PROGMEM =
     "TOO MANY,\n"    /**/
     "OTHER JOBS\n"   /**/
     "WILL NOT BE\n"  /**/
-    "TAKEN\n";       /**/
+    "TAKEN.\n";      /**/
 const char textWater[] PROGMEM =
     "WATER TOWERS\n" /**/
     "CAN HELP\n"     /**/
@@ -168,6 +172,7 @@ const char textChurch[] PROGMEM =
     "TO BE AROUND\n" /**/
     "TOO NOISY\n"    /**/
     "BUILDINGS.\n";  /**/
+const char textBack[] PROGMEM = "";
 const char textEmpty[] PROGMEM =
     "NOW YOU CAN\n"   /**/
     "CLEAR ANY\n"     /**/
@@ -218,6 +223,7 @@ const char templ[] PROGMEM =
 
 const char* const descriptions[static_cast<uint8_t>(Building::IDs::count)] PROGMEM = {
     textEmpty,   /* EMPTY   */
+    textBack,    /* EMPTY   */
     textHouse,   /* HOUSE   */
     textWater,   /* WATER   */
     textSaloon,  /* SALOON  */
