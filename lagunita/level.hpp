@@ -21,8 +21,10 @@ class Level {
   void resume() { inPause = false; };
 
   void update();
+  void nextDay();
   void onInput(Input dir);
   void render();
+  void renderBackground(uint16_t frame);
 
   void load(uint16_t start);
   void save(uint16_t start);
@@ -54,6 +56,9 @@ class Level {
   uint16_t river_in = 0;  /*  X coordinate where the river goes into the lake */
   uint16_t river_out = 0; /* X coordinate where the river leaves the lake */
 
+  static constexpr uint16_t fps = 32;
+  static constexpr uint16_t dayLength = 256 * fps;
+  uint16_t frame;
   uint16_t days;
   uint16_t housing;
   uint16_t jobs;
@@ -76,11 +81,9 @@ class Level {
   Building::IDs currBuil = Building::IDs::house;
 
   uint16_t money = 999;
-  uint8_t ticks = 0;
   Input lastPressed = Input::a;
-  unsigned long timeLastInput = 0;
-  unsigned long timeLastUpdate = 0;
-  unsigned long timeLastEvent = 0;
+  uint16_t long frameLastInput = 0;
+  uint16_t long frameNextEvent = 0;
 
   EventState tutorials[Events::count] = {
       EventState::untriggered,

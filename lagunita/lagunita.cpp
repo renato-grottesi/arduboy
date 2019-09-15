@@ -244,8 +244,9 @@ void Lagunita::render() {
   // render the menus
   switch (currentMenu) {
     case Menus::main: {
-      static uint8_t frame = 0;
+      static uint16_t frame = 0;
       frame++;
+      level.renderBackground(frame);
       const uint8_t bl_y = 21;
       const uint8_t bl_x_l = 4;
       const uint8_t bl_x_r = 54;
@@ -253,6 +254,8 @@ void Lagunita::render() {
       arduboy.drawBitmap((128 - 105) / 2, 4 * 8, bmp_lagunita, 105, 16);
       arduboy.drawBitmap(0, 5 * 8, bmp_cactus, 8, 8);
       arduboy.drawBitmap(128 - 8, 5 * 8, bmp_weed, 8, 8);
+      arduboy.fillRoundRect(bl_x_l - 2, 6, 46, 22, 4, BLACK);
+      arduboy.fillRoundRect(bl_x_r - 2, 6, 46, 22, 4, BLACK);
       arduboy.drawRoundRect(bl_x_l - 2, 6, 46, 22, 4);
       arduboy.drawRoundRect(bl_x_r - 2, 6, 46, 22, 4);
       arduboy.drawFastHLine(0, 1, post_len);
