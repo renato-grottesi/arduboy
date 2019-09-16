@@ -754,16 +754,16 @@ void Level::render() {
   // GUI
   char tmp_str[16];
 
-  tinyfont.setCursor(0, 0);
+  tinyfont.setCursor(1, 1);
   tinyfont.print(Building::name(sel));
-  tinyfont.setCursor(0, 5);
+  tinyfont.setCursor(1, 6);
   tinyfont.print(5 * Building::cost(sel));
 
   snprintf_P(tmp_str, 16, PSTR("%9d$"), money);
-  tinyfont.setCursor(78, 0);
+  tinyfont.setCursor(78, 1);
   tinyfont.print(tmp_str);
   snprintf_P(tmp_str, 16, PSTR("%9dP"), population);
-  tinyfont.setCursor(78, 5);
+  tinyfont.setCursor(78, 6);
   tinyfont.print(tmp_str);
 
   drawing.waterReflection(frame / 2);
