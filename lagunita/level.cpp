@@ -58,12 +58,11 @@ void Level::init() {
   timeLastEvent = millis();
 
   /* Add some random vegetation. */
-  uint8_t mask = 0x0f;
+  uint8_t mask = 0x00;
   for (uint16_t i = 0; i < size; i++) {
-    tiles[i].building = Building::IDs::empty;
     uint8_t r = rand() & mask;
     /* Leave some empty space around the starting area. */
-    if (i > 8 && i < size - 8) {
+    if (i > 4 && i < size - 4) {
       mask = 0x0f;
     }
     switch (r) {
@@ -86,8 +85,7 @@ void Level::init() {
     }
   }
 
-  /* Exceptions for rivers and first tile that may overlap two trees. */
-  tiles[0].building = Building::IDs::empty;
+  /* Exceptions for rivers. */
   tiles[river_in].building = Building::IDs::empty;
   tiles[river_out].building = Building::IDs::empty;
 
@@ -215,9 +213,11 @@ void Level::onInput(Input dir) {
           // Check if we are in the middle of another building or tree
           for (uint16_t i = 0; i < 4; i++) {
             uint16_t lidx = (cidx + size - i) % size;
-            uint16_t ends = Building::width(tiles[lidx].building);
-            if (((lidx + ends) % size) > cidx) {
-              Building::IDs id = tiles[lidx].building;
+            Building::IDs id = tiles[lidx].building;
+            uint16_t ends = Building::width(id);
+            /* If cidx is bigger than size-4, don't do the modulo. */
+            if ((cidx < (size - 4) && ((lidx + ends) % size) > cidx) ||
+                ((lidx + ends) > cidx)) {
               if (Building::IDs::tree == id) {
                 snprintf_P(tutor, tutorLen, PSTR("\nYOU CANNOT\nBUILD OVER A\nTREE."));
                 tutorVisible = true;
@@ -342,13 +342,14 @@ bool Level::canBuild() {
     return true;
 
   // Check if we are in the middle of another building or tree
-  uint16_t cidx = (camera + 7) % size;
+  int16_t cidx = (camera + 7) % size;
 
   for (uint16_t i = 0; i < 4; i++) {
     uint16_t lidx = (cidx + size - i) % size;
-    uint16_t ends = Building::width(tiles[lidx].building);
-    if (((lidx + ends) % size) > cidx) {
-      Building::IDs id = tiles[lidx].building;
+    Building::IDs id = tiles[lidx].building;
+    uint16_t ends = Building::width(id);
+    /* If cidx is bigger than size-4, don't do the modulo. */
+    if ((cidx < (size - 4) && ((lidx + ends) % size) > cidx) || ((lidx + ends) > cidx)) {
       if (Building::IDs::weed != id && Building::IDs::cactus != id &&
           Building::IDs::empty != id) {
         return false;
@@ -706,7 +707,7 @@ void Level::render() {
   }
 
   // Camera affected objects
-  for (int8_t obj = -5; obj < 17; obj++) {
+  for (int16_t obj = -5; obj < 17; obj++) {
     uint16_t moved = (obj + size + camera) % size;
 
     const bool in_river = (moved == river_in || moved == river_out);
