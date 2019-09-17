@@ -210,40 +210,16 @@ void Level::onInput(Input dir) {
             }
           }
         } else {
-          // Check if we are in the middle of another building or tree
-          for (uint16_t i = 0; i < 4; i++) {
-            uint16_t lidx = (cidx + size - i) % size;
-            Building::IDs id = tiles[lidx].building;
-            uint16_t ends = Building::width(id);
-            /* If cidx is bigger than size-4, don't do the modulo. */
-            if ((cidx < (size - 4) && ((lidx + ends) % size) > cidx) ||
-                ((lidx + ends) > cidx)) {
-              if (Building::IDs::tree == id) {
-                snprintf_P(tutor, tutorLen, PSTR("\nYOU CANNOT\nBUILD OVER A\nTREE."));
-                tutorVisible = true;
-                replace = false;
-              } else if (Building::IDs::weed != id && Building::IDs::cactus != id &&
-                         Building::IDs::empty != id) {
-                snprintf_P(tutor, tutorLen, PSTR("\nYOU CANNOT\nBUILD OVER A\nBUILDING."));
-                tutorVisible = true;
-                replace = false;
-              }
-            }
-          }
-
-          // Check if there is another building or tree on the right
-          for (uint16_t i = 0; i < Building::width(currBuil); i++) {
-            Building::IDs id = tiles[(cidx + i) % size].building;
-            if (Building::IDs::tree == id) {
-              snprintf_P(tutor, tutorLen, PSTR("\nYOU CANNOT\nBUILD OVER A\nTREE."));
-              tutorVisible = true;
-              replace = false;
-            } else if (Building::IDs::weed != id && Building::IDs::cactus != id &&
-                       Building::IDs::empty != id) {
-              snprintf_P(tutor, tutorLen, PSTR("\nYOU CANNOT\nBUILD OVER A\nBUILDING."));
-              tutorVisible = true;
-              replace = false;
-            }
+          Building::IDs collision = buildCollides();
+          if (Building::IDs::tree == collision) {
+            snprintf_P(tutor, tutorLen, PSTR("\nYOU CANNOT\nBUILD OVER A\nTREE."));
+            tutorVisible = true;
+            replace = false;
+          } else if (Building::IDs::weed != collision && Building::IDs::cactus != collision &&
+                     Building::IDs::empty != collision) {
+            snprintf_P(tutor, tutorLen, PSTR("\nYOU CANNOT\nBUILD OVER A\nBUILDING."));
+            tutorVisible = true;
+            replace = false;
           }
         }
         if (replace) {
@@ -337,13 +313,10 @@ static void setRGBled(uint8_t red, uint8_t green, uint8_t blue) {
   OCR1CL = green;
 }
 
-bool Level::canBuild() {
-  if (Building::IDs::empty == currBuil)
-    return true;
-
-  // Check if we are in the middle of another building or tree
+Building::IDs Level::buildCollides() {
   int16_t cidx = (camera + 7) % size;
 
+  // Check if we are in the middle of another building or tree
   for (uint16_t i = 0; i < 4; i++) {
     uint16_t lidx = (cidx + size - i) % size;
     Building::IDs id = tiles[lidx].building;
@@ -352,7 +325,7 @@ bool Level::canBuild() {
     if ((cidx < (size - 4) && ((lidx + ends) % size) > cidx) || ((lidx + ends) > cidx)) {
       if (Building::IDs::weed != id && Building::IDs::cactus != id &&
           Building::IDs::empty != id) {
-        return false;
+        return id;
       }
     }
   }
@@ -362,11 +335,18 @@ bool Level::canBuild() {
     Building::IDs id = tiles[(cidx + i) % size].building;
     if (Building::IDs::weed != id && Building::IDs::cactus != id &&
         Building::IDs::empty != id) {
-      return false;
+      return id;
     }
   }
 
-  return true;
+  return Building::IDs::empty;
+}
+
+bool Level::canBuild() {
+  if (Building::IDs::empty == currBuil)
+    return true;
+
+  return Building::IDs::empty == buildCollides();
 }
 
 void Level::findFirstAvailableSpot(int8_t dir) {

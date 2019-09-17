@@ -96,4 +96,5 @@ class Level {
 
   void findFirstAvailableSpot(int8_t dir);
   bool canBuild();
+  Building::IDs buildCollides();
 };
