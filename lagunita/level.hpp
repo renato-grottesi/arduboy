@@ -53,6 +53,7 @@ class Level {
   uint16_t river_in = 0;  /*  X coordinate where the river goes into the lake */
   uint16_t river_out = 0; /* X coordinate where the river leaves the lake */
 
+  uint16_t days;
   uint16_t housing;
   uint16_t jobs;
   uint16_t food;

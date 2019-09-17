@@ -268,11 +268,11 @@ void Level::onInput(Input dir) {
         tutorVisible = true;
         tutorChars = tutorLen; /* No text animation for stats. */
 
-        snprintf_P(tutor, tutorLen,                                      /**/
-                   PSTR("\nHOUSING\n%7d\nJOBS   FOOD\n%4d%7d\n"          /**/
-                        "MAINTENANCE\n%7d $/s\nEARNINGS\n%4d $/s\n"      /**/
-                        "EXPORTS\n%4d $/s"),                             /**/
-                   housing, jobs, food, maintenance, earnings, exports); /**/
+        snprintf_P(tutor, tutorLen,                                            /**/
+                   PSTR("\nHOUSING DAYS\n%7d%5d\nJOBS\t  FOOD\n%4d%8d\n"       /**/
+                        " MAINTENANCE\n%8d $/s\n\tEARNINGS\n%8d $/s\n"         /**/
+                        "\tEXPORTS\n%8d $/s"),                                 /**/
+                   housing, days, jobs, food, maintenance, earnings, exports); /**/
       }
       lastPressed = Input::b;
       break;
