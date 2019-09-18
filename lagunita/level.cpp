@@ -750,7 +750,7 @@ void Level::render() {
   drawing.waterReflection(frame / 2);
 
   if (tutorVisible) {
-    arduboy.fillRect(32, 0, 64, 64, BLACK);
+    arduboy.fillRoundRect(32, 0, 64, 64, 4, BLACK);
     arduboy.drawRoundRect(32, 0, 64, 64, 4, WHITE);
     tinyfont.setCursor(35, 3, tutorChars);
     tinyfont.print(tutor);

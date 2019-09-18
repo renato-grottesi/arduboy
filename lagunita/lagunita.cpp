@@ -353,7 +353,7 @@ void Lagunita::render() {
                        ));
       break;
     case Menus::help:
-      tinyfont.setCursor(2, 0);
+      tinyfont.setCursor(2, 2);
       switch (help_page) {
         case 0:
           tinyfont.print(F(                            /**/
