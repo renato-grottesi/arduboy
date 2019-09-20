@@ -264,8 +264,7 @@ static const Building::IDs dependsOn[Events::count] PROGMEM = {
     Building::IDs::empty,   /* TREE    */
     Building::IDs::tree,    /* CACTUS  */
     Building::IDs::cactus,  /* WEED    */
-    Building::IDs::farm,
-    /* UPGRADE */ /*TODO*/
+    Building::IDs::church,  /* UPGRADE */
 };
 
 const char* Events::getText(uint8_t id) {
