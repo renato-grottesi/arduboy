@@ -453,7 +453,7 @@ const unsigned char PROGMEM bmp_mine[] = {
     0b00000000, /**/
 };
 
-const unsigned char PROGMEM bmp_house_small[] = {
+const unsigned char PROGMEM bmp_house[] = {
     /* Top */
     0b00000000, /* b0 */
     0b10000000, /**/
@@ -490,7 +490,7 @@ const unsigned char PROGMEM bmp_house_small[] = {
     0b00000000, /**/
 };
 
-const unsigned char PROGMEM bmp_house[] = {
+const unsigned char PROGMEM bmp_palace[] = {
     /* Top */
     0b11111110, /* b0 */
     0b10010001, /**/

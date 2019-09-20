@@ -6,7 +6,9 @@ const Building buildings[static_cast<uint8_t>(Building::IDs::count)] PROGMEM = {
     /* name,    bitmap,   jobs, cost, w, h, maintenance, profit */
     {"CLEAR",   bmp_empty,   0,    4, 1, 1, 0,  0},
     {"PAUSE",   bmp_empty,   0,    0, 1, 1, 0,  0},
+    {"UPGRADE", bmp_empty,   0,   50, 1, 1, 0,  0},
     {"HOUSE",   bmp_house,   0,    5, 2, 2, 1,  0},
+    {"PALACE",  bmp_palace,  0,    5, 2, 2, 1,  0},
     {"WATER",   bmp_water,   0,   10, 1, 3, 0,  1},
     {"SALOON",  bmp_saloon,  8,   50, 3, 3, 0,  1},
     {"FARM",    bmp_farm,    8,   20, 4, 2, 0, 10},
@@ -172,7 +174,6 @@ const char textChurch[] PROGMEM =
     "TO BE AROUND\n" /**/
     "TOO NOISY\n"    /**/
     "BUILDINGS.\n";  /**/
-const char textBack[] PROGMEM = "";
 const char textEmpty[] PROGMEM =
     "NOW YOU CAN\n"   /**/
     "CLEAR ANY\n"     /**/
@@ -208,6 +209,15 @@ const char textStable[] PROGMEM =
     "PRESS B TO\n"  /**/
     "CHECK YOUR\n"  /**/
     "EXPORTS.\n";   /**/
+const char textUpgrade[] PROGMEM =
+    "REMEMBER TO\n"   /**/
+    "CHECK STATS\n"   /**/
+    "TO SEE HOW\n"    /**/
+    "UPGRADING\n"     /**/
+    "BUILDINGS\n"     /**/
+    "ALTERS THEM.\n"; /**/
+const char textBack[] PROGMEM = "";
+const char textPalace[] PROGMEM = "";
 #if 0
 const char templ[] PROGMEM = 
     "            \n"  /**/
@@ -223,8 +233,10 @@ const char templ[] PROGMEM =
 
 const char* const descriptions[static_cast<uint8_t>(Building::IDs::count)] PROGMEM = {
     textEmpty,   /* EMPTY   */
-    textBack,    /* EMPTY   */
+    textBack,    /* BACK    */
+    textUpgrade, /* UPGRADE */
     textHouse,   /* HOUSE   */
+    textPalace,  /* PALACE  */
     textWater,   /* WATER   */
     textSaloon,  /* SALOON  */
     textFarm,    /* FARM    */

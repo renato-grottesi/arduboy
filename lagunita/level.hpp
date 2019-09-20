@@ -98,4 +98,6 @@ class Level {
   void findFirstAvailableSpot(int8_t dir);
   bool canBuild();
   Building::IDs buildCollides();
+  Building::IDs cursorOverlaps(bool clear = false,
+                               Building::IDs replaceWith = Building::IDs::empty);
 };

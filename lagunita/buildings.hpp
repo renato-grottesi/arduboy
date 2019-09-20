@@ -11,8 +11,10 @@ class Building {
     /* actions */
     empty,
     back,
+    upgrade,
     /* housing*/
     house,
+    palace,
     water,
     saloon,
     farm,

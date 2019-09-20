@@ -58,12 +58,13 @@ void Level::init() {
   timeLastEvent = millis();
 
   /* Add some random vegetation. */
-  uint8_t mask = 0x00;
+  uint8_t mask = 0x0f;
   for (uint16_t i = 0; i < size; i++) {
     uint8_t r = rand() & mask;
+    mask = 0x0f;
     /* Leave some empty space around the starting area. */
-    if (i > 4 && i < size - 4) {
-      mask = 0x0f;
+    if (i < 4 || i > size - 4) {
+      r = 0x00;
     }
     switch (r) {
       case 1:
@@ -189,26 +190,21 @@ void Level::onInput(Input dir) {
       if (money < (Building::cost(idx) * 5)) {
         snprintf_P(tutor, tutorLen, PSTR("\nYOU HAVE\nNOT ENOUGH\nMONEY TO\nBUILD."));
         tutorVisible = true;
+      } else if (Building::IDs::upgrade == currBuil) {
+        Building::IDs current = cursorOverlaps(false);
+        if (current == Building::IDs::house) {
+          cursorOverlaps(true, Building::IDs::palace);
+          buildings[static_cast<uint8_t>(Building::IDs::palace)].built =
+              min(buildings[static_cast<uint8_t>(Building::IDs::palace)].built + 1, 1024);
+          money -= Building::cost(idx) * 5;
+        }
       } else if (Building::IDs::back == currBuil) {
         pause();
       } else {
-        uint16_t cidx = (camera + 7) % size;
         bool replace = true;
 
         if (Building::IDs::empty == currBuil) {
-          // Check if we are in the middle of another building that has to be
-          // destroyed
-          for (uint16_t i = 0; i < 4; i++) {
-            uint16_t lidx = (cidx + size - i) % size;
-            uint16_t ends = Building::width(tiles[lidx].building);
-            if (((lidx + ends) % size) > cidx) {
-              uint8_t del_b = static_cast<uint8_t>(tiles[lidx].building);
-              if (buildings[del_b].built > 0) {
-                buildings[del_b].built--;
-              }
-              tiles[lidx].building = Building::IDs::empty;
-            }
-          }
+          cursorOverlaps(true);
         } else {
           Building::IDs collision = buildCollides();
           if (Building::IDs::tree == collision) {
@@ -223,6 +219,7 @@ void Level::onInput(Input dir) {
           }
         }
         if (replace) {
+          uint16_t cidx = (camera + 7) % size;
           // Destroy everything on the path of this building
           for (uint16_t i = 0; i < Building::width(currBuil); i++) {
             uint8_t del_b = static_cast<uint8_t>(tiles[(cidx + i) % size].building);
@@ -313,33 +310,49 @@ static void setRGBled(uint8_t red, uint8_t green, uint8_t blue) {
   OCR1CL = green;
 }
 
-Building::IDs Level::buildCollides() {
-  int16_t cidx = (camera + 7) % size;
+Building::IDs Level::cursorOverlaps(bool clear, Building::IDs replaceWith) {
+  uint16_t cidx = camera + 7;
+  uint16_t cidxm = cidx % size;
 
   // Check if we are in the middle of another building or tree
   for (uint16_t i = 0; i < 4; i++) {
-    uint16_t lidx = (cidx + size - i) % size;
+    uint16_t lidx = (cidxm + size - i) % size;
     Building::IDs id = tiles[lidx].building;
     uint16_t ends = Building::width(id);
     /* If cidx is bigger than size-4, don't do the modulo. */
-    if ((cidx < (size - 4) && ((lidx + ends) % size) > cidx) || ((lidx + ends) > cidx)) {
-      if (Building::IDs::weed != id && Building::IDs::cactus != id &&
-          Building::IDs::empty != id) {
-        return id;
+    if ((cidxm < (size - 4) && ((lidx + ends) % size) > cidxm) || ((lidx + ends) > cidx)) {
+      if (Building::IDs::empty != id) {
+        bool freeToClear = Building::IDs::weed == id || Building::IDs::cactus == id;
+        if (clear || (!freeToClear)) {
+          if (clear) {
+            uint8_t del_b = static_cast<uint8_t>(id);
+            if (buildings[del_b].built > 0) {
+              buildings[del_b].built--;
+            }
+            tiles[lidx].building = replaceWith;
+          }
+          return id;
+        }
       }
     }
   }
 
+  return Building::IDs::empty;
+}
+
+Building::IDs Level::buildCollides() {
+  uint16_t cidxm = (camera + 7) % size;
+
   // Check if there is another building or tree on the right
   for (uint16_t i = 0; i < Building::width(currBuil); i++) {
-    Building::IDs id = tiles[(cidx + i) % size].building;
+    Building::IDs id = tiles[(cidxm + i) % size].building;
     if (Building::IDs::weed != id && Building::IDs::cactus != id &&
         Building::IDs::empty != id) {
       return id;
     }
   }
 
-  return Building::IDs::empty;
+  return cursorOverlaps();
 }
 
 bool Level::canBuild() {
@@ -407,11 +420,13 @@ void Level::update() {
     for (uint16_t obj = 0; obj < size; obj++) {
       maintenance += Building::maintenance(tiles[obj].building);
       jobs += Building::jobs(tiles[obj].building);
-      if (tiles[obj].building == Building::IDs::house) {
-        housing += 4;
+      uint16_t house_housing = 0;
+      if (tiles[obj].building == Building::IDs::house ||
+          tiles[obj].building == Building::IDs::palace) {
+        house_housing += 4;
         for (uint16_t i = (obj + size - 16); i < (obj + size + 16); i++) {
           if (tiles[i % size].building == Building::IDs::water) {
-            housing += 4;
+            house_housing += 4;
             break;
           }
         }
@@ -419,11 +434,15 @@ void Level::update() {
           Building::IDs bld = tiles[i % size].building;
           if (bld == Building::IDs::tree || bld == Building::IDs::cactus ||
               bld == Building::IDs::weed) {
-            housing += 2;
+            house_housing += 2;
             break;
           }
         }
       }
+      if (tiles[obj].building == Building::IDs::palace) {
+        house_housing *= 2;
+      }
+      housing += house_housing;
     }
 
     int16_t unemployed = population;
@@ -738,7 +757,20 @@ void Level::render() {
   tinyfont.setCursor(1, 1);
   tinyfont.print(Building::name(sel));
   tinyfont.setCursor(1, 6);
-  tinyfont.print(5 * Building::cost(sel));
+  if (currBuil == Building::IDs::back) {
+    /* Show nothing */
+  } else if (currBuil == Building::IDs::upgrade) {
+    /* Only show the price for upgradeable buildings. */
+    if (cursorOverlaps() == Building::IDs::house) {
+      tinyfont.print(5 * Building::cost(sel));
+    } else if (cursorOverlaps() == Building::IDs::palace) {
+      tinyfont.print("MAXED");
+    } else {
+      tinyfont.print("---");
+    }
+  } else {
+    tinyfont.print(5 * Building::cost(sel));
+  }
 
   snprintf_P(tmp_str, 16, PSTR("%9d$"), money);
   tinyfont.setCursor(78, 1);

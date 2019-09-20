@@ -154,6 +154,16 @@ const char textStable[] PROGMEM =
     "STABLE TO\n"    /**/
     "EXPORT THE\n"   /**/
     "EXTRA FOOD.\n"; /**/
+const char textUpgrade[] PROGMEM =
+    "\n"             /**/
+    "AS THE TOWN \n" /**/
+    "GROWS, SPACE\n" /**/
+    "BECOMES VERY\n" /**/
+    "VALUABLE.\n"    /**/
+    "NOW YOU CAN\n"  /**/
+    "UPGRADE SOME\n" /**/
+    "OF THE\n"       /**/
+    "BUILDINGS.\n";  /**/
 #if 0
 const char templ[] PROGMEM = 
     "            \n"  /**/
@@ -182,6 +192,7 @@ const char* const texts[Events::count] PROGMEM = {
     textTree,    /* TREE    */
     textCactus,  /* CACTUS  */
     textWeed,    /* WEED    */
+    textUpgrade, /* UPGRADE */
 };
 
 static const uint16_t onMoney[Events::count] PROGMEM = {
@@ -199,6 +210,7 @@ static const uint16_t onMoney[Events::count] PROGMEM = {
     4000, /* TREE    */
     4500, /* CACTUS  */
     5000, /* WEED    */
+    1000, /* UPGRADE */
 };
 
 static const uint16_t onPopulation[Events::count] PROGMEM = {
@@ -216,6 +228,7 @@ static const uint16_t onPopulation[Events::count] PROGMEM = {
     200, /* TREE    */
     250, /* CACTUS  */
     300, /* WEED    */
+    175, /* UPGRADE */
 };
 
 static const Building::IDs unlocks[Events::count] PROGMEM = {
@@ -233,6 +246,7 @@ static const Building::IDs unlocks[Events::count] PROGMEM = {
     Building::IDs::tree,    /* TREE    */
     Building::IDs::cactus,  /* CACTUS  */
     Building::IDs::weed,    /* WEED    */
+    Building::IDs::upgrade, /* UPGRADE */
 };
 
 static const Building::IDs dependsOn[Events::count] PROGMEM = {
@@ -250,6 +264,8 @@ static const Building::IDs dependsOn[Events::count] PROGMEM = {
     Building::IDs::empty,   /* TREE    */
     Building::IDs::tree,    /* CACTUS  */
     Building::IDs::cactus,  /* WEED    */
+    Building::IDs::farm,
+    /* UPGRADE */ /*TODO*/
 };
 
 const char* Events::getText(uint8_t id) {
