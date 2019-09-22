@@ -3,24 +3,25 @@
 
 const Building buildings[static_cast<uint8_t>(Building::IDs::count)] PROGMEM = {
     // clang-format off
-    /* name,    bitmap,   jobs, cost, w, h, maintenance, profit */
-    {"CLEAR",   bmp_empty,   0,    4, 1, 1, 0,  0},
-    {"PAUSE",   bmp_empty,   0,    0, 1, 1, 0,  0},
-    {"UPGRADE", bmp_empty,   0,   50, 1, 1, 0,  0},
-    {"HOUSE",   bmp_house,   0,    5, 2, 2, 1,  0},
-    {"PALACE",  bmp_palace,  0,    5, 2, 2, 1,  0},
-    {"WATER",   bmp_water,   0,   10, 1, 3, 0,  1},
-    {"SALOON",  bmp_saloon,  8,   50, 3, 3, 0,  1},
-    {"FARM",    bmp_farm,    8,   20, 4, 2, 0, 10},
-    {"MILL",    bmp_mill,    1,   20, 1, 3, 0,  1},
-    {"MINE",    bmp_mine,   30,  100, 3, 3, 0, 30},
-    {"CHURCH",  bmp_church,  1,  150, 3, 3, 2,  0},
-    {"SHERIFF", bmp_sheriff, 2,   20, 2, 2, 2,  0},
-    {"BANK",    bmp_bank,    4,   50, 2, 2, 5,  0},
-    {"STABLE",  bmp_stable,  2,  200, 4, 3, 4,  0},
-    {"WEED",    bmp_weed,    0,    2, 1, 1, 0,  0},
-    {"CACTUS",  bmp_cactus,  0,    2, 1, 1, 0,  0},
-    {"TREE",    bmp_tree,    0,    4, 2, 2, 0,  0},
+    /* name,    bitmap,   jobs, cost, w, h, maintenance, profit, upgrade */
+    {"CLEAR",   bmp_empty,   0,    4, 1, 1, 0,           0,      Building::IDs::empty},
+    {"PAUSE",   bmp_empty,   0,    0, 1, 1, 0,           0,      Building::IDs::empty},
+    {"UPGRADE", bmp_empty,   0,    0, 1, 1, 0,           0,      Building::IDs::empty},
+    {"HOUSE",   bmp_house,   0,    5, 2, 2, 1,           0,      Building::IDs::palace},
+    {"WATER",   bmp_water,   0,   10, 1, 3, 0,           1,      Building::IDs::empty},
+    {"SALOON",  bmp_saloon,  8,   50, 3, 3, 0,           1,      Building::IDs::empty},
+    {"FARM",    bmp_farm,    8,   20, 4, 2, 0,          10,      Building::IDs::empty},
+    {"MILL",    bmp_mill,    1,   20, 1, 3, 0,           1,      Building::IDs::empty},
+    {"MINE",    bmp_mine,   30,  100, 3, 3, 0,          30,      Building::IDs::empty},
+    {"CHURCH",  bmp_church,  1,  150, 3, 3, 2,           0,      Building::IDs::empty},
+    {"SHERIFF", bmp_sheriff, 2,   20, 2, 2, 2,           0,      Building::IDs::empty},
+    {"BANK",    bmp_bank,    4,   50, 2, 2, 5,           0,      Building::IDs::bank2},
+    {"STABLE",  bmp_stable,  2,  200, 4, 3, 4,           0,      Building::IDs::empty},
+    {"WEED",    bmp_weed,    0,    2, 1, 1, 0,           0,      Building::IDs::empty},
+    {"CACTUS",  bmp_cactus,  0,    2, 1, 1, 0,           0,      Building::IDs::empty},
+    {"TREE",    bmp_tree,    0,    4, 2, 2, 0,           0,      Building::IDs::empty},
+    {"PALACE",  bmp_palace,  0,   55, 2, 2, 1,           0,      Building::IDs::empty},
+    {"BANK2",   bmp_bank2,   4,  155, 2, 3, 5,           0,      Building::IDs::empty},
     // clang-format on
 };
 
@@ -56,6 +57,10 @@ const uint8_t* Building::bitmap() const {
   return pgm_read_ptr(&_bitmap);
 }
 
+const Building::IDs Building::upgrade() const {
+  return static_cast<Building::IDs>(pgm_read_byte(&_upgrade));
+}
+
 const __FlashStringHelper* Building::name(const uint8_t id) {
   return buildings[id].name();
 }
@@ -86,6 +91,10 @@ const uint8_t Building::profit(const uint8_t id) {
 
 const uint8_t* Building::bitmap(const uint8_t id) {
   return buildings[id].bitmap();
+}
+
+const Building::IDs Building::upgrade(const uint8_t id) {
+  return buildings[id].upgrade();
 }
 
 const char textHouse[] PROGMEM =
@@ -218,6 +227,7 @@ const char textUpgrade[] PROGMEM =
     "ALTERS THEM.\n"; /**/
 const char textBack[] PROGMEM = "";
 const char textPalace[] PROGMEM = "";
+const char textBank2[] PROGMEM = "";
 #if 0
 const char templ[] PROGMEM = 
     "            \n"  /**/
@@ -236,7 +246,6 @@ const char* const descriptions[static_cast<uint8_t>(Building::IDs::count)] PROGM
     textBack,    /* BACK    */
     textUpgrade, /* UPGRADE */
     textHouse,   /* HOUSE   */
-    textPalace,  /* PALACE  */
     textWater,   /* WATER   */
     textSaloon,  /* SALOON  */
     textFarm,    /* FARM    */
@@ -249,6 +258,8 @@ const char* const descriptions[static_cast<uint8_t>(Building::IDs::count)] PROGM
     textWeed,    /* WEED    */
     textCactus,  /* CACTUS  */
     textTree,    /* TREE    */
+    textPalace,  /* PALACE  */
+    textBank2,   /* BANK    */
 };
 
 const char* Building::description(const uint8_t id) {

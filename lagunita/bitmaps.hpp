@@ -624,7 +624,28 @@ const unsigned char PROGMEM bmp_tree[] = {
     0b00000000, /**/
 };
 
-const unsigned char PROGMEM bmp_bank[] = {
+/* The upgraded bank is just 2 extra coins on top of the normal bank */
+#define bmp_bank (&bmp_bank2[16])
+
+const unsigned char PROGMEM bmp_bank2[] = {
+    /* beginning of bmp_bank2 */
+    0b00000000, /* b0 */
+    0b00000000, /**/
+    0b00100000, /**/
+    0b01010000, /**/
+    0b10001000, /**/
+    0b01010000, /**/
+    0b00100000, /**/
+    0b00000000, /**/
+    0b00100000, /* b1 */
+    0b01010000, /**/
+    0b10001000, /**/
+    0b01010000, /**/
+    0b00100000, /**/
+    0b00000000, /**/
+    0b00000000, /**/
+    0b00000000, /**/
+    /* beginning of bmp_bank */
     /* Top */
     0b00110000, /* b0 */
     0b11111111, /**/

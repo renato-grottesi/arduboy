@@ -192,11 +192,18 @@ void Level::onInput(Input dir) {
         tutorVisible = true;
       } else if (Building::IDs::upgrade == currBuil) {
         Building::IDs current = cursorOverlaps(false);
-        if (current == Building::IDs::house) {
-          cursorOverlaps(true, Building::IDs::palace);
-          buildings[static_cast<uint8_t>(Building::IDs::palace)].built =
-              min(buildings[static_cast<uint8_t>(Building::IDs::palace)].built + 1, 1024);
-          money -= Building::cost(idx) * 5;
+        Building::IDs upgrade = Building::upgrade(current);
+        if (upgrade != Building::IDs::empty) {
+          uint8_t cost = Building::cost(upgrade);
+          if (money < (cost * 5)) {
+            snprintf_P(tutor, tutorLen, PSTR("\nYOU HAVE\nNOT ENOUGH\nMONEY TO\nUPGRADE."));
+            tutorVisible = true;
+          } else {
+            cursorOverlaps(true, upgrade);
+            uint8_t upgrade_u8 = static_cast<uint8_t>(upgrade);
+            buildings[upgrade_u8].built = min(buildings[upgrade_u8].built + 1, 1024);
+            money -= cost * 5;
+          }
         }
       } else if (Building::IDs::back == currBuil) {
         pause();
@@ -477,6 +484,8 @@ void Level::update() {
     /* Second loop to allocate workers to other buildings. */
     for (uint16_t obj = 0; obj < size; obj++) {
       if (tiles[obj].building == Building::IDs::bank) {
+        max_money += 2500;
+      } else if (tiles[obj].building == Building::IDs::bank2) {
         max_money += 5000;
       } else if ((tiles[obj].building == Building::IDs::water ||
                   tiles[obj].building == Building::IDs::saloon ||
@@ -760,10 +769,12 @@ void Level::render() {
   if (currBuil == Building::IDs::back) {
     /* Show nothing */
   } else if (currBuil == Building::IDs::upgrade) {
+    Building::IDs current = cursorOverlaps(false);
+    Building::IDs upgrade = Building::upgrade(current);
     /* Only show the price for upgradeable buildings. */
-    if (cursorOverlaps() == Building::IDs::house) {
-      tinyfont.print(5 * Building::cost(sel));
-    } else if (cursorOverlaps() == Building::IDs::palace) {
+    if (upgrade != Building::IDs::empty) {
+      tinyfont.print(5 * Building::cost(upgrade));
+    } else if (static_cast<uint8_t>(current) >= static_cast<uint8_t>(Building::IDs::upgrades)) {
       tinyfont.print("MAXED");
     } else {
       tinyfont.print("---");

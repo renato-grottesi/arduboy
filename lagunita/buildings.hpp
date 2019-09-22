@@ -14,7 +14,6 @@ class Building {
     upgrade,
     /* housing*/
     house,
-    palace,
     water,
     saloon,
     farm,
@@ -29,12 +28,16 @@ class Building {
     weed,
     cactus,
     tree,
+    /* upgrades */
+    palace,
+    bank2,
     /* specials */
     count,
     actions = empty,
     housing = house,
     services = church,
     nature = weed,
+    upgrades = palace,
   };
 
   static const uint8_t ACTIONS = static_cast<uint8_t>(IDs::actions);
@@ -56,6 +59,7 @@ class Building {
   const uint8_t maintenance() const;
   const uint8_t profit() const;
   const uint8_t* bitmap() const;
+  const Building::IDs upgrade() const;
 
   /* Building's name. */
   static const __FlashStringHelper* name(const uint8_t id);
@@ -84,6 +88,9 @@ class Building {
   /* Building's description in PROGMEM. */
   static const char* description(const uint8_t id);
   static const char* description(IDs id) { return description(static_cast<uint8_t>(id)); };
+  /* Which building this building can be upgraded to. */
+  static const Building::IDs upgrade(const uint8_t id);
+  static const Building::IDs upgrade(IDs id) { return upgrade(static_cast<uint8_t>(id)); };
 
   static const uint8_t count() { return static_cast<uint8_t>(IDs::count); }
 
@@ -95,4 +102,5 @@ class Building {
   const uint8_t _height;
   const uint8_t _maintenance;
   const uint8_t _profit;
+  const Building::IDs _upgrade;
 };
