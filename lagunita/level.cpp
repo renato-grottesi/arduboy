@@ -239,8 +239,12 @@ void Level::onInput(Input dir) {
           tiles[cidx].building = currBuil;
           /* If a building just got built, let's show some hints about it. */
           if (0 == buildings[static_cast<uint8_t>(currBuil)].built) {
-            strncpy_P(tutor, Building::description(currBuil), tutorLen);
-            tutorVisible = true;
+            Building::IDs upgrade = Building::upgrade(currBuil);
+            /* Check that no upgraded version of the building exists. */
+            if (0 == buildings[static_cast<uint8_t>(upgrade)].built) {
+              strncpy_P(tutor, Building::description(currBuil), tutorLen);
+              tutorVisible = true;
+            }
           }
           buildings[static_cast<uint8_t>(currBuil)].built =
               min(buildings[static_cast<uint8_t>(currBuil)].built + 1, 1024);
