@@ -433,7 +433,7 @@ void Level::update() {
       jobs += Building::jobs(tiles[obj].building);
       uint16_t house_housing = 0;
       if (tiles[obj].building == Building::IDs::house ||
-          tiles[obj].building == Building::IDs::palace) {
+          tiles[obj].building == Building::IDs::house2) {
         house_housing += 4;
         for (uint16_t i = (obj + size - 16); i < (obj + size + 16); i++) {
           if (tiles[i % size].building == Building::IDs::water) {
@@ -450,7 +450,7 @@ void Level::update() {
           }
         }
       }
-      if (tiles[obj].building == Building::IDs::palace) {
+      if (tiles[obj].building == Building::IDs::house2) {
         house_housing *= 2;
       }
       housing += house_housing;
@@ -468,6 +468,17 @@ void Level::update() {
         for (uint16_t i = (obj + size - 6); i < (obj + size + 16); i++) {
           if (tiles[i % size].building == Building::IDs::water) {
             food += 11;
+            break;
+          }
+        }
+      } else if ((tiles[obj].building == Building::IDs::farm2) && (unemployed > 0)) {
+        food += 44;
+        earnings += Building::profit(tiles[obj].building);
+        unemployed -= Building::jobs(tiles[obj].building);
+        /* If a water tower is close increase food production. */
+        for (uint16_t i = (obj + size - 6); i < (obj + size + 16); i++) {
+          if (tiles[i % size].building == Building::IDs::water) {
+            food += 22;
             break;
           }
         }
@@ -520,8 +531,11 @@ void Level::update() {
     }
 
     saloons = buildings[static_cast<uint8_t>(Building::IDs::saloon)].built;
+    saloons += 2 * buildings[static_cast<uint8_t>(Building::IDs::saloon2)].built;
     churches = buildings[static_cast<uint8_t>(Building::IDs::church)].built;
+    churches += 2 * buildings[static_cast<uint8_t>(Building::IDs::church2)].built;
     sheriffs = buildings[static_cast<uint8_t>(Building::IDs::sheriff)].built;
+    sheriffs += 2 * buildings[static_cast<uint8_t>(Building::IDs::sheriff2)].built;
 
     /* Mines hurts environment. */
     if (vegetation > buildings[static_cast<uint8_t>(Building::IDs::mine)].built * 10) {
@@ -574,8 +588,9 @@ void Level::update() {
     }
 
     /* Export food-population and cap it for 10*each stable. */
-    exports = min((food - population),
-                  (buildings[static_cast<uint8_t>(Building::IDs::stable)].built) * 10);
+    exports = buildings[static_cast<uint8_t>(Building::IDs::stable)].built * 10;
+    exports += buildings[static_cast<uint8_t>(Building::IDs::stable2)].built * 20;
+    exports = min((food - population), exports);
 
     money += exports;
 

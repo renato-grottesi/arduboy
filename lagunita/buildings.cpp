@@ -3,25 +3,30 @@
 
 const Building buildings[static_cast<uint8_t>(Building::IDs::count)] PROGMEM = {
     // clang-format off
-    /* name,    bitmap,   jobs, cost, w, h, maintenance, profit, upgrade */
-    {"CLEAR",   bmp_empty,   0,    4, 1, 1, 0,           0,      Building::IDs::empty},
-    {"PAUSE",   bmp_empty,   0,    0, 1, 1, 0,           0,      Building::IDs::empty},
-    {"UPGRADE", bmp_empty,   0,    0, 1, 1, 0,           0,      Building::IDs::empty},
-    {"HOUSE",   bmp_house,   0,    5, 2, 2, 1,           0,      Building::IDs::palace},
-    {"WATER",   bmp_water,   0,   10, 1, 3, 0,           1,      Building::IDs::empty},
-    {"SALOON",  bmp_saloon,  8,   50, 3, 3, 0,           1,      Building::IDs::empty},
-    {"FARM",    bmp_farm,    8,   20, 4, 2, 0,          10,      Building::IDs::empty},
-    {"MILL",    bmp_mill,    1,   20, 1, 3, 0,           1,      Building::IDs::empty},
-    {"MINE",    bmp_mine,   30,  100, 3, 3, 0,          30,      Building::IDs::empty},
-    {"CHURCH",  bmp_church,  1,  150, 3, 3, 2,           0,      Building::IDs::empty},
-    {"SHERIFF", bmp_sheriff, 2,   20, 2, 2, 2,           0,      Building::IDs::empty},
-    {"BANK",    bmp_bank,    4,   50, 2, 2, 5,           0,      Building::IDs::bank2},
-    {"STABLE",  bmp_stable,  2,  200, 4, 3, 4,           0,      Building::IDs::empty},
-    {"WEED",    bmp_weed,    0,    2, 1, 1, 0,           0,      Building::IDs::empty},
-    {"CACTUS",  bmp_cactus,  0,    2, 1, 1, 0,           0,      Building::IDs::empty},
-    {"TREE",    bmp_tree,    0,    4, 2, 2, 0,           0,      Building::IDs::empty},
-    {"PALACE",  bmp_palace,  0,   55, 2, 2, 1,           0,      Building::IDs::empty},
-    {"BANK2",   bmp_bank2,   4,  155, 2, 3, 5,           0,      Building::IDs::empty},
+    /* name,    bitmap,    jobs, cost, w, h, maintenance, profit, upgrade */
+    {"CLEAR",   bmp_empty,    0,    4, 1, 1, 0,           0,      Building::IDs::empty},
+    {"PAUSE",   bmp_empty,    0,    0, 1, 1, 0,           0,      Building::IDs::empty},
+    {"UPGRADE", bmp_empty,    0,    0, 1, 1, 0,           0,      Building::IDs::empty},
+    {"HOUSE",   bmp_house,    0,    5, 2, 2, 1,           0,      Building::IDs::house2},
+    {"WATER",   bmp_water,    0,   10, 1, 3, 0,           1,      Building::IDs::empty},
+    {"SALOON",  bmp_saloon,   8,   50, 3, 2, 0,           1,      Building::IDs::saloon2},
+    {"FARM",    bmp_farm,     8,   20, 4, 2, 0,          10,      Building::IDs::farm2},
+    {"MILL",    bmp_mill,     1,   20, 1, 3, 0,           1,      Building::IDs::empty},
+    {"MINE",    bmp_mine,    30,  100, 3, 3, 0,          30,      Building::IDs::empty},
+    {"CHURCH",  bmp_church,   1,  150, 3, 2, 2,           0,      Building::IDs::church2},
+    {"SHERIFF", bmp_sheriff,  2,   20, 2, 2, 2,           0,      Building::IDs::sheriff2},
+    {"BANK",    bmp_bank,     4,   50, 2, 2, 5,           0,      Building::IDs::bank2},
+    {"STABLE",  bmp_stable,   2,  200, 4, 2, 4,           0,      Building::IDs::stable2},
+    {"WEED",    bmp_weed,     0,    2, 1, 1, 0,           0,      Building::IDs::empty},
+    {"CACTUS",  bmp_cactus,   0,    2, 1, 1, 0,           0,      Building::IDs::empty},
+    {"TREE",    bmp_tree,     0,    4, 2, 2, 0,           0,      Building::IDs::empty},
+    {"HS2",     bmp_house2,   0,   55, 2, 2, 1,           0,      Building::IDs::empty},
+    {"BNK2",    bmp_bank2,    4,  155, 2, 3, 5,           0,      Building::IDs::empty},
+    {"SRFF2",   bmp_sheriff2, 2,  120, 2, 2, 2,           0,      Building::IDs::empty},
+    {"CRC2",    bmp_church2,  1,  250, 3, 3, 2,           0,      Building::IDs::empty},
+    {"SLN2",    bmp_saloon2,  8,  250, 3, 3, 0,           1,      Building::IDs::empty},
+    {"STBL2",   bmp_stable2,  2,  200, 4, 3, 4,           0,      Building::IDs::empty},
+    {"FRM2",    bmp_farm2,    8,  220, 4, 3, 0,          10,      Building::IDs::empty},
     // clang-format on
 };
 
@@ -226,8 +231,13 @@ const char textUpgrade[] PROGMEM =
     "BUILDINGS\n"     /**/
     "ALTERS THEM.\n"; /**/
 const char textBack[] PROGMEM = "";
-const char textPalace[] PROGMEM = "";
+const char textHouse2[] PROGMEM = "";
 const char textBank2[] PROGMEM = "";
+const char textSheriff2[] PROGMEM = "";
+const char textChurch2[] PROGMEM = "";
+const char textSaloon2[] PROGMEM = "";
+const char textStable2[] PROGMEM = "";
+const char textFarm2[] PROGMEM = "";
 #if 0
 const char templ[] PROGMEM = 
     "            \n"  /**/
@@ -242,24 +252,29 @@ const char templ[] PROGMEM =
 #endif
 
 const char* const descriptions[static_cast<uint8_t>(Building::IDs::count)] PROGMEM = {
-    textEmpty,   /* EMPTY   */
-    textBack,    /* BACK    */
-    textUpgrade, /* UPGRADE */
-    textHouse,   /* HOUSE   */
-    textWater,   /* WATER   */
-    textSaloon,  /* SALOON  */
-    textFarm,    /* FARM    */
-    textMill,    /* MILL    */
-    textMine,    /* MINE    */
-    textChurch,  /* CHURCH  */
-    textSheriff, /* SHERIFF */
-    textBank,    /* BANK    */
-    textStable,  /* STABLE  */
-    textWeed,    /* WEED    */
-    textCactus,  /* CACTUS  */
-    textTree,    /* TREE    */
-    textPalace,  /* PALACE  */
-    textBank2,   /* BANK    */
+    textEmpty,    /* EMPTY    */
+    textBack,     /* BACK     */
+    textUpgrade,  /* UPGRADE  */
+    textHouse,    /* HOUSE    */
+    textWater,    /* WATER    */
+    textSaloon,   /* SALOON   */
+    textFarm,     /* FARM     */
+    textMill,     /* MILL     */
+    textMine,     /* MINE     */
+    textChurch,   /* CHURCH   */
+    textSheriff,  /* SHERIFF  */
+    textBank,     /* BANK     */
+    textStable,   /* STABLE   */
+    textWeed,     /* WEED     */
+    textCactus,   /* CACTUS   */
+    textTree,     /* TREE     */
+    textHouse2,   /* HOUSE2   */
+    textBank2,    /* BANK2    */
+    textSheriff2, /* SHERIFF2 */
+    textChurch2,  /* CHURCH2  */
+    textSaloon2,  /* SALOON2  */
+    textStable2,  /* STABLE2  */
+    textFarm2,    /* FARM2  */
 };
 
 const char* Building::description(const uint8_t id) {

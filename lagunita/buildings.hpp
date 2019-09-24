@@ -29,15 +29,20 @@ class Building {
     cactus,
     tree,
     /* upgrades */
-    palace,
+    house2,
     bank2,
+    sheriff2,
+    church2,
+    saloon2,
+    stable2,
+    farm2,
     /* specials */
     count,
     actions = empty,
     housing = house,
     services = church,
     nature = weed,
-    upgrades = palace,
+    upgrades = house2,
   };
 
   static const uint8_t ACTIONS = static_cast<uint8_t>(IDs::actions);
