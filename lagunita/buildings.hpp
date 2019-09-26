@@ -28,6 +28,8 @@ class Building {
     weed,
     cactus,
     tree,
+    /* special */
+    totem,
     /* upgrades */
     house2,
     bank2,
@@ -36,7 +38,7 @@ class Building {
     saloon2,
     stable2,
     farm2,
-    /* specials */
+    /* categories */
     count,
     actions = empty,
     housing = house,

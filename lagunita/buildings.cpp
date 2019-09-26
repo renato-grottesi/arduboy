@@ -20,6 +20,7 @@ const Building buildings[static_cast<uint8_t>(Building::IDs::count)] PROGMEM = {
     {"WEED",    bmp_weed,     0,    2, 1, 1, 0,           0,      Building::IDs::empty},
     {"CACTUS",  bmp_cactus,   0,    2, 1, 1, 0,           0,      Building::IDs::empty},
     {"TREE",    bmp_tree,     0,    4, 2, 2, 0,           0,      Building::IDs::empty},
+    {"TTM",     bmp_totem,    0,    0, 1, 3, 0,           0,      Building::IDs::empty},
     {"HS2",     bmp_house2,   0,   55, 2, 2, 1,           0,      Building::IDs::empty},
     {"BNK2",    bmp_bank2,    4,  155, 2, 3, 5,           0,      Building::IDs::empty},
     {"SRFF2",   bmp_sheriff2, 2,  120, 2, 2, 2,           0,      Building::IDs::empty},
@@ -238,6 +239,7 @@ const char textChurch2[] PROGMEM = "";
 const char textSaloon2[] PROGMEM = "";
 const char textStable2[] PROGMEM = "";
 const char textFarm2[] PROGMEM = "";
+const char textTotem[] PROGMEM = "";
 #if 0
 const char templ[] PROGMEM = 
     "            \n"  /**/
@@ -268,6 +270,7 @@ const char* const descriptions[static_cast<uint8_t>(Building::IDs::count)] PROGM
     textWeed,     /* WEED     */
     textCactus,   /* CACTUS   */
     textTree,     /* TREE     */
+    textTotem,    /* TOTEM    */
     textHouse2,   /* HOUSE2   */
     textBank2,    /* BANK2    */
     textSheriff2, /* SHERIFF2 */

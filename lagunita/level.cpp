@@ -90,6 +90,12 @@ void Level::init() {
   tiles[river_in].building = Building::IDs::empty;
   tiles[river_out].building = Building::IDs::empty;
 
+  /* Add 2 special totems. */
+  tiles[1 * (size / 3) - 1].building = Building::IDs::empty;
+  tiles[1 * (size / 3) + 0].building = Building::IDs::totem;
+  tiles[2 * (size / 3) - 1].building = Building::IDs::empty;
+  tiles[2 * (size / 3) + 0].building = Building::IDs::totem;
+
   /* Init the random walkers and birds */
   for (uint8_t i = 0; i < npc_count; i++) {
     walking[i] = rand() % (size * 8);
@@ -209,9 +215,14 @@ void Level::onInput(Input dir) {
         pause();
       } else {
         bool replace = true;
+        uint16_t cidx = (camera + 7) % size;
 
         if (Building::IDs::empty == currBuil) {
-          cursorOverlaps(true);
+          if (Building::IDs::totem != tiles[cidx].building) {
+            cursorOverlaps(true);
+          } else {
+            replace = false;
+          }
         } else {
           Building::IDs collision = buildCollides();
           if (Building::IDs::tree == collision) {
@@ -226,11 +237,11 @@ void Level::onInput(Input dir) {
           }
         }
         if (replace) {
-          uint16_t cidx = (camera + 7) % size;
           // Destroy everything on the path of this building
           for (uint16_t i = 0; i < Building::width(currBuil); i++) {
             uint8_t del_b = static_cast<uint8_t>(tiles[(cidx + i) % size].building);
-            if (buildings[del_b].built > 0) {
+            if (buildings[del_b].built > 0 &&
+                del_b != static_cast<uint8_t>(Building::IDs::empty)) {
               buildings[del_b].built--;
             }
             tiles[(cidx + i) % size].building = Building::IDs::empty;
@@ -449,6 +460,12 @@ void Level::update() {
             break;
           }
         }
+        for (uint16_t i = (obj + size - 7); i < (obj + size + 16); i++) {
+          if (tiles[i % size].building == Building::IDs::totem) {
+            house_housing += 16;
+            break;
+          }
+        }
       }
       if (tiles[obj].building == Building::IDs::house2) {
         house_housing *= 2;
@@ -471,6 +488,12 @@ void Level::update() {
             break;
           }
         }
+        for (uint16_t i = (obj + size - 7); i < (obj + size + 16); i++) {
+          if (tiles[i % size].building == Building::IDs::totem) {
+            food += 33;
+            break;
+          }
+        }
       } else if ((tiles[obj].building == Building::IDs::farm2) && (unemployed > 0)) {
         food += 44;
         earnings += Building::profit(tiles[obj].building);
@@ -479,6 +502,12 @@ void Level::update() {
         for (uint16_t i = (obj + size - 6); i < (obj + size + 16); i++) {
           if (tiles[i % size].building == Building::IDs::water) {
             food += 22;
+            break;
+          }
+        }
+        for (uint16_t i = (obj + size - 7); i < (obj + size + 16); i++) {
+          if (tiles[i % size].building == Building::IDs::totem) {
+            food += 66;
             break;
           }
         }
@@ -493,6 +522,12 @@ void Level::update() {
             break;
           }
         }
+        for (uint16_t i = (obj + size - 7); i < (obj + size + 16); i++) {
+          if (tiles[i % size].building == Building::IDs::totem) {
+            food += 33;
+            break;
+          }
+        }
       }
     }
 
@@ -503,8 +538,7 @@ void Level::update() {
       } else if (tiles[obj].building == Building::IDs::bank2) {
         max_money += 5000;
       } else if ((tiles[obj].building == Building::IDs::water ||
-                  tiles[obj].building == Building::IDs::saloon ||
-                  tiles[obj].building == Building::IDs::mine) &&
+                  tiles[obj].building == Building::IDs::saloon) &&
                  unemployed > 0) {
         earnings += Building::profit(tiles[obj].building);
       } else if (tiles[obj].building == Building::IDs::tree ||
@@ -524,6 +558,18 @@ void Level::update() {
             churches_effectivity -= 16;
           } else if (bld == Building::IDs::saloon || bld == Building::IDs::mine) {
             churches_effectivity -= 32;
+          }
+          if (tiles[i % size].building == Building::IDs::totem) {
+            churches_effectivity -= 64;
+          }
+        }
+      } else if (tiles[obj].building == Building::IDs::mine && unemployed > 0) {
+        earnings += Building::profit(tiles[obj].building);
+        for (uint16_t i = (obj + size - 8); i < (obj + size + 16); i++) {
+          Building::IDs bld = tiles[i % size].building;
+          if (tiles[i % size].building == Building::IDs::totem) {
+            earnings += 99;
+            break;
           }
         }
       }
@@ -549,6 +595,9 @@ void Level::update() {
     // A saloon for every 24 people
     update_statistic(happiness, 24, saloons, population);
     // A church for every 100 people
+    if (churches_effectivity < 0) {
+      churches_effectivity = 0;
+    }
     int32_t church_corrected = (static_cast<int32_t>(population) - churches_effectivity) > 0
                                    ? population - churches_effectivity
                                    : population;
