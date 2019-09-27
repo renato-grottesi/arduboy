@@ -566,7 +566,6 @@ void Level::update() {
       } else if (tiles[obj].building == Building::IDs::mine && unemployed > 0) {
         earnings += Building::profit(tiles[obj].building);
         for (uint16_t i = (obj + size - 8); i < (obj + size + 16); i++) {
-          Building::IDs bld = tiles[i % size].building;
           if (tiles[i % size].building == Building::IDs::totem) {
             earnings += 99;
             break;
@@ -725,6 +724,12 @@ void Level::render() {
   frame++;
 
   int8_t x_off = (camera_sign ? (1) : (-1)) * (static_cast<int8_t>(camera_off));
+
+  if (tutorVisible) {
+    drawing.excludeVerticalBar(32, 32 + 64);
+  } else {
+    drawing.excludeNothing();
+  }
 
   for (uint8_t i = 0; i < npc_count; i++) {
     if (!(frame % 1)) {

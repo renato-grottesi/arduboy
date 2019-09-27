@@ -46,6 +46,31 @@ class Drawing {
   /* Lake reflection effect. */
   void waterReflection(uint8_t frame);
 
+  /* Set a vertical bar to exclude from drawing. */
+  void excludeVerticalBar(uint8_t l, uint8_t r) {
+    ex_l = l;
+    ex_r = r;
+  }
+
+  /* Remove any exclusion. */
+  void excludeNothing() {
+    ex_l = 0xff;
+    ex_r = 0xff;
+  }
+
  private:
+  bool outOfBounds(int16_t x, int16_t y, uint8_t w, uint8_t h) {
+    if (x + w < 0 || x > WIDTH - 1 || y + h < 0 || y > HEIGHT - 1) {
+      return true;
+    }
+
+    if (x >= ex_l && (x + w) < ex_r) {
+      return true;
+    }
+    return false;
+  }
+
   uint8_t* sBuffer;
+  uint8_t ex_l = 0xff;
+  uint8_t ex_r = 0xff;
 };

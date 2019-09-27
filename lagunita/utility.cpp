@@ -6,7 +6,7 @@ void Drawing::drawBitmapPlain(int16_t x,
                               const uint8_t* bitmap,
                               uint8_t w,
                               uint8_t h) {
-  if (x + w < 0 || x > WIDTH - 1 || y + h < 0 || y > HEIGHT - 1) {
+  if (outOfBounds(x, y, w, h)) {
     return;
   }
 
@@ -48,7 +48,7 @@ void Drawing::drawBitmapMirrored(int16_t x,
                                  const uint8_t* bitmap,
                                  uint8_t w,
                                  uint8_t h) {
-  if (x + w < 0 || x > WIDTH - 1 || y + h < 0 || y > HEIGHT - 1) {
+  if (outOfBounds(x, y, w, h)) {
     return;
   }
 
@@ -92,7 +92,7 @@ void Drawing::drawBitmapAlpha(int16_t x,
                               const uint8_t* bitmap,
                               uint8_t w,
                               uint8_t h) {
-  if (x + w < 0 || x > WIDTH - 1 || y + h < 0 || y > HEIGHT - 1) {
+  if (outOfBounds(x, y, w, h)) {
     return;
   }
 
@@ -174,6 +174,9 @@ void Drawing::waterReflection(uint8_t frame) {
   for (uint16_t y = 0; y < 2; y++) {
     /* Read all 128 columns. */
     for (uint16_t x = 0; x < WIDTH; x++) {
+      if (x >= ex_l && x < ex_r) {
+        continue;
+      }
       /* Init destination color as black. */
       uint8_t dst_col = 0x00;
 
