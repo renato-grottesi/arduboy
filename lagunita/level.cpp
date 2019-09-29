@@ -193,22 +193,22 @@ void Level::onInput(Input dir) {
       break;
     case Input::a: {
       uint8_t idx = static_cast<uint8_t>(currBuil);
-      if (money < (Building::cost(idx) * 5)) {
+      if (money < Building::cost(idx)) {
         snprintf_P(tutor, tutorLen, PSTR("\nYOU HAVE\nNOT ENOUGH\nMONEY TO\nBUILD."));
         tutorVisible = true;
       } else if (Building::IDs::upgrade == currBuil) {
         Building::IDs current = cursorOverlaps(false);
         Building::IDs upgrade = Building::upgrade(current);
         if (upgrade != Building::IDs::empty) {
-          uint8_t cost = Building::cost(upgrade);
-          if (money < (cost * 5)) {
+          uint16_t cost = Building::cost(upgrade);
+          if (money < cost) {
             snprintf_P(tutor, tutorLen, PSTR("\nYOU HAVE\nNOT ENOUGH\nMONEY TO\nUPGRADE."));
             tutorVisible = true;
           } else {
             cursorOverlaps(true, upgrade);
             uint8_t upgrade_u8 = static_cast<uint8_t>(upgrade);
             buildings[upgrade_u8].built = min(buildings[upgrade_u8].built + 1, 1024);
-            money -= cost * 5;
+            money -= cost;
           }
         }
       } else if (Building::IDs::back == currBuil) {
@@ -259,7 +259,7 @@ void Level::onInput(Input dir) {
           }
           buildings[static_cast<uint8_t>(currBuil)].built =
               min(buildings[static_cast<uint8_t>(currBuil)].built + 1, 1024);
-          money -= Building::cost(idx) * 5;
+          money -= Building::cost(idx);
         }
       }
       lastPressed = Input::a;
@@ -567,7 +567,7 @@ void Level::update() {
         earnings += Building::profit(tiles[obj].building);
         for (uint16_t i = (obj + size - 8); i < (obj + size + 16); i++) {
           if (tiles[i % size].building == Building::IDs::totem) {
-            earnings += 99;
+            earnings += 55;
             break;
           }
         }
@@ -846,14 +846,14 @@ void Level::render() {
     Building::IDs upgrade = Building::upgrade(current);
     /* Only show the price for upgradeable buildings. */
     if (upgrade != Building::IDs::empty) {
-      tinyfont.print(5 * Building::cost(upgrade));
+      tinyfont.print(Building::cost(upgrade));
     } else if (static_cast<uint8_t>(current) >= static_cast<uint8_t>(Building::IDs::upgrades)) {
       tinyfont.print("MAXED");
     } else {
       tinyfont.print("---");
     }
   } else {
-    tinyfont.print(5 * Building::cost(sel));
+    tinyfont.print(Building::cost(sel));
   }
 
   snprintf_P(tmp_str, 16, PSTR("%9d$"), money);

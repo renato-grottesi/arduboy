@@ -60,7 +60,7 @@ class Building {
   /* Convenience functions for reading from PROGMEM */
   const __FlashStringHelper* name() const;
   const uint8_t jobs() const;
-  const uint8_t cost() const;
+  const uint16_t cost() const;
   const uint8_t width() const;
   const uint8_t height() const;
   const uint8_t maintenance() const;
@@ -75,8 +75,8 @@ class Building {
   static const uint8_t jobs(const uint8_t id);
   static const uint8_t jobs(IDs id) { return jobs(static_cast<uint8_t>(id)); };
   /* How much does it cost to construct the building. */
-  static const uint8_t cost(const uint8_t id);
-  static const uint8_t cost(IDs id) { return cost(static_cast<uint8_t>(id)); };
+  static const uint16_t cost(const uint8_t id);
+  static const uint16_t cost(IDs id) { return cost(static_cast<uint8_t>(id)); };
   /* Width in tiles (8px). */
   static const uint8_t width(const uint8_t id);
   static const uint8_t width(IDs id) { return width(static_cast<uint8_t>(id)); };
@@ -104,7 +104,7 @@ class Building {
   const char _name[8];
   const uint8_t* const _bitmap;
   const uint8_t _jobs;
-  const uint8_t _cost;
+  const uint16_t _cost;
   const uint8_t _width;
   const uint8_t _height;
   const uint8_t _maintenance;
