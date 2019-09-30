@@ -727,8 +727,6 @@ void Level::render() {
 
   if (tutorVisible) {
     drawing.excludeVerticalBar(32, 32 + 64);
-  } else {
-    drawing.excludeNothing();
   }
 
   for (uint8_t i = 0; i < npc_count; i++) {
@@ -880,4 +878,6 @@ void Level::render() {
   if (camera_off > 0) {
     camera_off -= camera_scrolls < 8 ? 1 : (camera_scrolls < 32 ? 2 : 4);
   }
+
+  drawing.excludeNothing();
 }
