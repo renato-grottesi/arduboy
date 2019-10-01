@@ -45,9 +45,10 @@ class Level {
    * expensive division operations. */
   static const uint16_t size = 512;
 
-  /* Potentially use a bit field to pack more fields in a byte. */
+  /* Use a bit field to pack more fields in a byte. */
   struct {
-    Building::IDs building;
+    Building::IDs building : 5;
+    uint8_t progress : 3;
   } tiles[size] = {};
 
   uint16_t river_in = 0;  /*  X coordinate where the river goes into the lake */
@@ -100,4 +101,8 @@ class Level {
   Building::IDs buildCollides();
   Building::IDs cursorOverlaps(bool clear = false,
                                Building::IDs replaceWith = Building::IDs::empty);
+  void setTileEmpty(uint16_t t) {
+    tiles[t].building = Building::IDs::empty;
+    tiles[t].progress = 0;
+  }
 };

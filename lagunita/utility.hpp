@@ -41,7 +41,12 @@ class Drawing {
   /* Draw a bitmap that is transparent from the top
      down to the first white pixel.
    */
-  void drawBitmapAlpha(int16_t x, int16_t y, const uint8_t* bitmap, uint8_t w, uint8_t h);
+  void drawBitmapAlpha(int16_t x,
+                       int16_t y,
+                       const uint8_t* bitmap,
+                       uint8_t w,
+                       uint8_t h,
+                       uint8_t skipsCount = 0);
 
   /* Lake reflection effect. */
   void waterReflection(uint8_t frame);

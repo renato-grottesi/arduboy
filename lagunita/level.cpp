@@ -69,31 +69,34 @@ void Level::init() {
     switch (r) {
       case 1:
         tiles[i].building = Building::IDs::cactus;
+        tiles[i].progress = 0b111;
         break;
       case 2:
         tiles[i].building = Building::IDs::weed;
+        tiles[i].progress = 0b111;
         break;
       /* Trees are non removable and add to the strategy: let's double them. */
       case 3:
       case 4:
         tiles[i].building = Building::IDs::tree;
+        tiles[i].progress = 0b111;
         /* After a tree there must be a blank space, so reset the mask. */
         mask = 0x00;
         break;
       default:
-        tiles[i].building = Building::IDs::empty;
+        setTileEmpty(i);
         break;
     }
   }
 
   /* Exceptions for rivers. */
-  tiles[river_in].building = Building::IDs::empty;
-  tiles[river_out].building = Building::IDs::empty;
+  setTileEmpty(river_in);
+  setTileEmpty(river_out);
 
   /* Add 2 special totems. */
-  tiles[1 * (size / 3) - 1].building = Building::IDs::empty;
+  setTileEmpty(1 * (size / 3) - 1);
   tiles[1 * (size / 3) + 0].building = Building::IDs::totem;
-  tiles[2 * (size / 3) - 1].building = Building::IDs::empty;
+  setTileEmpty(2 * (size / 3) - 1);
   tiles[2 * (size / 3) + 0].building = Building::IDs::totem;
 
   /* Init the random walkers and birds */
@@ -244,7 +247,7 @@ void Level::onInput(Input dir) {
                 del_b != static_cast<uint8_t>(Building::IDs::empty)) {
               buildings[del_b].built--;
             }
-            tiles[(cidx + i) % size].building = Building::IDs::empty;
+            setTileEmpty((cidx + i) % size);
           }
 
           tiles[cidx].building = currBuil;
@@ -352,6 +355,7 @@ Building::IDs Level::cursorOverlaps(bool clear, Building::IDs replaceWith) {
               buildings[del_b].built--;
             }
             tiles[lidx].building = replaceWith;
+            tiles[lidx].progress = 0;
           }
           return id;
         }
@@ -426,7 +430,10 @@ void Level::update() {
     }
   }
 
+  static uint8_t updateProgress = 0;
+
   if ((time - timeLastUpdate) > 100) {
+    updateProgress = (updateProgress + 1) % 8;
     uint16_t max_money = 2500;
     timeLastUpdate = time;
     housing = 0;
@@ -471,6 +478,9 @@ void Level::update() {
         house_housing *= 2;
       }
       housing += house_housing;
+      if (tiles[obj].building != Building::IDs::empty && 0 == updateProgress) {
+        tiles[obj].progress = min(0b111, tiles[obj].progress + 1);
+      }
     }
 
     int16_t unemployed = population;
@@ -809,8 +819,9 @@ void Level::render() {
     bmp = Building::bitmap(id);
     uint8_t w = Building::width(id);
     uint8_t h = Building::height(id);
+    uint8_t p = tiles[moved].progress + 1;
     uint8_t y = (4 - h) * 8 + 6;
-    drawing.drawBitmapAlpha(x_off + obj * 8, y, bmp, w * 8, h * 8);
+    drawing.drawBitmapAlpha(x_off + obj * 8, y, bmp, w * 8, h * 8, h * (8 - p));
   }
 
   uint8_t sel = static_cast<uint8_t>(currBuil);

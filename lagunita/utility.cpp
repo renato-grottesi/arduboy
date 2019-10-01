@@ -91,7 +91,8 @@ void Drawing::drawBitmapAlpha(int16_t x,
                               int16_t y,
                               const uint8_t* bitmap,
                               uint8_t w,
-                              uint8_t h) {
+                              uint8_t h,
+                              uint8_t skipsCount) {
   if (outOfBounds(x, y, w, h)) {
     return;
   }
@@ -121,16 +122,21 @@ void Drawing::drawBitmapAlpha(int16_t x,
         if (iCol + x > (WIDTH - 1)) {
           break;
         }
+        uint8_t skips = a * 8;
         if (iCol + x >= 0) {
           if (bRow >= 0) {
             uint8_t src_byte = pgm_read_byte(bitmap + (a * w) + iCol) << yOffset;
-            if (bits[iCol]) {
+            if (bits[iCol] && 0 == skipsCount) {
               /* full overwrite of the background */
               sBuffer[(bRow * WIDTH) + x + iCol] &= ~(0xff << yOffset);
               sBuffer[(bRow * WIDTH) + x + iCol] |= src_byte;
             } else {
               /* proceed bit by bit vertically */
-              for (uint8_t b = 0; b < yOffset; b++) {
+              for (uint8_t b = 0; b < (8 - yOffset); b++) {
+                skips++;
+                if (skips < skipsCount) {
+                  continue;
+                }
                 uint8_t bitmask = (0x1 << (b + yOffset));
                 uint8_t bitmap_bit = src_byte & bitmask;
                 /* keep or delete the destination's pixel */
@@ -144,13 +150,17 @@ void Drawing::drawBitmapAlpha(int16_t x,
           }
           if (yOffset && bRow < (HEIGHT / 8) - 1 && bRow > -2) {
             uint8_t src_byte = pgm_read_byte(bitmap + (a * w) + iCol) >> (8 - yOffset);
-            if (bits[iCol]) {
+            if (bits[iCol] && 0 == skipsCount) {
               /* full overwrite of the background */
               sBuffer[((bRow + 1) * WIDTH) + x + iCol] &= ~(0xff >> (8 - yOffset));
               sBuffer[((bRow + 1) * WIDTH) + x + iCol] |= src_byte;
             } else {
               /* proceed bit by bit vertically */
               for (uint8_t b = 0; b < yOffset; b++) {
+                skips++;
+                if (skips < skipsCount) {
+                  continue;
+                }
                 uint8_t bitmask = (0x1 << b);
                 /* keep or delete the destination's pixel */
                 uint8_t bitmap_bit = src_byte & bitmask;
