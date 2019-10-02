@@ -21,13 +21,13 @@ const Building buildings[static_cast<uint8_t>(Building::IDs::count)] PROGMEM = {
     {"CACTUS",  bmp_cactus,   0,    15, 1, 1, 0,           0,      Building::IDs::empty},
     {"TREE",    bmp_tree,     0,    30, 2, 2, 0,           0,      Building::IDs::empty},
     {"TTM",     bmp_totem,    0,     0, 1, 3, 0,           0,      Building::IDs::empty},
-    {"HS2",     bmp_house2,   0,   250, 2, 2, 1,           0,      Building::IDs::empty},
-    {"BNK2",    bmp_bank2,    4,  5000, 2, 3, 5,           0,      Building::IDs::empty},
+    {"HS2",     bmp_house2,   1,   250, 2, 2, 1,           0,      Building::IDs::empty},
+    {"BNK2",    bmp_bank2,    7,  5000, 2, 3, 5,           0,      Building::IDs::empty},
     {"SRFF2",   bmp_sheriff2, 2,  3000, 2, 2, 2,           0,      Building::IDs::empty},
-    {"CRC2",    bmp_church2,  1,  1500, 3, 3, 2,           0,      Building::IDs::empty},
-    {"SLN2",    bmp_saloon2,  8,  1000, 3, 3, 0,           5,      Building::IDs::empty},
-    {"STBL2",   bmp_stable2,  2,  1000, 4, 3, 4,           0,      Building::IDs::empty},
-    {"FRM2",    bmp_farm2,    8,  1000, 4, 3, 0,          20,      Building::IDs::empty},
+    {"CRC2",    bmp_church2,  2,  1500, 3, 3, 2,           0,      Building::IDs::empty},
+    {"SLN2",    bmp_saloon2, 18,  1000, 3, 3, 0,           5,      Building::IDs::empty},
+    {"STBL2",   bmp_stable2,  5,  1000, 4, 3, 4,           0,      Building::IDs::empty},
+    {"FRM2",    bmp_farm2,   18,  1000, 4, 3, 0,          20,      Building::IDs::empty},
     // clang-format on
 };
 

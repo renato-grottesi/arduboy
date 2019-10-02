@@ -632,9 +632,9 @@ void Level::update() {
       money = 0;
     }
 
-    uint16_t stats =
+    uint32_t stats =
         (static_cast<uint16_t>(environment) + happiness + spirituality + safety) / 4;
-    uint16_t max_housing = (housing * stats) / 100;
+    uint16_t max_housing = (static_cast<uint32_t>(housing) * stats) / 100;
 
     max_housing = max_housing > jobs ? jobs : max_housing;
 
