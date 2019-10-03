@@ -1,17 +1,16 @@
 #include "events.hpp"
 
 const char textHouse[] PROGMEM =
-    "\n"             /**/
-    "WELCOME TO\n"   /**/
-    "LAGUNITA,\n"    /**/
-    "A SMALL LAKE\n" /**/
-    "IN THE WILD\n"  /**/
-    "WILD WEST.\n"   /**/
-    "\n"             /**/
-    "BUILD SOME\n"   /**/
-    "HOUSES TO\n"    /**/
-    "INCREASE THE\n" /**/
-    "POPULATION.\n"; /**/
+    "\n"              /**/
+    "WELCOME TO\n"    /**/
+    "LAGUNITA,\n"     /**/
+    "A SMALL LAKE\n"  /**/
+    "IN THE WILD\n"   /**/
+    "WILD WEST.\n"    /**/
+    "\n"              /**/
+    "PRESS A TO\n"    /**/
+    "BUILD YOUR\n"    /**/
+    "FIRST HOUSE.\n"; /**/
 const char textFarm[] PROGMEM =
     "\n"             /**/
     "BUILD A FARM\n" /**/
@@ -195,24 +194,6 @@ const char* const texts[Events::count] PROGMEM = {
     textUpgrade, /* UPGRADE */
 };
 
-static const uint16_t onMoney[Events::count] PROGMEM = {
-    0,    /* HOUSE   */
-    50,   /* FARM    */
-    700,  /* WATER   */
-    900,  /* SALOON  */
-    1100, /* STABLE  */
-    1300, /* MINE    */
-    1500, /* SHERIFF */
-    2000, /* CHURCH  */
-    2500, /* BANK    */
-    3000, /* MILL    */
-    3500, /* CLEAR   */
-    4000, /* TREE    */
-    4500, /* CACTUS  */
-    5000, /* WEED    */
-    1000, /* UPGRADE */
-};
-
 static const uint16_t onPopulation[Events::count] PROGMEM = {
     0,   /* HOUSE   */
     1,   /* FARM    */
@@ -279,12 +260,10 @@ EventState Events::update(
     EventState ev,
     uint8_t id,
     uint16_t population,
-    uint16_t money,
     Building::Status buildings[static_cast<uint8_t>(Building::IDs::count)]) {
   switch (ev) {
     case EventState::untriggered:
-      if (money >= pgm_read_word(&onMoney[id]) &&
-          population >= pgm_read_word(&onPopulation[id]) &&
+      if (population >= pgm_read_word(&onPopulation[id]) &&
           (buildings[static_cast<uint8_t>(pgm_read_byte(&dependsOn[id]))].built > 0)) {
         return EventState::justTriggered;
       } else {

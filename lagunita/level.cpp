@@ -717,7 +717,7 @@ void Level::update() {
       } else {
         /* Check if any tutorial event is ready to trigger. */
         for (uint8_t t = 0; t < Events::count; t++) {
-          tutorials[t] = Events::update(tutorials[t], t, population, money, buildings);
+          tutorials[t] = Events::update(tutorials[t], t, population, buildings);
           if (tutorials[t] == EventState::justTriggered) {
             uint8_t b = Events::buildingUnlocked(t);
             buildings[b].enabled = true;
