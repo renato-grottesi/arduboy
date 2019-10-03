@@ -200,10 +200,10 @@ static const uint16_t onPopulation[Events::count] PROGMEM = {
     10,  /* WATER   */
     15,  /* SALOON  */
     20,  /* STABLE  */
-    25,  /* MINE    */
-    30,  /* SHERIFF */
-    35,  /* CHURCH  */
-    50,  /* BANK    */
+    30,  /* MINE    */
+    50,  /* SHERIFF */
+    65,  /* CHURCH  */
+    75,  /* BANK    */
     100, /* MILL    */
     150, /* CLEAR   */
     200, /* TREE    */
@@ -241,11 +241,11 @@ static const Building::IDs dependsOn[Events::count] PROGMEM = {
     Building::IDs::sheriff, /* CHURCH  */
     Building::IDs::church,  /* BANK    */
     Building::IDs::bank,    /* MILL    */
-    Building::IDs::mill,    /* CLEAR   */
-    Building::IDs::empty,   /* TREE    */
-    Building::IDs::tree,    /* CACTUS  */
-    Building::IDs::cactus,  /* WEED    */
-    Building::IDs::church,  /* UPGRADE */
+    Building::IDs::back,    /* CLEAR   */
+    Building::IDs::back,    /* TREE    */
+    Building::IDs::back,    /* CACTUS  */
+    Building::IDs::back,    /* WEED    */
+    Building::IDs::back,    /* UPGRADE */
 };
 
 const char* Events::getText(uint8_t id) {
