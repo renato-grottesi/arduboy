@@ -57,11 +57,6 @@ const char textMine[] PROGMEM =
     "THE INCOME.\n"; /**/
 const char textBank[] PROGMEM =
     "\n"             /**/
-    "THERE IS NO\n"  /**/
-    "SPACE LEFT\n"   /**/
-    "TO STORE ALL\n" /**/
-    "THE MONEY!\n"   /**/
-    "\n"             /**/
     "BUILD A BANK\n" /**/
     "TO INCREASE \n" /**/
     "GOLD STORAGE\n" /**/
@@ -114,9 +109,6 @@ const char textEmpty[] PROGMEM =
     "BUILDINGS.\n"; /**/
 const char textTree[] PROGMEM =
     "\n"              /**/
-    "IT'S SO\n"       /**/
-    "WARM...\n"       /**/
-    "\n"              /**/
     "PLANT A FEW\n"   /**/
     "TREES TO\n"      /**/
     "PROVIDE\n"       /**/
@@ -125,24 +117,13 @@ const char textTree[] PROGMEM =
     "LAGUNITIANS!\n"; /**/
 const char textCactus[] PROGMEM =
     "\n"             /**/
-    "DID YOU TRY\n"  /**/
-    "THE FRUITS\n"   /**/
-    "FROM OUR\n"     /**/
-    "LOCAL CACTUS\n" /**/
-    "PLANTS?\n"      /**/
-    "\n"             /**/
     "NOW YOU CAN\n"  /**/
     "PLANT YOUR\n"   /**/
-    "OWN!\n";        /**/
+    "OWN CACTAI!\n"; /**/
 const char textWeed[] PROGMEM =
-    "\n"            /**/
-    "DO YOU EVER\n" /**/
-    "REGRET\n"      /**/
-    "CUTTING ALL\n" /**/
-    "THE WEED?\n"   /**/
-    "\n"            /**/
-    "TAKE SOME\n"   /**/
-    "SEEDS.\n";     /**/
+    "\n"             /**/
+    "TAKE SOME\n"    /**/
+    "WEED SEEDS!\n"; /**/
 const char textStable[] PROGMEM =
     "\n"             /**/
     "THE QUALITY\n"  /**/

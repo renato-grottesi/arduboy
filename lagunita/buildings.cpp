@@ -113,15 +113,10 @@ const char textHouse[] PROGMEM =
     "ATTRACT MORE\n"  /**/
     "PEOPLE.\n";      /**/
 const char textFarm[] PROGMEM =
-    "WORKERS ARE\n"  /**/
-    "ALLOCATED\n"    /**/
-    "TO FARMS\n"     /**/
-    "FIRST.\n"       /**/
-    "IF YOU BUILD\n" /**/
-    "TOO MANY,\n"    /**/
-    "OTHER JOBS\n"   /**/
-    "WILL NOT BE\n"  /**/
-    "TAKEN.\n";      /**/
+    "WORKERS ARE\n" /**/
+    "ALLOCATED\n"   /**/
+    "TO FARMS\n"    /**/
+    "FIRST.\n";     /**/
 const char textWater[] PROGMEM =
     "WATER TOWERS\n" /**/
     "CAN HELP\n"     /**/
@@ -160,15 +155,12 @@ const char textBank[] PROGMEM =
     "ATTRACT MORE\n" /**/
     "THIEVES.\n";    /**/
 const char textSheriff[] PROGMEM =
-    "REMEMBER TO\n"   /**/
-    "CHECK THE\n"     /**/
-    "STATISTICS\n"    /**/
-    "TO KNOW WHEN\n"  /**/
-    "THE SECURITY\n"  /**/
-    "IS LOW AND\n"    /**/
-    "IT'S TIME TO\n"  /**/
-    "BUILD A NEW\n"   /**/
-    "SHERIFF POST\n"; /**/
+    "REMEMBER TO\n"  /**/
+    "CHECK THE\n"    /**/
+    "STATISTICS\n"   /**/
+    "TO KNOW WHEN\n" /**/
+    "SAFETY DROPS\n" /**/
+    "LOW!\n";        /**/
 const char textMill[] PROGMEM =
     "MILLS REFINE\n" /**/
     "SEEDS FROM\n"   /**/
@@ -187,7 +179,7 @@ const char textChurch[] PROGMEM =
     "CLERICS DO\n"   /**/
     "NOT LIKE\n"     /**/
     "TO BE AROUND\n" /**/
-    "TOO NOISY\n"    /**/
+    "OTHER NOISY\n"  /**/
     "BUILDINGS.\n";  /**/
 const char textEmpty[] PROGMEM =
     "NOW YOU CAN\n"   /**/
@@ -203,11 +195,8 @@ const char textTree[] PROGMEM =
     "THEM MORE\n"    /**/
     "ATTRACTIVE.\n"; /**/
 const char textCactus[] PROGMEM =
-    "DID YOU KNOW\n" /**/
-    "THAT THE\n"     /**/
-    "PLURAL FORM\n"  /**/
-    "OF CACTUS\n"    /**/
-    "IS CACTI?\n";   /**/
+    "IS CACTUSES\n" /**/
+    "OR CACTI?\n";  /**/
 const char textWeed[] PROGMEM =
     "PLANTING\n"    /**/
     "WEED IS A\n"   /**/

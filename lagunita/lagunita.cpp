@@ -326,33 +326,33 @@ void Lagunita::render() {
       break;
     case Menus::lost:
       tinyfont.setCursor(2, 0);
-      tinyfont.print(F(                         /**/
-                       "\n"                     /**/
-                       "      UNFORTUNATELY\n"  /**/
-                       "      YOU RUN OUT\n"    /**/
-                       "      OF MONEY.\n"      /**/
-                       "\n"                     /**/
-                       "      REMEMBER TO\n"    /**/
-                       "      CHECK THE\n"      /**/
-                       "      STATISTICS\n"     /**/
-                       "      WHILE PLAYING!\n" /**/
-                       "\n"                     /**/
-                       "      TRY AGAIN!\n"     /**/
+      tinyfont.print(F(                     /**/
+                       "\n"                 /**/
+                       "\tUNFORTUNATELY\n"  /**/
+                       "\tYOU RUN OUT\n"    /**/
+                       "\tOF MONEY.\n"      /**/
+                       "\n"                 /**/
+                       "\tREMEMBER TO\n"    /**/
+                       "\tCHECK THE\n"      /**/
+                       "\tSTATISTICS\n"     /**/
+                       "\tWHILE PLAYING!\n" /**/
+                       "\n"                 /**/
+                       "\tTRY AGAIN!\n"     /**/
                        ));
       break;
     case Menus::credits:
       tinyfont.setCursor(2, 0);
-      tinyfont.print(F(                            /**/
-                       "\n"                        /**/
-                       "LAGUNITA WAS CREATED BY\n" /**/
-                       "    RENATO GROTTESI\n"     /**/
-                       "\n"                        /**/
-                       "PROGRAMMING\n"             /**/
-                       "    RENATO GROTTESI\n"     /**/
-                       "    GUUS SLIEPEN\n"        /**/
-                       "\n"                        /**/
-                       "MUSIC BY\n"                /**/
-                       "    JOAKIM SIMONSSON\n"    /**/
+      tinyfont.print(F(                       /**/
+                       "\n"                   /**/
+                       "GAME DESIGN\n"        /**/
+                       "\tRENATO GROTTESI\n"  /**/
+                       "\n"                   /**/
+                       "PROGRAMMING\n"        /**/
+                       "\tRENATO GROTTESI\n"  /**/
+                       "\tGUUS SLIEPEN\n"     /**/
+                       "\n"                   /**/
+                       "MUSIC\n"              /**/
+                       "\tJOAKIM SIMONSSON\n" /**/
                        ));
       break;
     case Menus::help:
@@ -365,14 +365,12 @@ void Lagunita::render() {
                            "LAGUNITA WITH AS MANY\n"   /**/
                            "CITIZENS AS POSSIBLE.\n"   /**/
                            "\n"                        /**/
-                           "INCREASE YOUR PROFIT TO\n" /**/
-                           "KEEP UNLOCKING NEW AND\n"  /**/
-                           "EXCITING BUILDINGS.\n"     /**/
-                           "\n"                        /**/
-                           "PRESS THE RIGHT ARROW\n"   /**/
-                           "FOR MORE INSTRUCTIONS\n"   /**/
-                           "OR B TO GO BACK.\n"        /**/
+                           "INCREASE THE POPULATION\n" /**/
+                           "TO KEEP UNLOCKING NEW\n"   /**/
+                           "BUILDINGS.\n"              /**/
                            ));
+          tinyfont.setCursor(118, 58);
+          tinyfont.print(F("->"));
           break;
         case 1:
           tinyfont.print(F(                             /**/
@@ -385,10 +383,11 @@ void Lagunita::render() {
                            "BUILD THE CURRENTLY\n"      /**/
                            "SELECTED BUILDING.\n"       /**/
                            "PRESS BOTH TO RECENTER.\n"  /**/
-                           "\n"                         /**/
-                           "PRESS THE RIGHT ARROW\n"    /**/
-                           "FOR MORE INSTRUCTIONS.\n"   /**/
                            ));
+          tinyfont.setCursor(118, 58);
+          tinyfont.print(F("->"));
+          tinyfont.setCursor(2, 58);
+          tinyfont.print(F("<-"));
           break;
         case 2:
           tinyfont.print(F(                              /**/
@@ -402,9 +401,9 @@ void Lagunita::render() {
                            "\n"                          /**/
                            "PRESS B TO CHECK THE\n"      /**/
                            "STATISTICS.\n"               /**/
-                           "\n"                          /**/
-                           "PRESS B TO GO BACK.\n"       /**/
                            ));
+          tinyfont.setCursor(2, 58);
+          tinyfont.print(F("<-"));
           break;
         default:
           help_page = 0;
