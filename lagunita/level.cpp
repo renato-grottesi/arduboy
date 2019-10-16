@@ -95,8 +95,10 @@ void Level::init() {
   /* Add 2 special totems. */
   setTileEmpty(1 * (size / 3) - 1);
   tiles[1 * (size / 3) + 0].building = Building::IDs::totem;
+  tiles[1 * (size / 3) + 0].progress = 0b111;
   setTileEmpty(2 * (size / 3) - 1);
   tiles[2 * (size / 3) + 0].building = Building::IDs::totem;
+  tiles[2 * (size / 3) + 0].progress = 0b111;
 
   /* Init the random walkers and birds */
   for (uint8_t i = 0; i < npc_count; i++) {
@@ -249,17 +251,6 @@ void Level::onInput(Input dir) {
           }
 
           tiles[cidx].building = currBuil;
-          /* If a building just got built, let's show some hints about it. */
-          if (0 == buildings[static_cast<uint8_t>(currBuil)].built) {
-            Building::IDs upgrade = Building::upgrade(currBuil);
-            /* Check that no upgraded version of the building exists. */
-            if (0 == buildings[static_cast<uint8_t>(upgrade)].built) {
-              strncpy_P(tutor, Building::description(currBuil), tutorLen);
-              tutorVisible = true;
-            }
-          }
-          buildings[static_cast<uint8_t>(currBuil)].built =
-              min(buildings[static_cast<uint8_t>(currBuil)].built + 1, 1024);
           money -= Building::cost(idx);
         }
       }
@@ -482,6 +473,22 @@ void Level::update() {
       }
       housing += house_housing;
       if (tiles[obj].building != Building::IDs::empty && 0 == updateProgress) {
+        /* If we are about to complete a building, let's increase the built counters. */
+        if (tiles[obj].progress == 0b110) {
+          uint8_t sel = static_cast<uint8_t>(tiles[obj].building);
+
+          /* If a building just got built, let's show some hints about it. */
+          if (0 == buildings[sel].built) {
+            Building::IDs upgrade = Building::upgrade(sel);
+            /* Check that no upgraded version of the building exists. */
+            if (0 == buildings[static_cast<uint8_t>(upgrade)].built) {
+              strncpy_P(tutor, Building::description(sel), tutorLen);
+              tutorVisible = true;
+            }
+          }
+
+          buildings[sel].built = min(buildings[sel].built + 1, 1024);
+        }
         tiles[obj].progress = min(0b111, tiles[obj].progress + 1);
       }
     }
