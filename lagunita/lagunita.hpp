@@ -20,7 +20,7 @@ class Lagunita {
   void load();
 
  private:
-  enum class Menus : uint8_t { main, game, credits, help, lost };
+  enum class Menus : uint8_t { main, game, credits, help, lost, exit };
   enum class MainSelections : uint8_t { play, load, save, credits, help, audio };
   uint8_t help_page = 0;
   int16_t weed = 0;

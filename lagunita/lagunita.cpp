@@ -190,7 +190,9 @@ void Lagunita::update() {
             break;
         }
       }
-
+      if (arduboy.justPressed(B_BUTTON)) {
+        currentMenu = Menus::exit;
+      }
       break;
     case Menus::game:
       if (level.isPaused()) {
@@ -227,6 +229,14 @@ void Lagunita::update() {
       }
       if (arduboy.justPressed(LEFT_BUTTON)) {
         help_page--;
+      }
+      break;
+    case Menus::exit:
+      if (arduboy.justPressed(B_BUTTON)) {
+        currentMenu = Menus::main;
+      }
+      if (arduboy.justPressed(DOWN_BUTTON)) {
+        arduboy.exitToBootloader();
       }
       break;
     case Menus::lost:
@@ -325,19 +335,36 @@ void Lagunita::render() {
       level.render();
       break;
     case Menus::lost:
-      tinyfont.setCursor(2, 0);
-      tinyfont.print(F(                     /**/
-                       "\n"                 /**/
-                       "\tUNFORTUNATELY\n"  /**/
-                       "\tYOU RUN OUT\n"    /**/
-                       "\tOF MONEY.\n"      /**/
-                       "\n"                 /**/
-                       "\tREMEMBER TO\n"    /**/
-                       "\tCHECK THE\n"      /**/
-                       "\tSTATISTICS\n"     /**/
-                       "\tWHILE PLAYING!\n" /**/
-                       "\n"                 /**/
-                       "\tTRY AGAIN!\n"     /**/
+      tinyfont.setCursor(32, 0);
+      tinyfont.print(F(                   /**/
+                       "\n"               /**/
+                       "UNFORTUNATELY\n"  /**/
+                       "YOU RUN OUT\n"    /**/
+                       "OF MONEY.\n"      /**/
+                       "\n"               /**/
+                       "REMEMBER TO\n"    /**/
+                       "CHECK THE\n"      /**/
+                       "STATISTICS\n"     /**/
+                       "WHILE PLAYING!\n" /**/
+                       "\n"               /**/
+                       "TRY AGAIN!\n"     /**/
+                       ));
+      break;
+    case Menus::exit:
+      tinyfont.setCursor(32, 0);
+      tinyfont.print(F(                  /**/
+                       "\n"              /**/
+                       "YOU PRESSED\n"   /**/
+                       "THE B BUTTON.\n" /**/
+                       "\n"              /**/
+                       "PRESS B TO\n"    /**/
+                       "RETURN TO THE\n" /**/
+                       "MAIN MENU.\n"    /**/
+                       "\n"              /**/
+                       "PRESS DOWN IF\n" /**/
+                       "YOU WANT TO\n"   /**/
+                       "REFLASH YOUR\n"  /**/
+                       "ARDUBOY.\n"      /**/
                        ));
       break;
     case Menus::credits:
@@ -359,30 +386,34 @@ void Lagunita::render() {
       tinyfont.setCursor(2, 2);
       switch (help_page) {
         case 0:
-          tinyfont.print(F(                            /**/
-                           "BUILD A WILD WEST TOWN\n"  /**/
-                           "ON THE SHORE OF LAKE\n"    /**/
-                           "LAGUNITA WITH AS MANY\n"   /**/
-                           "CITIZENS AS POSSIBLE.\n"   /**/
-                           "\n"                        /**/
-                           "INCREASE THE POPULATION\n" /**/
-                           "TO KEEP UNLOCKING NEW\n"   /**/
-                           "BUILDINGS.\n"              /**/
+          tinyfont.print(F(                             /**/
+                           "BUILD A WILD WEST TOWN\n"   /**/
+                           "ON THE SHORE OF LAKE\n"     /**/
+                           "LAGUNITA WITH AS MANY\n"    /**/
+                           "CITIZENS AS POSSIBLE.\n"    /**/
+                           "\n"                         /**/
+                           "INCREASE THE POPULATION\n"  /**/
+                           "TO KEEP UNLOCKING NEW\n"    /**/
+                           "BUILDINGS.\n"               /**/
+                           "\n"                         /**/
+                           "PRESS B ON THE MAIN MENU\n" /**/
+                           "TO REFLASH YOUR ARDUBOY\n"  /**/
                            ));
           tinyfont.setCursor(118, 58);
           tinyfont.print(F("->"));
           break;
         case 1:
-          tinyfont.print(F(                             /**/
-                           "YOU CAN MOVE AROUND THE\n"  /**/
-                           "LEVEL WITH THE LEFT AND\n"  /**/
-                           "RIGHT ARROWS. LONG PRESS\n" /**/
-                           "FOR FAST SCROLLING.\n"      /**/
-                           "DOUBLE CLICK TO MOVE TO\n"  /**/
-                           "NEXT AVAILABLE SPOT TO\n"   /**/
-                           "BUILD THE CURRENTLY\n"      /**/
-                           "SELECTED BUILDING.\n"       /**/
-                           "PRESS BOTH TO RECENTER.\n"  /**/
+          tinyfont.print(F(                              /**/
+                           "YOU CAN MOVE AROUND THE\n"   /**/
+                           "LEVEL WITH THE LEFT AND\n"   /**/
+                           "RIGHT ARROWS. LONG PRESS\n"  /**/
+                           "FOR FAST SCROLLING.\n"       /**/
+                           "DOUBLE CLICK TO MOVE TO\n"   /**/
+                           "NEXT AVAILABLE SPOT TO\n"    /**/
+                           "BUILD THE CURRENTLY\n"       /**/
+                           "SELECTED BUILDING.\n"        /**/
+                           "PRESS BOTH LEFT AND RIGHT\n" /**/
+                           "TO RECENTER.\n"              /**/
                            ));
           tinyfont.setCursor(118, 58);
           tinyfont.print(F("->"));
