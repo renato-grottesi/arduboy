@@ -1,4 +1,4 @@
-# Remember that the binary file should be 28672 for the Program sections!
+# Remember that the max binary file should be 28672 for the Program sections!
 
 ARDUINO_LIBS = Arduboy2 EEPROM SPI
 BOARD_TAG    = leonardo

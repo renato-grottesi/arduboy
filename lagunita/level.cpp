@@ -917,7 +917,15 @@ void Level::render() {
     arduboy.drawBitmap(tile * 8, 0, bmp, 8, 8);
   }
 
-  for (uint8_t i = 0; i < npc_count; i++) {
+  /* Calculate the number of tubmleweeds to display as inverse proportional to houses built. */
+  uint16_t houses = buildings[static_cast<uint8_t>(Building::IDs::house)].built;
+  houses += buildings[static_cast<uint8_t>(Building::IDs::house2)].built;
+  int16_t tbweeds = npc_count - (houses / 8);
+  if (tbweeds > npc_count) {
+    tbweeds = npc_count;
+  }
+
+  for (uint8_t i = 0; i < tbweeds; i++) {
     int16_t pos = size + ((i % 2) ? (-flying[i]) : (flying[i]));
 
     // Tumbleweed
