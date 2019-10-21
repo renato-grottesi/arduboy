@@ -49,7 +49,7 @@ class Drawing {
                        uint8_t skipsCount = 0);
 
   /* Lake reflection effect. */
-  void waterReflection(uint8_t frame);
+  void waterReflection(uint8_t frame, uint16_t camera = 0);
 
   /* Set a vertical bar to exclude from drawing. */
   void excludeVerticalBar(uint8_t l, uint8_t r) {
@@ -78,4 +78,8 @@ class Drawing {
   uint8_t* sBuffer;
   uint8_t ex_l = 0xff;
   uint8_t ex_r = 0xff;
+
+  static const uint8_t waves_cnt = 16;
+  int16_t waves_x[waves_cnt] = {};  // global x
+  uint8_t waves_y[waves_cnt] = {};  // local y
 };

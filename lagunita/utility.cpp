@@ -179,7 +179,22 @@ void Drawing::drawBitmapAlpha(int16_t x,
 }
 
 /* Lake reflection effect. */
-void Drawing::waterReflection(uint8_t frame) {
+void Drawing::waterReflection(uint8_t frame, uint16_t camera) {
+  for (uint8_t w = 0; w < waves_cnt; w++) {
+    if ((frame % 32) == (w * 4)) {
+      waves_x[w] = (rand() & 0x7f) + camera;
+      waves_y[w] = rand() & 0x0f;
+    }
+  }
+
+  for (uint8_t w = 0; w < waves_cnt; w++) {
+    if ((frame % 8) == 0) {
+      waves_y[w] -= waves_y[w] > 0 ? 1 : 0;
+    }
+  }
+
+  uint8_t frame2 = frame / 2;
+
   /* Do the bottom 16 rows of pixels. */
   for (uint16_t y = 0; y < 2; y++) {
     /* Read all 128 columns. */
@@ -198,26 +213,33 @@ void Drawing::waterReflection(uint8_t frame) {
       /* Shuffle the 3 columns and OR them.*/
       uint8_t src_col = 0x00;
 
-      src_col = mirror[((frame >> 3) + 0) % 3];
+      src_col = mirror[((frame2 >> 3) + 0) % 3];
       dst_col |= (src_col & 0x80) >> 7;
-      src_col = mirror[((frame >> 3) + 1) % 3];
+      src_col = mirror[((frame2 >> 3) + 1) % 3];
       dst_col |= (src_col & 0x40) >> 5;
-      src_col = mirror[((frame >> 3) + 2) % 3];
+      src_col = mirror[((frame2 >> 3) + 2) % 3];
       dst_col |= (src_col & 0x20) >> 3;
-      src_col = mirror[((frame >> 3) + 1) % 3];
+      src_col = mirror[((frame2 >> 3) + 1) % 3];
       dst_col |= (src_col & 0x10) >> 1;
-      src_col = mirror[((frame >> 3) + 0) % 3];
+      src_col = mirror[((frame2 >> 3) + 0) % 3];
       dst_col |= (src_col & 0x08) << 1;
-      src_col = mirror[((frame >> 3) + 1) % 3];
+      src_col = mirror[((frame2 >> 3) + 1) % 3];
       dst_col |= (src_col & 0x04) << 3;
-      src_col = mirror[((frame >> 3) + 2) % 3];
+      src_col = mirror[((frame2 >> 3) + 2) % 3];
       dst_col |= (src_col & 0x02) << 5;
-      src_col = mirror[((frame >> 3) + 1) % 3];
+      src_col = mirror[((frame2 >> 3) + 1) % 3];
       dst_col |= (src_col & 0x01) << 7;
 
       /* Horizontal like at the top. */
       if (!y) {
         dst_col |= 0x01;
+      }
+
+      for (uint8_t w = 0; w < waves_cnt; w++) {
+        uint16_t x_off = waves_x[w] - camera;
+        if ((x > x_off && x < x_off + 3) && (y == waves_y[w] >> 3)) {
+          dst_col |= 0x1 << (waves_y[w] & 0b111);
+        }
       }
 
       /* Write to the frame buffer. */

@@ -282,7 +282,7 @@ void Lagunita::render() {
       y_off = (y_off < 0) ? (-y_off) : (y_off);
       drawing.drawBitmap(weed, 4 * 8 + y_off, &bmp_tumbleweed[((frame >> 3) % 8) * 8], 8, 8);
 
-      drawing.waterReflection(frame / 2);
+      drawing.waterReflection(frame);
 
       tinyfont.setCursor(bl_x_l + 10, bl_y - 6 * 2);
       if (level.isInProgress()) {

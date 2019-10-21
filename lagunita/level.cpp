@@ -54,7 +54,7 @@ void Level::init() {
   buildings[static_cast<uint8_t>(Building::IDs::back)].enabled = true;
   buildings[static_cast<uint8_t>(Building::IDs::back)].built = 1;
 
-  frameNextEvent = 2048 + (rand() & 2047);
+  frameNextEvent = 2048 + (rand() % 2047);
 
   /* Add some random vegetation. */
   uint8_t mask = 0x0f;
@@ -967,7 +967,7 @@ void Level::render() {
   tinyfont.print(tmp_str);
   tinyfont.maskText = false;
 
-  drawing.waterReflection(frame / 2);
+  drawing.waterReflection(frame, camera * 8 - x_off);
 
   if (tutorVisible) {
     arduboy.fillRoundRect(32, 0, 64, 64, 4, BLACK);
