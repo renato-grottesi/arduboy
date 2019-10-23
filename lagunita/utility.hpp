@@ -80,6 +80,6 @@ class Drawing {
   uint8_t ex_r = 0xff;
 
   static const uint8_t waves_cnt = 16;
-  int16_t waves_x[waves_cnt] = {};  // global x
-  uint8_t waves_y[waves_cnt] = {};  // local y
+  int16_t waves_x[waves_cnt] = {}; /* global x for the waves */
+  uint8_t waves_y[waves_cnt] = {}; /* local y for the waves  */
 };

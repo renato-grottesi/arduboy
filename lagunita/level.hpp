@@ -53,7 +53,7 @@ class Level {
     uint8_t progress : 3;
   } tiles[size] = {};
 
-  uint16_t river_in = 0;  /*  X coordinate where the river goes into the lake */
+  uint16_t river_in = 0;  /* X coordinate where the river goes into the lake */
   uint16_t river_out = 0; /* X coordinate where the river leaves the lake */
 
   static constexpr uint16_t fps = 32;
@@ -72,12 +72,12 @@ class Level {
   uint8_t spirituality;
   uint8_t environment;
 
-  // x coordinates for moving objects
+  /* x coordinates for moving objects */
   static const uint8_t npc_count = 16;
   uint16_t flying[npc_count];
   uint16_t walking[npc_count];
 
-  // Currently selected object
+  /* Currently selected object */
   Building::IDs currBuil = Building::IDs::house;
 
   uint16_t money = 999;

@@ -8,8 +8,8 @@ CPPFLAGS += -Wall -DARDUINO_AVR_LEONARDO -finline-limit=0
 CFLAGS   += -Wall -DARDUINO_AVR_LEONARDO
 
 # Setup the 7.3.0 avr toolchain that is bundled with the arduino ide
-# AVR_TOOLS_DIR = /home/renato/.local/share/umake/ide/arduino/hardware/tools/avr/
+# AVR_TOOLS_DIR = ~/.local/share/umake/ide/arduino/hardware/tools/avr/
 # Setup the path to the arduino dir that has libraries/Arduboy2
-# ARDUINO_DIR   = /home/renato/.local/share/umake/electronics/arduino/
+# ARDUINO_DIR   = ~/.local/share/umake/electronics/arduino/
 
 include /usr/share/arduino/Arduino.mk

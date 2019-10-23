@@ -111,7 +111,7 @@ void Level::init() {
 }
 
 void Level::onInput(Input dir) {
-  // If there is a tutorial displayed, only allow the b button
+  /* If there is a tutorial displayed, only allow the b button */
   if (tutorVisible && (dir != Input::b)) {
     return;
   }
@@ -240,7 +240,7 @@ void Level::onInput(Input dir) {
           }
         }
         if (replace) {
-          // Destroy everything on the path of this building
+          /* Destroy everything on the path of this building */
           for (uint16_t i = 0; i < Building::width(currBuil); i++) {
             uint8_t del_b = static_cast<uint8_t>(tiles[(cidx + i) % size].building);
             if (buildings[del_b].built > 0 &&
@@ -296,7 +296,7 @@ static void update_statistic(uint8_t& statistic,
                              uint8_t multiplier,
                              uint16_t count,
                              uint16_t denominator) {
-  // Assume numerator <= size and multiplier < 65536 / size
+  /* Assume numerator <= size and multiplier < 65536 / size */
   uint16_t numerator = count * multiplier;
 
   if (denominator < multiplier || numerator >= denominator) {
@@ -316,7 +316,7 @@ static void update_statistic(uint8_t& statistic,
 }
 
 static void setRGBled(uint8_t red, uint8_t green, uint8_t blue) {
-  // Use timer 1 OC1A/OC1B *and* OC1C
+  /* Use timer 1 OC1A/OC1B *and* OC1C */
   TCCR1A = _BV(COM1A1) | _BV(COM1A0) | _BV(COM1B1) | _BV(COM1B0) | _BV(COM1C1) | _BV(COM1C0) |
            _BV(WGM10);
   OCR1AL = blue;
@@ -328,7 +328,7 @@ Building::IDs Level::cursorOverlaps(bool clear, Building::IDs replaceWith) {
   uint16_t cidx = camera + 7;
   uint16_t cidxm = cidx % size;
 
-  // Check if we are in the middle of another building or tree
+  /* Check if we are in the middle of another building or tree */
   for (uint16_t i = 0; i < 4; i++) {
     uint16_t lidx = (cidxm + size - i) % size;
     Building::IDs id = tiles[lidx].building;
@@ -358,7 +358,7 @@ Building::IDs Level::cursorOverlaps(bool clear, Building::IDs replaceWith) {
 Building::IDs Level::buildCollides() {
   uint16_t cidxm = (camera + 7) % size;
 
-  // Check if there is another building or tree on the right
+  /* Check if there is another building or tree on the right */
   for (uint16_t i = 0; i < Building::width(currBuil); i++) {
     Building::IDs id = tiles[(cidxm + i) % size].building;
     if (Building::IDs::weed != id && Building::IDs::cactus != id &&
@@ -403,7 +403,7 @@ void Level::update() {
     bool left = arduboy.pressed(LEFT_BUTTON);
     bool right = arduboy.pressed(RIGHT_BUTTON);
     if (left && right) {
-      // Scroll back to the center position
+      /* Scroll back to the center position */
       camera /= 2;
       camera_scrolls = 0;
     } else if (left) {
@@ -609,11 +609,11 @@ void Level::update() {
       vegetation = 0;
     }
 
-    // Some vegetation for every 16 people
+    /* Some vegetation for every 16 people */
     update_statistic(environment, 16, vegetation, population);
-    // A saloon for every 24 people
+    /* A saloon for every 24 people */
     update_statistic(happiness, 24, saloons, population);
-    // A church for every 100 people
+    /* A church for every 100 people */
     if (churches_effectivity < 0) {
       churches_effectivity = 0;
     }
@@ -621,11 +621,11 @@ void Level::update() {
                                    ? population - churches_effectivity
                                    : population;
     update_statistic(spirituality, 100, churches, church_corrected);
-    // A sheriff for every 100 people with a penalty for banks
+    /* A sheriff for every 100 people with a penalty for banks */
     uint16_t bank_penalty = 32 * buildings[static_cast<uint8_t>(Building::IDs::bank)].built;
     update_statistic(safety, 100, sheriffs, population + bank_penalty);
 
-    // Use the minimum of all four statistics to change the RGB led color
+    /* Use the minimum of all four statistics to change the RGB led color */
     uint8_t ledval = min(min(min(environment, happiness), spirituality), safety) / 4;
     setRGBled(25 - ledval, ledval, 0);
 
@@ -760,7 +760,7 @@ static uint8_t getDither(int8_t duskLevel, uint8_t x) {
 }
 
 void Level::renderBackground(uint16_t frame) {
-  // Draw mountains
+  /* Draw mountains */
   int8_t x_off = (camera_sign ? (1) : (-1)) * (static_cast<int8_t>(camera_off));
 
   static const uint8_t topsvisible = 8;
@@ -818,7 +818,7 @@ void Level::renderBackground(uint16_t frame) {
             break;
           for (uint8_t y = 0; y < 4; y++) {
             if (y0 < y * 8) {
-              // do nothing
+              /* Do nothing */
             } else if (y0 < y * 8 + 8) {
               uint8_t mask = (255 >> (8 - (y0 & 7)));
               arduboy.sBuffer[x0 + y * 128] =
@@ -855,11 +855,11 @@ void Level::render() {
 
     int16_t pos = size + ((i % 2) ? (-flying[i]) : (flying[i]));
 
-    // Birds
+    /* Birds */
     drawing.drawBitmap((pos - camera * 8 + x_off) % (size * 8), 1 * 8,
                        &bmp_bird[((frame >> 2) % 4) * 8], 8, 8, i % 2);
 
-    // Draw two horses for each stable
+    /* Draw two horses for each stable */
     if (buildings[static_cast<uint8_t>(Building::IDs::stable)].built * 2 > i) {
       drawing.drawBitmap((size / 2 + pos - camera * 8 + x_off) % (size * 8), 6 + 4 * 8,
                          &bmp_horse[((frame >> 2) % 4) * 16], 16, 8, i % 2);
@@ -875,29 +875,29 @@ void Level::render() {
 
     int16_t pos = size + ((i % 2) ? (-walking[i]) : (walking[i]));
 
-    // Walking objects
+    /* Walking objects */
     drawing.drawBitmap((pos - camera * 8 + x_off) % (size * 8), 6 + 4 * 8,
                        &bmp_man[((frame >> 3) % 4) * 8], 8, 8, i % 2);
   }
 
-  // Camera affected objects
+  /* Camera affected objects */
   for (int16_t obj = -5; obj < 17; obj++) {
     uint16_t moved = (obj + size + camera) % size;
 
     const bool in_river = (moved == river_in || moved == river_out);
 
-    // Area where characters walk
+    /* Area where characters walk */
     const uint8_t* bmp = (in_river ? bmp_bridge : bmp_empty);
     arduboy.drawBitmap(x_off + obj * 8, 4 * 8 + 4, bmp, 8, 8);
 
-    // Lake shore area
+    /* Lake shore area */
     /* The river has 3 frames of animation while the ground has only 1. */
     uint8_t frames = in_river ? 3 : 1;
     bmp = in_river ? bmp_river : bmp_ground;
     bmp = bmp + 8 * ((frame >> 2) % frames);
     arduboy.drawBitmap(x_off + obj * 8, 5 * 8, bmp, 8, 8);
 
-    // Building area
+    /* Building area */
     Building::IDs b = tiles[moved].building;
 
     uint8_t id = static_cast<uint8_t>(b);
@@ -911,7 +911,7 @@ void Level::render() {
 
   uint8_t sel = static_cast<uint8_t>(currBuil);
 
-  // Current selection
+  /* Current selection */
   for (uint8_t tile = 7; tile < 7 + (Building::width(sel)); tile++) {
     const uint8_t* bmp = bmp_selection;
     arduboy.drawBitmap(tile * 8, 0, bmp, 8, 8);
@@ -928,14 +928,14 @@ void Level::render() {
   for (uint8_t i = 0; i < tbweeds; i++) {
     int16_t pos = size + ((i % 2) ? (-flying[i]) : (flying[i]));
 
-    // Tumbleweed
+    /* Tumbleweed */
     int16_t y_off = ((frame >> 3) % 8) - 4;
     y_off = (y_off < 0) ? (-y_off) : (y_off);
     drawing.drawBitmap((size / 4 + pos - camera * 8 + x_off) % (size * 8), 4 * 8 + y_off,
                        &bmp_tumbleweed[((frame >> 3) % 8) * 8], 8, 8);
   }
 
-  // GUI
+  /* GUI */
   char tmp_str[16];
 
   tinyfont.maskText = true;

@@ -53,8 +53,8 @@ class Building {
   static const uint8_t NATURE = static_cast<uint8_t>(IDs::nature);
 
   struct Status {
-    uint16_t built : 10;  // max 1023 buildings
-    bool enabled : 1;     // one bit enabled
+    uint16_t built : 10; /* max 1023 buildings  */
+    bool enabled : 1;    /* one bit for enabled */
   };
 
   /* Convenience functions for reading from PROGMEM */

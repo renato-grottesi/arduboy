@@ -1,34 +1,34 @@
 #include "lagunita.hpp"
 
 void Lagunita::init() {
-  // initialize the random seed with noise
+  /* initialize the random seed with noise */
   srand(arduboy.generateRandomSeed());
 
-  // initiate arduboy instance
+  /* initiate arduboy instance */
   arduboy.begin();
 
-  // set the framerate to 32 FPS
+  /* set the framerate to 32 FPS */
   arduboy.setFrameRate(32);
 
-  // start the music
+  /* start the music */
   arduboy.audio.begin();
 }
 
 void Lagunita::loop() {
-  // pause render until it's time for the next frame
+  /* pause render until it's time for the next frame */
   if (!(arduboy.nextFrame())) {
     return;
   }
-  // update the scene
+  /* update the scene */
   update();
-  // render the scene
+  /* render the scene */
   render();
 }
 
 void Lagunita::update() {
   arduboy.pollButtons();
 
-  // keep the music in a loop
+  /* keep the music in a loop */
   if (!music.isPlaying()) {
     music.play();
   }
@@ -248,10 +248,10 @@ void Lagunita::update() {
 }
 
 void Lagunita::render() {
-  // clear the whole screen to black
+  /* clear the whole screen to black */
   arduboy.clear();
 
-  // render the menus
+  /* render the menus */
   switch (currentMenu) {
     case Menus::main: {
       static uint16_t frame = 0;
@@ -276,7 +276,7 @@ void Lagunita::render() {
       arduboy.drawCircle(bl_x_r + 36, 4, 1);
       arduboy.drawBitmap(post_len, 0, bmp_decor, 16, 16);
 
-      // Tumbleweed
+      /* Tumbleweed */
       weed = (weed < 256) ? (weed + 1) : -rand() % 256;
       int16_t y_off = ((frame >> 2) % 16) - 8;
       y_off = (y_off < 0) ? (-y_off) : (y_off);
@@ -443,7 +443,7 @@ void Lagunita::render() {
       break;
   }
 
-  // tell the arduboy to swap buffers
+  /* tell the arduboy to swap buffers */
   arduboy.display();
 }
 

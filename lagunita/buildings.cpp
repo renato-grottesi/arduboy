@@ -2,8 +2,8 @@
 #include "bitmaps.hpp"
 
 const Building buildings[static_cast<uint8_t>(Building::IDs::count)] PROGMEM = {
-    // clang-format off
-    /* name,    bitmap,    jobs, cost, w, h, maintenance, profit, upgrade */
+    /* clang-format off */
+    /* name,    bitmap,    jobs,  cost, w, h, maintenance, profit, upgrade */
     {"CLEAR",   bmp_empty,    0,    50, 1, 1, 0,           0,      Building::IDs::empty},
     {"PAUSE",   bmp_empty,    0,     0, 1, 1, 0,           0,      Building::IDs::empty},
     {"UPGRADE", bmp_empty,    0,     0, 1, 1, 0,           0,      Building::IDs::empty},
@@ -28,7 +28,7 @@ const Building buildings[static_cast<uint8_t>(Building::IDs::count)] PROGMEM = {
     {"SLN2",    bmp_saloon2, 18,  1000, 3, 3, 0,           5,      Building::IDs::empty},
     {"STBL2",   bmp_stable2,  5,  1000, 4, 3, 4,           0,      Building::IDs::empty},
     {"FRM2",    bmp_farm2,   18,  1000, 4, 3, 0,          20,      Building::IDs::empty},
-    // clang-format on
+    /* clang-format on */
 };
 
 const __FlashStringHelper* Building::name() const {
@@ -266,7 +266,7 @@ const char* const descriptions[static_cast<uint8_t>(Building::IDs::count)] PROGM
     textChurch2,  /* CHURCH2  */
     textSaloon2,  /* SALOON2  */
     textStable2,  /* STABLE2  */
-    textFarm2,    /* FARM2  */
+    textFarm2,    /* FARM2    */
 };
 
 const char* Building::description(const uint8_t id) {
