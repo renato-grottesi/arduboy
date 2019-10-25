@@ -29,6 +29,8 @@ class Level {
   void load(uint16_t start);
   void save(uint16_t start);
 
+  uint16_t getPopulation() { return population; }
+
  private:
   Arduboy2Base& arduboy;
   Tinyfont& tinyfont;

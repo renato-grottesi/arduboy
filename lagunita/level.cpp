@@ -1,4 +1,7 @@
 #include "level.hpp"
+#include "lagunita.hpp"
+
+static const uint16_t minute = Lagunita::frame_rate * 64;
 
 void Level::load(uint16_t start) {
   uint8_t* raw = reinterpret_cast<uint8_t*>(this);
@@ -54,7 +57,7 @@ void Level::init() {
   buildings[static_cast<uint8_t>(Building::IDs::back)].enabled = true;
   buildings[static_cast<uint8_t>(Building::IDs::back)].built = 1;
 
-  frameNextEvent = 2048 + (rand() % 2047);
+  frameNextEvent = minute + (rand() % minute);
 
   /* Add some random vegetation. */
   uint8_t mask = 0x0f;
@@ -666,12 +669,11 @@ void Level::update() {
     }
 
     if (!tutorVisible) {
-      /* Random events happen every 60 to 120 seconds. */
+      /* Random events happen between 1 and 2 minutes. */
       if (frame == frameNextEvent) {
-        uint16_t r = rand();
-        frameNextEvent = frame + 2048 + (rand() & 2047);
-        r = (r / 2048) % 2;
+        frameNextEvent = frame + minute + (rand() % minute);
 
+        uint16_t r = rand() % 2;
         if ((r == 0) && buildings[static_cast<uint8_t>(Building::IDs::sheriff)].enabled) {
           if (safety < 100) {
             /* If the safety is low, simulate a robbery. */
@@ -693,7 +695,7 @@ void Level::update() {
           }
           tutorVisible = true;
           money -= r;
-        } else if ((r == 1) && buildings[static_cast<uint8_t>(Building::IDs::church)].enabled) {
+        } else if (buildings[static_cast<uint8_t>(Building::IDs::church)].enabled) {
           if (spirituality < 100) {
             /* If the spirituality is low, simulate emigration. */
             r = rand() % (population / 2);

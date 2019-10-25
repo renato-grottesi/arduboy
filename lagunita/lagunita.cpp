@@ -1,5 +1,13 @@
 #include "lagunita.hpp"
 
+union high_score_union {
+  struct {
+    uint8_t b1;
+    uint8_t b2;
+  } bytes;
+  uint16_t population;
+};
+
 void Lagunita::init() {
   /* initialize the random seed with noise */
   srand(arduboy.generateRandomSeed());
@@ -7,11 +15,20 @@ void Lagunita::init() {
   /* initiate arduboy instance */
   arduboy.begin();
 
-  /* set the framerate to 32 FPS */
-  arduboy.setFrameRate(32);
+  /* set the framerate */
+  arduboy.setFrameRate(frame_rate);
 
   /* start the music */
   arduboy.audio.begin();
+
+  /* load the high score */
+  if (canLoad()) {
+    const uint16_t loc = EEPROM_STORAGE_SPACE_START;
+    high_score_union hs;
+    hs.bytes.b1 = EEPROM.read(loc + 5);
+    hs.bytes.b2 = EEPROM.read(loc + 6);
+    high_score = hs.population;
+  }
 }
 
 void Lagunita::loop() {
@@ -196,9 +213,11 @@ void Lagunita::update() {
       break;
     case Menus::game:
       if (level.isPaused()) {
+        updateHighScore();
         currentMenu = Menus::main;
       } else if (level.gameOver()) {
         level.quit();
+        updateHighScore();
         currentMenu = Menus::lost;
       } else if (arduboy.justPressed(UP_BUTTON)) {
         level.onInput(Input::up);
@@ -257,13 +276,15 @@ void Lagunita::render() {
       static uint16_t frame = 0;
       frame++;
       level.renderBackground(frame);
+
+      /* logo */
+      arduboy.drawBitmap(1, 4 * 8, bmp_lagunita, 105, 16);
+
+      /* posts signs in the top for the menu */
       const uint8_t bl_y = 21;
       const uint8_t bl_x_l = 4;
       const uint8_t bl_x_r = 54;
       const uint8_t post_len = 104;
-      arduboy.drawBitmap((128 - 105) / 2, 4 * 8, bmp_lagunita, 105, 16);
-      arduboy.drawBitmap(0, 5 * 8, bmp_cactus, 8, 8);
-      arduboy.drawBitmap(128 - 8, 5 * 8, bmp_weed, 8, 8);
       arduboy.fillRoundRect(bl_x_l - 2, 6, 46, 22, 4, BLACK);
       arduboy.fillRoundRect(bl_x_r - 2, 6, 46, 22, 4, BLACK);
       arduboy.drawRoundRect(bl_x_l - 2, 6, 46, 22, 4);
@@ -276,7 +297,18 @@ void Lagunita::render() {
       arduboy.drawCircle(bl_x_r + 36, 4, 1);
       arduboy.drawBitmap(post_len, 0, bmp_decor, 16, 16);
 
-      /* Tumbleweed */
+      /* population sign for high score */
+      arduboy.drawFastVLine(128 - 12, 32, 16);
+      arduboy.drawFastVLine(128 - 13, 32, 16);
+      arduboy.fillRoundRect(128 - 24, 24, 23, 13, 2, BLACK);
+      arduboy.drawRoundRect(128 - 24, 24, 23, 13, 2);
+      tinyfont.setCursor(128 - 22, 26);
+      tinyfont.print(F("POP."));
+      tinyfont.setCursor(128 - 22, 31);
+      tinyfont.print(high_score);
+      arduboy.drawBitmap(128 - 9, 5 * 8, bmp_cactus, 8, 8);
+
+      /* tumbleweed */
       weed = (weed < 256) ? (weed + 1) : -rand() % 256;
       int16_t y_off = ((frame >> 2) % 16) - 8;
       y_off = (y_off < 0) ? (-y_off) : (y_off);
@@ -466,6 +498,20 @@ void Lagunita::render() {
                        ));
 #endif
 
+void Lagunita::updateHighScore() {
+  if (level.getPopulation() > high_score) {
+    high_score = level.getPopulation();
+    if (canLoad()) {
+      const uint16_t loc = EEPROM_STORAGE_SPACE_START;
+
+      high_score_union hs;
+      hs.population = high_score;
+      EEPROM.update(loc + 5, hs.bytes.b1);
+      EEPROM.update(loc + 6, hs.bytes.b2);
+    }
+  }
+}
+
 void Lagunita::load() {
   const uint16_t loc = EEPROM_STORAGE_SPACE_START;
   level.load(loc + 8);
@@ -479,7 +525,7 @@ void Lagunita::save() {
   EEPROM.update(loc + 1, 'A');
   EEPROM.update(loc + 2, 'G');
   EEPROM.update(loc + 3, '0');
-  EEPROM.update(loc + 4, '0');
+  EEPROM.update(loc + 4, '1');
 
   level.save(loc + 8);
 }
@@ -495,5 +541,5 @@ bool Lagunita::canLoad() {
   uint8_t h2 = EEPROM.read(loc + 2);
   uint8_t h3 = EEPROM.read(loc + 3);
   uint8_t h4 = EEPROM.read(loc + 4);
-  return h0 == 'L' && h1 == 'A' && h2 == 'G' && h3 == '0' && h4 == '0';
+  return h0 == 'L' && h1 == 'A' && h2 == 'G' && h3 == '0' && h4 == '1';
 }
