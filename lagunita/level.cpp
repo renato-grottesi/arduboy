@@ -670,10 +670,10 @@ void Level::update() {
 
     if (!tutorVisible) {
       /* Random events happen between 1 and 2 minutes. */
-      if (frame == frameNextEvent) {
+      if (frame > frameNextEvent) {
         frameNextEvent = frame + minute + (rand() % minute);
 
-        uint16_t r = rand() % 2;
+        uint16_t r = rand() % 3;
         if ((r == 0) && buildings[static_cast<uint8_t>(Building::IDs::sheriff)].enabled) {
           if (safety < 100) {
             /* If the safety is low, simulate a robbery. */
@@ -683,6 +683,7 @@ void Level::update() {
                             "\nTHE THIEVES\nSTOLE %4d$\n"       /**/
                             "\nBUILD MORE\nSHERIFF\nPOSTS!\n"), /**/
                        r);                                      /**/
+            money -= r;
           } else {
             /* Else inform that the sheriff saved the day. */
             snprintf_P(tutor, tutorLen,                   /**/
@@ -694,8 +695,7 @@ void Level::update() {
                        r);                                /**/
           }
           tutorVisible = true;
-          money -= r;
-        } else if (buildings[static_cast<uint8_t>(Building::IDs::church)].enabled) {
+        } else if ((r == 1) && buildings[static_cast<uint8_t>(Building::IDs::church)].enabled) {
           if (spirituality < 100) {
             /* If the spirituality is low, simulate emigration. */
             r = rand() % (population / 2);
@@ -711,6 +711,7 @@ void Level::update() {
                             "CHURCHES TO\n"   /**/
                             "RISE FAITH!\n"), /**/
                        r);                    /**/
+            population -= r;
           } else {
             /* Else inform that the church is bringing people together. */
             snprintf_P(tutor, tutorLen,                    /**/
@@ -721,7 +722,38 @@ void Level::update() {
                        r);                                 /**/
           }
           tutorVisible = true;
-          population -= r;
+        } else if ((r == 2) && buildings[static_cast<uint8_t>(Building::IDs::tree)].enabled) {
+          if (environment < 100) {
+            /* If the environment is low, simulate a land slide. */
+            snprintf_P(tutor, tutorLen,        /**/
+                       PSTR("\nTHERE AREN'T\n" /**/
+                            "ENOUGH TREES\n"   /**/
+                            "AND PLANTS\n"     /**/
+                            "TO STABILIZE\n"   /**/
+                            "THE GROUND.\n"    /**/
+                            "A LANDSLIDE\n"    /**/
+                            "DESTROYED\n"      /**/
+                            "SOME OF YOUR\n"   /**/
+                            "BUILDINGS."));    /**/
+
+            tutorVisible = true;
+            r = rand() % size;
+            uint16_t broken = 4 + rand() % 16;
+            for (uint16_t i = r; (broken > 0) && (i < (r + size)); i++) {
+              uint16_t b = i % size;
+              uint8_t bld = static_cast<uint8_t>(tiles[b].building);
+              if (bld >= Building::HOUSING &&
+                  bld != static_cast<uint8_t>(Building::IDs::totem) &&
+                  bld != static_cast<uint8_t>(Building::IDs::tree) &&
+                  bld != static_cast<uint8_t>(Building::IDs::cactus) &&
+                  bld != static_cast<uint8_t>(Building::IDs::weed)) {
+                buildings[bld].built--;
+                tiles[b].building = Building::IDs::cactus;
+                tiles[b].progress = 0b000;
+                broken--;
+              }
+            }
+          }
         }
       } else {
         /* Check if any tutorial event is ready to trigger. */

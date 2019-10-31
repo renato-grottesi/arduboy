@@ -237,7 +237,7 @@ void Drawing::waterReflection(uint8_t frame, uint16_t camera) {
 
       for (uint8_t w = 0; w < waves_cnt; w++) {
         uint16_t x_off = waves_x[w] - camera;
-        if ((x > x_off && x < x_off + 3) && (y == waves_y[w] >> 3)) {
+        if ((x > x_off && x < x_off + 3) && (y == static_cast<uint16_t>(waves_y[w] >> 3))) {
           dst_col |= 0x1 << (waves_y[w] & 0b111);
         }
       }

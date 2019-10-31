@@ -28,7 +28,7 @@ class Lagunita {
   enum class MainSelections : uint8_t { play, load, save, credits, help, audio };
   uint8_t help_page = 0;
   int16_t weed = 0;
-  int16_t high_score = 0;
+  uint16_t high_score = 0;
 
   Arduboy2Base arduboy;
   Drawing drawing = {arduboy.sBuffer};

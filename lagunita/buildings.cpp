@@ -126,15 +126,15 @@ const char textWater[] PROGMEM =
     "FARMS AS\n"     /**/
     "WELL.\n";       /**/
 const char textSaloon[] PROGMEM =
-    "SALOONS\n"      /**/
-    "INCREASE THE\n" /**/
-    "HAPPINES OF\n"  /**/
-    "LAGUNITIANS.\n" /**/
-    "PRESS THE B\n"  /**/
-    "BUTTON TO\n"    /**/
-    "CHECK THE\n"    /**/
-    "STATISTIC\n"    /**/
-    "REPORT!\n";     /**/
+    "SALOONS\n"       /**/
+    "INCREASE THE\n"  /**/
+    "HAPPINES OF\n"   /**/
+    "LAGUNITIANS.\n"  /**/
+    "\nPRESS THE B\n" /**/
+    "BUTTON TO\n"     /**/
+    "CHECK THE\n"     /**/
+    "STATISTIC\n"     /**/
+    "REPORT!\n";      /**/
 const char textMine[] PROGMEM =
     "MINES ARE\n"     /**/
     "GREAT TO\n"      /**/
@@ -204,15 +204,15 @@ const char textWeed[] PROGMEM =
     "TO PAY YOUR\n" /**/
     "CO2 QUOTA.\n"; /**/
 const char textStable[] PROGMEM =
-    "EACH STABLE\n" /**/
-    "ALLOWS YOU\n"  /**/
-    "TO EXPORT\n"   /**/
-    "ADDITIONAL\n"  /**/
-    "EXCEEDING\n"   /**/
-    "FOOD.\n"       /**/
-    "PRESS B TO\n"  /**/
-    "CHECK YOUR\n"  /**/
-    "EXPORTS.\n";   /**/
+    "EACH STABLE\n"  /**/
+    "ALLOWS YOU\n"   /**/
+    "TO EXPORT\n"    /**/
+    "ADDITIONAL\n"   /**/
+    "EXCEEDING\n"    /**/
+    "FOOD.\n"        /**/
+    "\nPRESS B TO\n" /**/
+    "CHECK YOUR\n"   /**/
+    "EXPORTS.\n";    /**/
 const char textUpgrade[] PROGMEM =
     "REMEMBER TO\n"   /**/
     "CHECK STATS\n"   /**/
