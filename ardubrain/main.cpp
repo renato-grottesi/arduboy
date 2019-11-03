@@ -90,6 +90,16 @@ void Main::update() {
   }
 }
 
+static void setupEntry(Arduboy2Base& arduboy,
+                       Tinyfont& tinyfont,
+                       uint8_t x,
+                       uint8_t y,
+                       bool selected) {
+  tinyfont.setCursor(x + 1, y + 1);
+  arduboy.fillRect(x, y, 64, 6, selected ? WHITE : BLACK);
+  tinyfont.setTextColor(selected ? BLACK : WHITE);
+}
+
 void Main::render() {
   /* clear the whole screen to black */
   arduboy.clear();
@@ -97,10 +107,20 @@ void Main::render() {
   /* render the menus */
   switch (currentMenu) {
     case Menus::main: {
-      tinyfont.setCursor(0, 0);
+      setupEntry(arduboy, tinyfont, 0, 0, currentMainSelection == MainSelections::reflex);
       tinyfont.print(F("REFLEX"));
-      tinyfont.setCursor(0, 8);
+
+      setupEntry(arduboy, tinyfont, 0, 8, currentMainSelection == MainSelections::planning);
+      tinyfont.print(F("PLANNING"));
+
+      setupEntry(arduboy, tinyfont, 0, 16, currentMainSelection == MainSelections::cognitive);
+      tinyfont.print(F("COGNITIVE"));
+
+      setupEntry(arduboy, tinyfont, 0, 24, currentMainSelection == MainSelections::credits);
       tinyfont.print(F("CREDITS"));
+
+      tinyfont.setTextColor(WHITE);
+
       break;
     }
     case Menus::test:

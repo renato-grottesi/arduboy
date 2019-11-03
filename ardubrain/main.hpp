@@ -22,7 +22,7 @@ class Main {
     planning,
     cognitive,
     auditory,
-    math,
+    focus,
     memory,
     credits
   };
