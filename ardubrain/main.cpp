@@ -80,7 +80,17 @@ void Main::update() {
       } else if (arduboy.justPressed(A_BUTTON)) {
       } else if (arduboy.justPressed(B_BUTTON)) {
       }
-      test->update();
+      if (test != nullptr) {
+        test->update();
+        uint16_t score = 0;
+        if (test->complete(score)) {
+          delete test;
+          test = nullptr;
+          currentMenu = Menus::main;
+        }
+      } else {
+        currentMenu = Menus::main;
+      }
       break;
     case Menus::credits:
       if (arduboy.justPressed(A_BUTTON) || arduboy.justPressed(B_BUTTON)) {
