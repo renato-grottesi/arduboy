@@ -1,4 +1,4 @@
-#include "reflex.hpp"
+#include "Reflex.hpp"
 
 void Reflex::update() {
   millis += 31;  // 32 frames per second, so 31.25 ms are rounded to 31

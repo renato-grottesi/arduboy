@@ -1,5 +1,5 @@
-#include "main.hpp"
-#include "reflex.hpp"
+#include "Main.hpp"
+#include "Reflex.hpp"
 
 void Main::init() {
   /* initialize the random seed with noise */
@@ -59,7 +59,7 @@ void Main::update() {
         switch (currentMainSelection) {
           case MainSelections::reflex:
             if (test != nullptr) {
-              free(test);
+              delete test;
             }
             test = new Reflex(arduboy, tinyfont);
             currentMenu = Menus::test;

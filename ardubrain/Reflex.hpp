@@ -1,6 +1,6 @@
 #pragma once
 
-#include "test.hpp"
+#include "Test.hpp"
 
 class Reflex : public Test {
  public:
@@ -13,14 +13,14 @@ class Reflex : public Test {
  private:
   enum class Status : uint8_t { instructions, black, white, pressed, score, done };
 
-  uint16_t reactions[4] = {0, 0, 0, 0};
-  uint16_t m_score = 0;
-  uint16_t millis = 0;
-  uint16_t waiting = 0;
-  uint16_t attempt = 0;
-
   Status status = Status::instructions;
 
   Arduboy2Base& arduboy;
   Tinyfont& tinyfont;
+
+  uint16_t m_score = 0;
+  uint16_t reactions[4] = {0, 0, 0, 0};
+  uint16_t millis = 0;
+  uint16_t waiting = 0;
+  uint16_t attempt = 0;
 };

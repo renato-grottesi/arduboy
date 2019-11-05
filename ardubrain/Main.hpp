@@ -2,7 +2,7 @@
 
 #include <Arduboy2.h>
 #include "Tinyfont.hpp"
-#include "test.hpp"
+#include "Test.hpp"
 
 class Main {
  public:

@@ -1,4 +1,4 @@
-#include "main.hpp"
+#include "Main.hpp"
 
 /* The app instance. */
 Main app;
