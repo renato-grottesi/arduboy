@@ -7,6 +7,7 @@ ArduBrain is an application for the arduboy that trains your brain and tracks th
 Press the A button as soon as the screen change color: the faster the reflex, the higher the score.
 The screen has the dpad (up-down-left-right) and buttons (A,B) on screen. Now and then one of the 6 onscreen buttons changes color and the player needs to click the button that matches the onscreen one as soon as possible and before the onscreen button reverts to its previous color.
 There is an image in the screen, then another comes and the user should press A if it matches the previous, or B if it's new. As fast as possible.
+There are some arrows that points in one of the N,S,W,E directions traveling in one of the N,S,W,E directions: if the arrow is filled, the player should click the d-pad of pointing direction, if the arrow is only the outline, the player should click the d-pad of the traveling direction.
 
 ## Planning
 Classic game with a 4x4 grid containing 15 numbers and a hole. The player has to sort the numbers.
