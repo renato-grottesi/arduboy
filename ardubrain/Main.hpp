@@ -1,8 +1,8 @@
 #pragma once
 
 #include <Arduboy2.h>
-#include "Tinyfont.hpp"
 #include "Test.hpp"
+#include "Tinyfont.hpp"
 
 class Main {
  public:

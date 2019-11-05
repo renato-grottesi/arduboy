@@ -2,9 +2,10 @@
 
 #include "Test.hpp"
 
-class SquarePuzzle: public Test {
+class SquarePuzzle : public Test {
  public:
-  SquarePuzzle(Arduboy2Base& arduboy, Tinyfont& tinyfont) : arduboy(arduboy), tinyfont(tinyfont) {}
+  SquarePuzzle(Arduboy2Base& arduboy, Tinyfont& tinyfont)
+      : arduboy(arduboy), tinyfont(tinyfont) {}
 
   void update() final;
   void render() final;
@@ -18,7 +19,11 @@ class SquarePuzzle: public Test {
   Arduboy2Base& arduboy;
   Tinyfont& tinyfont;
 
-  uint16_t m_score = 0;
+  uint16_t mScore = 0;
   uint16_t millis = 0;
+  uint16_t moves = 0;
+  static const uint8_t cells = 4;
+  uint8_t matrix[cells * cells] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+  uint8_t hole_x = 0;
+  uint8_t hole_y = 0;
 };
-

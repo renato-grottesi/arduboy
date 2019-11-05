@@ -1,5 +1,6 @@
 #include "Main.hpp"
 #include "Reflex.hpp"
+#include "SquarePuzzle.hpp"
 
 void Main::init() {
   /* initialize the random seed with noise */
@@ -36,15 +37,37 @@ void Main::update() {
           case MainSelections::reflex:
             currentMainSelection = MainSelections::credits;
             break;
-          case MainSelections::credits:
+          case MainSelections::planning:
             currentMainSelection = MainSelections::reflex;
+            break;
+          case MainSelections::cognitive:
+            break;
+          case MainSelections::auditory:
+            break;
+          case MainSelections::focus:
+            break;
+          case MainSelections::memory:
+            break;
+          case MainSelections::credits:
+            currentMainSelection = MainSelections::planning;
             break;
         }
       }
       if (arduboy.justPressed(DOWN_BUTTON)) {
         switch (currentMainSelection) {
           case MainSelections::reflex:
+            currentMainSelection = MainSelections::planning;
+            break;
+          case MainSelections::planning:
             currentMainSelection = MainSelections::credits;
+            break;
+          case MainSelections::cognitive:
+            break;
+          case MainSelections::auditory:
+            break;
+          case MainSelections::focus:
+            break;
+          case MainSelections::memory:
             break;
           case MainSelections::credits:
             currentMainSelection = MainSelections::reflex;
@@ -63,6 +86,21 @@ void Main::update() {
             }
             test = new Reflex(arduboy, tinyfont);
             currentMenu = Menus::test;
+            break;
+          case MainSelections::planning:
+            if (test != nullptr) {
+              delete test;
+            }
+            test = new SquarePuzzle(arduboy, tinyfont);
+            currentMenu = Menus::test;
+            break;
+          case MainSelections::cognitive:
+            break;
+          case MainSelections::auditory:
+            break;
+          case MainSelections::focus:
+            break;
+          case MainSelections::memory:
             break;
           case MainSelections::credits:
             currentMenu = Menus::credits;

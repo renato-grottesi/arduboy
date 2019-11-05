@@ -31,7 +31,7 @@ void Reflex::update() {
           waiting = 2000 + (rand() % 5000);  // between 2 and 5 seconds
         } else {
           // TODO: improve scoring so that higher is better
-          m_score = (reactions[0] + reactions[1] + reactions[2] + reactions[3]) / 4;
+          mScore = (reactions[0] + reactions[1] + reactions[2] + reactions[3]) / 4;
           status = Status::score;
         }
       }
@@ -71,7 +71,7 @@ void Reflex::render() {
       tinyfont.setCursor(1, 1);
       tinyfont.print(F("FINAL SCORE:"));
       tinyfont.setCursor(1, 32);
-      tinyfont.print(m_score);
+      tinyfont.print(mScore);
       break;
     case Status::done:
       break;
@@ -79,6 +79,6 @@ void Reflex::render() {
 }
 
 bool Reflex::complete(uint16_t& score) {
-  score = m_score;
+  score = mScore;
   return status == Status::done;
 }

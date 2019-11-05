@@ -18,7 +18,7 @@ class Reflex : public Test {
   Arduboy2Base& arduboy;
   Tinyfont& tinyfont;
 
-  uint16_t m_score = 0;
+  uint16_t mScore = 0;
   uint16_t reactions[4] = {0, 0, 0, 0};
   uint16_t millis = 0;
   uint16_t waiting = 0;
