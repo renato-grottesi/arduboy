@@ -6,6 +6,8 @@ void SquarePuzzle::update() {
     case Status::instructions:
       if (arduboy.justPressed(A_BUTTON)) {
         status = Status::solving;
+        // TODO: this algorithm may lead to unsolvable puzzles!
+        // TODO: swith to hole movements in random direction: that would also set difficulty
         for (uint8_t i = 0; i < cells * cells; i++) {
           uint8_t j = rand() % (i + 1);
 
