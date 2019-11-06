@@ -1,4 +1,5 @@
 #include "Main.hpp"
+#include "MemoryGrid.hpp"
 #include "Reflex.hpp"
 #include "SquarePuzzle.hpp"
 
@@ -47,9 +48,10 @@ void Main::update() {
           case MainSelections::focus:
             break;
           case MainSelections::memory:
+            currentMainSelection = MainSelections::planning;
             break;
           case MainSelections::credits:
-            currentMainSelection = MainSelections::planning;
+            currentMainSelection = MainSelections::memory;
             break;
         }
       }
@@ -59,7 +61,7 @@ void Main::update() {
             currentMainSelection = MainSelections::planning;
             break;
           case MainSelections::planning:
-            currentMainSelection = MainSelections::credits;
+            currentMainSelection = MainSelections::memory;
             break;
           case MainSelections::cognitive:
             break;
@@ -68,6 +70,7 @@ void Main::update() {
           case MainSelections::focus:
             break;
           case MainSelections::memory:
+            currentMainSelection = MainSelections::credits;
             break;
           case MainSelections::credits:
             currentMainSelection = MainSelections::reflex;
@@ -101,6 +104,11 @@ void Main::update() {
           case MainSelections::focus:
             break;
           case MainSelections::memory:
+            if (test != nullptr) {
+              delete test;
+            }
+            test = new MemoryGrid(arduboy, tinyfont);
+            currentMenu = Menus::test;
             break;
           case MainSelections::credits:
             currentMenu = Menus::credits;
@@ -111,13 +119,6 @@ void Main::update() {
       }
       break;
     case Menus::test:
-      if (arduboy.justPressed(UP_BUTTON)) {
-      } else if (arduboy.justPressed(DOWN_BUTTON)) {
-      } else if (arduboy.justPressed(LEFT_BUTTON)) {
-      } else if (arduboy.justPressed(RIGHT_BUTTON)) {
-      } else if (arduboy.justPressed(A_BUTTON)) {
-      } else if (arduboy.justPressed(B_BUTTON)) {
-      }
       if (test != nullptr) {
         test->update();
         uint16_t score = 0;
@@ -161,8 +162,8 @@ void Main::render() {
       setupEntry(arduboy, tinyfont, 0, 8, currentMainSelection == MainSelections::planning);
       tinyfont.print(F("PLANNING"));
 
-      setupEntry(arduboy, tinyfont, 0, 16, currentMainSelection == MainSelections::cognitive);
-      tinyfont.print(F("COGNITIVE"));
+      setupEntry(arduboy, tinyfont, 0, 16, currentMainSelection == MainSelections::memory);
+      tinyfont.print(F("MEMORY"));
 
       setupEntry(arduboy, tinyfont, 0, 24, currentMainSelection == MainSelections::credits);
       tinyfont.print(F("CREDITS"));
