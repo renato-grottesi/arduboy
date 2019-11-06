@@ -20,12 +20,15 @@ class Main {
   enum class MainSelections : uint8_t {
     reflex,
     planning,
-    cognitive,
-    auditory,
-    focus,
+    // cognitive,
+    // auditory,
+    // focus,
     memory,
-    credits
+    credits,
+    count
   };
+
+  static const uint8_t selectionsCount = static_cast<uint8_t>(MainSelections::count);
 
   Test* test = nullptr;
 

@@ -34,79 +34,33 @@ void Main::update() {
   switch (currentMenu) {
     case Menus::main:
       if (arduboy.justPressed(UP_BUTTON)) {
-        switch (currentMainSelection) {
-          case MainSelections::reflex:
-            currentMainSelection = MainSelections::credits;
-            break;
-          case MainSelections::planning:
-            currentMainSelection = MainSelections::reflex;
-            break;
-          case MainSelections::cognitive:
-            break;
-          case MainSelections::auditory:
-            break;
-          case MainSelections::focus:
-            break;
-          case MainSelections::memory:
-            currentMainSelection = MainSelections::planning;
-            break;
-          case MainSelections::credits:
-            currentMainSelection = MainSelections::memory;
-            break;
-        }
+        uint8_t sel = static_cast<uint8_t>(currentMainSelection);
+        sel = (sel + selectionsCount - 1) % selectionsCount;
+        currentMainSelection = static_cast<MainSelections>(sel);
       }
       if (arduboy.justPressed(DOWN_BUTTON)) {
-        switch (currentMainSelection) {
-          case MainSelections::reflex:
-            currentMainSelection = MainSelections::planning;
-            break;
-          case MainSelections::planning:
-            currentMainSelection = MainSelections::memory;
-            break;
-          case MainSelections::cognitive:
-            break;
-          case MainSelections::auditory:
-            break;
-          case MainSelections::focus:
-            break;
-          case MainSelections::memory:
-            currentMainSelection = MainSelections::credits;
-            break;
-          case MainSelections::credits:
-            currentMainSelection = MainSelections::reflex;
-            break;
-        }
+        uint8_t sel = static_cast<uint8_t>(currentMainSelection);
+        sel = (sel + selectionsCount + 1) % selectionsCount;
+        currentMainSelection = static_cast<MainSelections>(sel);
       }
       if (arduboy.justPressed(RIGHT_BUTTON)) {
       }
       if (arduboy.justPressed(LEFT_BUTTON)) {
       }
       if (arduboy.justPressed(A_BUTTON)) {
+        if (test != nullptr) {
+          delete test;
+        }
         switch (currentMainSelection) {
           case MainSelections::reflex:
-            if (test != nullptr) {
-              delete test;
-            }
             test = new Reflex(arduboy, tinyfont);
             currentMenu = Menus::test;
             break;
           case MainSelections::planning:
-            if (test != nullptr) {
-              delete test;
-            }
             test = new SquarePuzzle(arduboy, tinyfont);
             currentMenu = Menus::test;
             break;
-          case MainSelections::cognitive:
-            break;
-          case MainSelections::auditory:
-            break;
-          case MainSelections::focus:
-            break;
           case MainSelections::memory:
-            if (test != nullptr) {
-              delete test;
-            }
             test = new MemoryGrid(arduboy, tinyfont);
             currentMenu = Menus::test;
             break;
