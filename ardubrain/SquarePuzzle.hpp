@@ -23,7 +23,13 @@ class SquarePuzzle : public Test {
   uint16_t millis = 0;
   uint16_t moves = 0;
   static const uint8_t cells = 4;
-  uint8_t matrix[cells * cells] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-  uint8_t hole_x = 0;
-  uint8_t hole_y = 0;
+  uint8_t matrix[cells * cells] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0};
+  uint8_t hole_x = 3;
+  uint8_t hole_y = 3;
+
+ private:
+  void hN();
+  void hS();
+  void hW();
+  void hE();
 };

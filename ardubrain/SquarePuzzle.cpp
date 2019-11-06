@@ -1,19 +1,58 @@
 #include "SquarePuzzle.hpp"
 
+void SquarePuzzle::hN() {
+  if (hole_y > 0) {
+    matrix[hole_y * cells + hole_x] = matrix[(hole_y - 1) * cells + hole_x];
+    matrix[(hole_y - 1) * cells + hole_x] = 0;
+    hole_y--;
+  }
+}
+
+void SquarePuzzle::hS() {
+  if (hole_y < cells - 1) {
+    matrix[hole_y * cells + hole_x] = matrix[(hole_y + 1) * cells + hole_x];
+    matrix[(hole_y + 1) * cells + hole_x] = 0;
+    hole_y++;
+  }
+}
+
+void SquarePuzzle::hW() {
+  if (hole_x > 0) {
+    matrix[hole_y * cells + hole_x] = matrix[hole_y * cells + hole_x - 1];
+    matrix[hole_y * cells + hole_x - 1] = 0;
+    hole_x--;
+  }
+}
+
+void SquarePuzzle::hE() {
+  if (hole_x < cells - 1) {
+    matrix[hole_y * cells + hole_x] = matrix[hole_y * cells + hole_x + 1];
+    matrix[hole_y * cells + hole_x + 1] = 0;
+    hole_x++;
+  }
+}
+
 void SquarePuzzle::update() {
   millis += 31;  // 32 frames per second, so 31.25 ms are rounded to 31
   switch (status) {
     case Status::instructions:
       if (arduboy.justPressed(A_BUTTON)) {
         status = Status::solving;
-        // TODO: this algorithm may lead to unsolvable puzzles!
-        // TODO: swith to hole movements in random direction: that would also set difficulty
-        for (uint8_t i = 0; i < cells * cells; i++) {
-          uint8_t j = rand() % (i + 1);
-
-          uint8_t t = matrix[i];
-          matrix[i] = matrix[j];
-          matrix[j] = t;
+        for (uint8_t i = 0; i < 128; i++) {
+          switch (rand() % cells) {
+            case 0:
+              hN();
+              break;
+            case 1:
+              hS();
+              break;
+            case 2:
+              hW();
+              break;
+            case 3:
+              hE();
+              break;
+          }
         }
         uint8_t hole_idx;
         for (hole_idx = 0; matrix[hole_idx] != 0; hole_idx++) {
@@ -26,29 +65,13 @@ void SquarePuzzle::update() {
       break;
     case Status::solving: {
       if (arduboy.justPressed(UP_BUTTON)) {
-        if (hole_y > 0) {
-          matrix[hole_y * cells + hole_x] = matrix[(hole_y - 1) * cells + hole_x];
-          matrix[(hole_y - 1) * cells + hole_x] = 0;
-          hole_y--;
-        }
+        hN();
       } else if (arduboy.justPressed(DOWN_BUTTON)) {
-        if (hole_y < cells - 1) {
-          matrix[hole_y * cells + hole_x] = matrix[(hole_y + 1) * cells + hole_x];
-          matrix[(hole_y + 1) * cells + hole_x] = 0;
-          hole_y++;
-        }
+        hS();
       } else if (arduboy.justPressed(LEFT_BUTTON)) {
-        if (hole_x > 0) {
-          matrix[hole_y * cells + hole_x] = matrix[hole_y * cells + hole_x - 1];
-          matrix[hole_y * cells + hole_x - 1] = 0;
-          hole_x--;
-        }
+        hW();
       } else if (arduboy.justPressed(RIGHT_BUTTON)) {
-        if (hole_x < cells - 1) {
-          matrix[hole_y * cells + hole_x] = matrix[hole_y * cells + hole_x + 1];
-          matrix[hole_y * cells + hole_x + 1] = 0;
-          hole_x++;
-        }
+        hE();
       } else if (arduboy.justPressed(B_BUTTON)) {
         mScore = 0;
         status = Status::done;

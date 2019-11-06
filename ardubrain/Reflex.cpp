@@ -14,7 +14,10 @@ void Reflex::update() {
       if (millis > waiting) {
         status = Status::white;
       }
-      // TODO: add anticheating here
+      if (arduboy.justPressed(A_BUTTON)) {
+        status = Status::pressed;
+        reactions[attempt] = 5000;  // Penalty for early pressing
+      }
       break;
     case Status::white:
       if (arduboy.justPressed(A_BUTTON)) {
