@@ -14,6 +14,8 @@ class Main {
  private:
   void update();
   void render();
+  void loadHighScore();
+  void saveHighScore();
 
  private:
   enum class Menus : uint8_t { main, test, credits };
@@ -22,13 +24,14 @@ class Main {
     planning,
     // cognitive,
     // auditory,
-    // focus,
+    focus,
     memory,
-    credits,
     count
   };
 
   static const uint8_t selectionsCount = static_cast<uint8_t>(MainSelections::count);
+
+  uint16_t hiScores[selectionsCount] = {};
 
   Test* test = nullptr;
 
