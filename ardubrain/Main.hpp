@@ -22,10 +22,10 @@ class Main {
   enum class MainSelections : uint8_t {
     reflex,
     planning,
-    // cognitive,
-    // auditory,
     focus,
     memory,
+    // cognitive,
+    // auditory,
     count
   };
 

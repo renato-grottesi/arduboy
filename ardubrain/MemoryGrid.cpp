@@ -67,9 +67,7 @@ void MemoryGrid::update() {
         }
       }
       if (solved) {
-        status = Status::score;
-        mScore += rows * cols - moves;  // TODO: make a better score
-
+        mScore += difficulty * 8;
         if (moves > difficulty) {
           status = Status::score;
         } else {

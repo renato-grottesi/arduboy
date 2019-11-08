@@ -16,13 +16,16 @@ void Reflex::update() {
       }
       if (arduboy.justPressed(A_BUTTON)) {
         status = Status::pressed;
-        reactions[attempt] = 5000;  // Penalty for early pressing
+        reactions[attempt] = 2000;  // Penalty for early pressing
       }
       break;
     case Status::white:
       if (arduboy.justPressed(A_BUTTON)) {
         status = Status::pressed;
         reactions[attempt] = millis - waiting;
+        if (reactions[attempt] > 2000) {
+          reactions[attempt] = 2000;
+        }
       }
       break;
     case Status::pressed:
@@ -33,8 +36,7 @@ void Reflex::update() {
           millis = 0;                        // Reset the counter
           waiting = 2000 + (rand() % 5000);  // between 2 and 5 seconds
         } else {
-          // TODO: improve scoring so that higher is better
-          mScore = (reactions[0] + reactions[1] + reactions[2] + reactions[3]) / 4;
+          mScore = 2000 - (reactions[0] + reactions[1] + reactions[2] + reactions[3]) / 4;
           status = Status::score;
         }
       }

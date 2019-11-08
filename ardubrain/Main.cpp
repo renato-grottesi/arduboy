@@ -1,5 +1,6 @@
 #include "Main.hpp"
 #include "Bitmaps.hpp"
+#include "Breathe.hpp"
 #include "MemoryGrid.hpp"
 #include "Reflex.hpp"
 #include "SquarePuzzle.hpp"
@@ -93,6 +94,8 @@ void Main::update() {
             currentMenu = Menus::test;
             break;
           case MainSelections::focus:
+            test = new Breathe(arduboy, tinyfont);
+            currentMenu = Menus::test;
             break;
           case MainSelections::memory:
             test = new MemoryGrid(arduboy, tinyfont);

@@ -66,12 +66,16 @@ void SquarePuzzle::update() {
     case Status::solving: {
       if (arduboy.justPressed(UP_BUTTON)) {
         hN();
+        moves++;
       } else if (arduboy.justPressed(DOWN_BUTTON)) {
         hS();
+        moves++;
       } else if (arduboy.justPressed(LEFT_BUTTON)) {
         hW();
+        moves++;
       } else if (arduboy.justPressed(RIGHT_BUTTON)) {
         hE();
+        moves++;
       } else if (arduboy.justPressed(B_BUTTON)) {
         mScore = 0;
         status = Status::done;
@@ -86,10 +90,7 @@ void SquarePuzzle::update() {
       }
 
       if (solved) {
-        mScore =
-            moves > 100
-                ? 0
-                : 100 - moves;  // TODO come out with a better score that also use the millis
+        mScore = (moves > 256 ? 0 : 256 - moves) * 8;
         status = Status::score;
       }
     } break;
