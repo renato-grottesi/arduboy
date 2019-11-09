@@ -4,6 +4,7 @@
 #include "MemoryGrid.hpp"
 #include "Reflex.hpp"
 #include "SquarePuzzle.hpp"
+#include "VerbalMemory.hpp"
 
 void Main::init() {
   /* initialize the random seed with noise */
@@ -101,6 +102,10 @@ void Main::update() {
             test = new MemoryGrid(arduboy, tinyfont);
             currentMenu = Menus::test;
             break;
+          case MainSelections::verbal:
+            test = new VerbalMemory(arduboy, tinyfont);
+            currentMenu = Menus::test;
+            break;
           default:
             break;
         }
@@ -192,7 +197,12 @@ void Main::render() {
       sel = static_cast<uint8_t>(MainSelections::memory);
       setupEntry(arduboy, tinyfont, 38, 32, currentMainSelection == MainSelections::memory,
                  hiScores[sel]);
-      tinyfont.print(F("MEMORY"));
+      tinyfont.print(F("VIS.MEM."));
+
+      sel = static_cast<uint8_t>(MainSelections::verbal);
+      setupEntry(arduboy, tinyfont, 38, 40, currentMainSelection == MainSelections::verbal,
+                 hiScores[sel]);
+      tinyfont.print(F("VERB.MEM."));
 
       tinyfont.setTextColor(WHITE);
 
