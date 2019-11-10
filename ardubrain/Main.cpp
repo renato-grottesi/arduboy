@@ -1,6 +1,7 @@
 #include "Main.hpp"
 #include "Bitmaps.hpp"
 #include "Breathe.hpp"
+#include "Major.hpp"
 #include "MemoryGrid.hpp"
 #include "Reflex.hpp"
 #include "SquarePuzzle.hpp"
@@ -106,6 +107,10 @@ void Main::update() {
             test = new VerbalMemory(arduboy, tinyfont);
             currentMenu = Menus::test;
             break;
+          case MainSelections::major:
+            test = new Major(arduboy, tinyfont);
+            currentMenu = Menus::test;
+            break;
           default:
             break;
         }
@@ -203,6 +208,11 @@ void Main::render() {
       setupEntry(arduboy, tinyfont, 38, 40, currentMainSelection == MainSelections::verbal,
                  hiScores[sel]);
       tinyfont.print(F("VERB.MEM."));
+
+      sel = static_cast<uint8_t>(MainSelections::major);
+      setupEntry(arduboy, tinyfont, 38, 48, currentMainSelection == MainSelections::major,
+                 hiScores[sel]);
+      tinyfont.print(F("MAJ.MEM."));
 
       tinyfont.setTextColor(WHITE);
 

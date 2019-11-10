@@ -67,7 +67,7 @@ const Words words[Words::wordsCount] PROGMEM = {
     {"GYM"},    /* 63 */
     {"CHAIR"},  /* 64 */
     {"CELLO"},  /* 65 */
-    {"YOYO"},   /* 66 */
+    {"JUDGE"},  /* 66 */
     {"JOGA"},   /* 67 */
     {"CHEF"},   /* 68 */
     {"SHEEP"},  /* 69 */
