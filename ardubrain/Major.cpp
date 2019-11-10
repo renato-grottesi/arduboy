@@ -11,6 +11,7 @@ void Major::shuffle() {
            options[1] == options[2] || options[1] == options[3] || options[2] == options[3]);
 
   correct = rand() % 4;
+  wordToNumber = (rand() % 2) == 0;
 }
 
 void Major::update() {
@@ -88,23 +89,26 @@ void Major::render() {
       break;
     case Status::testing:
       tinyfont.setCursor(32, 2);
-      tinyfont.print(options[correct]);
+      if (wordToNumber) {
+        tinyfont.print(options[correct]);
+      } else {
+        tinyfont.print(Words::word(options[correct]));
+      }
 
       arduboy.drawBitmap(22, 32, bmp_left, 8, 8);
-      tinyfont.setCursor(32, 32);
-      tinyfont.print(Words::word(options[0]));
-
       arduboy.drawBitmap(22, 40, bmp_down, 8, 8);
-      tinyfont.setCursor(32, 40);
-      tinyfont.print(Words::word(options[1]));
-
       arduboy.drawBitmap(22, 48, bmp_up, 8, 8);
-      tinyfont.setCursor(32, 48);
-      tinyfont.print(Words::word(options[2]));
-
       arduboy.drawBitmap(22, 56, bmp_right, 8, 8);
-      tinyfont.setCursor(32, 56);
-      tinyfont.print(Words::word(options[3]));
+
+      for (uint8_t opt = 0; opt < 4; opt++) {
+        tinyfont.setCursor(32, 32 + 8 * opt);
+        if (wordToNumber) {
+          tinyfont.print(Words::word(options[opt]));
+        } else {
+          tinyfont.print(options[opt]);
+        }
+      }
+
       break;
     case Status::score:
       tinyfont.setCursor(1, 1);

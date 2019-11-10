@@ -24,5 +24,6 @@ class Major : public Test {
   uint16_t mScore = 0;
   uint8_t options[4] = {0, 0, 0, 0};
   uint8_t correct = 0;
+  bool wordToNumber = true;
   uint16_t millis = 0;
 };
