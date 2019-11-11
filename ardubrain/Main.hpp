@@ -19,7 +19,16 @@ class Main {
 
  private:
   enum class Menus : uint8_t { main, test, credits };
-  enum class MainSelections : uint8_t { reflex, planning, focus, memory, verbal, major, count };
+  enum class MainSelections : uint8_t {
+    reflex,
+    planning,
+    focus,
+    memory,
+    verbal,
+    major,
+    associative,
+    count
+  };
 
   static const uint8_t selectionsCount = static_cast<uint8_t>(MainSelections::count);
 

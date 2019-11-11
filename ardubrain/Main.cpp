@@ -1,4 +1,5 @@
 #include "Main.hpp"
+#include "Associative.hpp"
 #include "Bitmaps.hpp"
 #include "Breathe.hpp"
 #include "Major.hpp"
@@ -111,6 +112,10 @@ void Main::update() {
             test = new Major(arduboy, tinyfont);
             currentMenu = Menus::test;
             break;
+          case MainSelections::associative:
+            test = new Associative(arduboy, tinyfont);
+            currentMenu = Menus::test;
+            break;
           default:
             break;
         }
@@ -202,17 +207,22 @@ void Main::render() {
       sel = static_cast<uint8_t>(MainSelections::memory);
       setupEntry(arduboy, tinyfont, 38, 32, currentMainSelection == MainSelections::memory,
                  hiScores[sel]);
-      tinyfont.print(F("VIS.MEM."));
+      tinyfont.print(F("VIS.MEM"));
 
       sel = static_cast<uint8_t>(MainSelections::verbal);
       setupEntry(arduboy, tinyfont, 38, 40, currentMainSelection == MainSelections::verbal,
                  hiScores[sel]);
-      tinyfont.print(F("VERB.MEM."));
+      tinyfont.print(F("VERB.MEM"));
 
       sel = static_cast<uint8_t>(MainSelections::major);
       setupEntry(arduboy, tinyfont, 38, 48, currentMainSelection == MainSelections::major,
                  hiScores[sel]);
-      tinyfont.print(F("MAJ.MEM."));
+      tinyfont.print(F("MAJ.MEM"));
+
+      sel = static_cast<uint8_t>(MainSelections::associative);
+      setupEntry(arduboy, tinyfont, 38, 56, currentMainSelection == MainSelections::associative,
+                 hiScores[sel]);
+      tinyfont.print(F("PAIR MEM"));
 
       tinyfont.setTextColor(WHITE);
 

@@ -41,3 +41,5 @@ A word appears on the screen and the player needs to click A if it's new or B if
 ### Spatial Memory
 A small maze is shown on screen completely, then the game start. The player needs to go from one point to another. The twist is that the field of view of the player is only 5x5 or 3x3 or 1x1 cells: every other cell of the town is hidden and the player needs to navigate by memory.
 
+### Associative Memory
+The application shows 20 pairs of random words for 10 seconds each and ask the user to make a small story with each pair. Then it follows with one minute of basics equations (bigger than or smaller than). Finally, the application shows one word from the pairs and 4 words, one of each is the correct one to match.
