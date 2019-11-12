@@ -3,6 +3,7 @@
 #include "Bitmaps.hpp"
 #include "Breathe.hpp"
 #include "Major.hpp"
+#include "Maze.hpp"
 #include "MemoryGrid.hpp"
 #include "Reflex.hpp"
 #include "SquarePuzzle.hpp"
@@ -116,6 +117,10 @@ void Main::update() {
             test = new Associative(arduboy, tinyfont);
             currentMenu = Menus::test;
             break;
+          case MainSelections::maze:
+            test = new Maze(arduboy, tinyfont);
+            currentMenu = Menus::test;
+            break;
           default:
             break;
         }
@@ -150,21 +155,6 @@ void Main::update() {
   }
 }
 
-static void setupEntry(Arduboy2Base& arduboy,
-                       Tinyfont& tinyfont,
-                       uint8_t x,
-                       uint8_t y,
-                       bool selected,
-                       uint16_t score) {
-  tinyfont.setTextColor(selected ? BLACK : WHITE);
-  arduboy.fillRect(x, y, WIDTH, 6, selected ? WHITE : BLACK);
-  tinyfont.setCursor(x + 1 + 5 * 9, y + 1);
-  if (score > 0) {
-    tinyfont.print(score);
-  }
-  tinyfont.setCursor(x + 1, y + 1);
-}
-
 void Main::render() {
   /* clear the whole screen to black */
   arduboy.clear();
@@ -175,56 +165,40 @@ void Main::render() {
       tinyfont.setCursor(1, 1);
       tinyfont.print(F("ARDU\n BRAIN"));
       arduboy.drawBitmap(1, 12, bmp_logo, 32, 32);
-      tinyfont.setCursor(1, 12 + 34);
-      tinyfont.print(F("TOTAL\n SCORE:"));
-      tinyfont.setCursor(1, 12 + 34 + 10);
+
+      tinyfont.setCursor(20, 64 - 6);
+      tinyfont.print(F("TOTAL SCORE:"));
+      tinyfont.setCursor(38 + 1 + 5 * 9, 64 - 6);
       uint16_t totalScore = 0;
       for (uint8_t s = 0; s < selectionsCount; s++) {
         totalScore += hiScores[s];
       }
       tinyfont.print(totalScore);
 
-      setupEntry(arduboy, tinyfont, 38, 0, false, 0);
+      tinyfont.setCursor(38 + 1, 0 + 3);
       tinyfont.print(F("TEST:    HI-SCORE:"));
 
-      uint8_t sel = 0;
+      uint8_t sel = static_cast<uint8_t>(currentMainSelection);
 
-      sel = static_cast<uint8_t>(MainSelections::reflex);
-      setupEntry(arduboy, tinyfont, 38, 8, currentMainSelection == MainSelections::reflex,
-                 hiScores[sel]);
-      tinyfont.print(F("REFLEX"));
-
-      sel = static_cast<uint8_t>(MainSelections::planning);
-      setupEntry(arduboy, tinyfont, 38, 16, currentMainSelection == MainSelections::planning,
-                 hiScores[sel]);
-      tinyfont.print(F("PLANNING"));
-
-      sel = static_cast<uint8_t>(MainSelections::focus);
-      setupEntry(arduboy, tinyfont, 38, 24, currentMainSelection == MainSelections::focus,
-                 hiScores[sel]);
-      tinyfont.print(F("FOCUS"));
-
-      sel = static_cast<uint8_t>(MainSelections::memory);
-      setupEntry(arduboy, tinyfont, 38, 32, currentMainSelection == MainSelections::memory,
-                 hiScores[sel]);
-      tinyfont.print(F("VIS.MEM"));
-
-      sel = static_cast<uint8_t>(MainSelections::verbal);
-      setupEntry(arduboy, tinyfont, 38, 40, currentMainSelection == MainSelections::verbal,
-                 hiScores[sel]);
-      tinyfont.print(F("VERB.MEM"));
-
-      sel = static_cast<uint8_t>(MainSelections::major);
-      setupEntry(arduboy, tinyfont, 38, 48, currentMainSelection == MainSelections::major,
-                 hiScores[sel]);
-      tinyfont.print(F("MAJ.MEM"));
-
-      sel = static_cast<uint8_t>(MainSelections::associative);
-      setupEntry(arduboy, tinyfont, 38, 56, currentMainSelection == MainSelections::associative,
-                 hiScores[sel]);
-      tinyfont.print(F("PAIR MEM"));
+      for (uint8_t e = 0; e < 5; e++) {
+        uint8_t s = (sel < 3) ? e
+                              : ((sel < selectionsCount - 2) ? (e + sel - 2)
+                                                             : (e + selectionsCount - 5));
+        uint8_t x = 38;
+        uint8_t y = e * 8 + 14;
+        tinyfont.setTextColor(sel == s ? BLACK : WHITE);
+        arduboy.fillRect(x, y, WIDTH, 6, sel == s ? WHITE : BLACK);
+        tinyfont.setCursor(x + 1 + 5 * 9, y + 1);
+        tinyfont.print(hiScores[s]);
+        tinyfont.setCursor(x + 1, y + 1);
+        tinyfont.print(Selections::name(s));
+      }
 
       tinyfont.setTextColor(WHITE);
+
+      arduboy.drawFastHLine(38, 10, WIDTH);
+      arduboy.drawFastHLine(0, HEIGHT - 10, WIDTH);
+      arduboy.drawFastVLine(37, 0, HEIGHT - 10);
 
       break;
     }
@@ -245,4 +219,23 @@ void Main::render() {
 
   /* tell the arduboy to swap buffers */
   arduboy.display();
+}
+
+const Main::Selections selections[Main::selectionsCount] PROGMEM = {
+    {"REFLEX"}, /* reflex      */
+    {"PLAN"},   /* planning    */
+    {"FOCUS"},  /* focus       */
+    {"VISUAL"}, /* memory      */
+    {"VERBAL"}, /* verbal      */
+    {"MAJOR"},  /* major       */
+    {"PAIRS"},  /* associative */
+    {"MAZE"},   /* maze        */
+};
+
+const __FlashStringHelper* Main::Selections::name() const {
+  return reinterpret_cast<const __FlashStringHelper*>(_name);
+}
+
+const __FlashStringHelper* Main::Selections::name(const uint8_t id) {
+  return selections[id].name();
 }

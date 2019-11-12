@@ -17,7 +17,7 @@ class Main {
   void loadHighScore();
   void saveHighScore();
 
- private:
+ public:
   enum class Menus : uint8_t { main, test, credits };
   enum class MainSelections : uint8_t {
     reflex,
@@ -27,11 +27,28 @@ class Main {
     verbal,
     major,
     associative,
+    maze,
     count
   };
 
   static const uint8_t selectionsCount = static_cast<uint8_t>(MainSelections::count);
 
+  class Selections {
+   private:
+    Selections() = default;
+    const __FlashStringHelper* name() const;
+
+   public:
+    static const __FlashStringHelper* name(const uint8_t id);
+    static const __FlashStringHelper* name(MainSelections id) {
+      return name(static_cast<uint8_t>(id));
+    }
+
+   public:
+    const char _name[10];
+  };
+
+ private:
   uint16_t hiScores[selectionsCount] = {};
 
   Test* test = nullptr;
