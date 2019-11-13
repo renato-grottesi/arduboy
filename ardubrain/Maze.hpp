@@ -11,6 +11,9 @@ class Maze : public Test {
   bool complete(uint16_t& score) final;
 
  private:
+  bool solveable();
+
+ private:
   enum class Status : uint8_t { instructions, showing, navigating, score, done };
 
   Status status = Status::instructions;
