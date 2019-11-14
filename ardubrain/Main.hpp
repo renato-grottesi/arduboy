@@ -28,6 +28,7 @@ class Main {
     major,
     associative,
     maze,
+    series,
     count
   };
 

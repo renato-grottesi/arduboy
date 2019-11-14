@@ -6,6 +6,7 @@
 #include "Maze.hpp"
 #include "MemoryGrid.hpp"
 #include "Reflex.hpp"
+#include "Series.hpp"
 #include "SquarePuzzle.hpp"
 #include "VerbalMemory.hpp"
 
@@ -121,6 +122,10 @@ void Main::update() {
             test = new Maze(arduboy, tinyfont);
             currentMenu = Menus::test;
             break;
+          case MainSelections::series:
+            test = new Series(arduboy, tinyfont);
+            currentMenu = Menus::test;
+            break;
           default:
             break;
         }
@@ -230,6 +235,7 @@ const Main::Selections selections[Main::selectionsCount] PROGMEM = {
     {"MAJOR"},  /* major       */
     {"PAIRS"},  /* associative */
     {"MAZE"},   /* maze        */
+    {"SERIES"}, /* series      */
 };
 
 const __FlashStringHelper* Main::Selections::name() const {

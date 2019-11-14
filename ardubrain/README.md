@@ -26,10 +26,14 @@ Breathing exercise where the user should follow his breath and press A while inh
 ## Memory
 
 ### Numeric Memory
-The application teaches how to convert numbers into consonants, how to find words that contain those consonants and how to use the method of loci to memorize those words.
-One exercise would be to show the player one number from 0 to 99, then show 4 words and the player needs to choose the one that maps to the Major Memory System's right PEG. Faster right answer, higher score.
-A reverse of the previous exercise would show a word, then 4 numbers and the player needs to choose the right one. Faster right answer, higher score.
-A final test will allow the player to read a sequence of numbers for some time (10 seconds per digit?), then ask to repeat it again. The longer the number, the higher the score.
+Show to the player a sequence of two digit numbers for some time and let it memorize it.
+Then 4 two digit numbers appear on screen and the player need to choose the right one to recreate the sequence.
+The longer it manages, the higher the score.
+
+### Mnemonic major system
+Show the player one number from 0 to 99, then show 4 words and the player needs to choose the one that maps to the Major Memory System's right PEG.
+A reverse of the previous exercise would show a word, then 4 numbers and the player needs to choose the right one.
+Faster right answer, higher score.
 
 ### Visual Memory
 There is a grid with some white squares. After one second all squares are black and the player needs to remember which ones changed.
