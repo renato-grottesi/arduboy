@@ -1,15 +1,13 @@
 # ArduBrain
-ArduBrain is an application for the arduboy that trains your brain and tracks the enhancements using minigames and tests.
+ArduBrain is an application for the arduboy that trains your brain and tracks the progress using minigames and tests.
 
 # Tests
 
 ## Reflex
-- [x] Press the A button as soon as the screen change color: the faster the reflex, the higher the score.
-- [ ] The screen has the dpad (up-down-left-right) and buttons (A,B) on screen. Now and then one of the 6 onscreen buttons changes color and the player needs to click the button that matches the onscreen one as soon as possible and before the onscreen button reverts to its previous color.
+- [x] Press the A button as soon as the screen change color: the faster the response, the higher the score.
 
 ## Attention
-- [ ] There is an image in the screen, then another comes and the user should press A if it matches the previous, or B if it's new. As fast as possible.
-- [ ] There are some arrows that points in one of the N,S,W,E directions traveling in one of the N,S,W,E directions: if the arrow is filled, the player should click the d-pad of pointing direction, if the arrow is only the outline, the player should click the d-pad of the traveling direction.
+- [x] There are some arrows that points in one of the N,S,W,E directions traveling in one of the N,S,W,E directions: if the background is black, the player should click the d-pad of pointing direction, if the background is white, the player should click the d-pad of the traveling direction.
 
 ## Planning
 - [x] Classic game with a 4x4 grid containing 15 numbers and a hole. The player has to sort the numbers.
@@ -33,7 +31,6 @@ ArduBrain is an application for the arduboy that trains your brain and tracks th
 
 ### Visual Memory
 - [x] There is a grid with some white squares. After one second all squares are black and the player needs to remember which ones changed.
-- [ ] Some figures are shown for some time, then the player is shown a different set of figures and needs to identify which ones are new, or which ones are from the previous set.
 
 ### Verbal Memory
 - [x] A word appears on the screen and the player needs to click A if it's new or B if it appeared before. Then more words appear. The 100 words from the Major Memory System's PEG can be reused here.

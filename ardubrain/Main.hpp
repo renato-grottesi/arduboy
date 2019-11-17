@@ -29,6 +29,7 @@ class Main {
     associative,
     maze,
     series,
+    arrows,
     count
   };
 

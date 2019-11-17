@@ -9,6 +9,7 @@
 #include "Series.hpp"
 #include "SquarePuzzle.hpp"
 #include "VerbalMemory.hpp"
+#include "Arrows.hpp"
 
 void Main::init() {
   /* initialize the random seed with noise */
@@ -126,6 +127,10 @@ void Main::update() {
             test = new Series(arduboy, tinyfont);
             currentMenu = Menus::test;
             break;
+          case MainSelections::arrows:
+            test = new Arrows(arduboy, tinyfont);
+            currentMenu = Menus::test;
+            break;
           default:
             break;
         }
@@ -236,6 +241,7 @@ const Main::Selections selections[Main::selectionsCount] PROGMEM = {
     {"PAIRS"},  /* associative */
     {"MAZE"},   /* maze        */
     {"SERIES"}, /* series      */
+    {"ARROWS"}, /* arrows      */
 };
 
 const __FlashStringHelper* Main::Selections::name() const {
