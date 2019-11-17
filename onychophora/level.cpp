@@ -3,7 +3,6 @@
 #include "levels.h"
 
 void Level::init(uint8_t level) {
-
   for (uint8_t row = 0; row < 8; row++) {
     rock[row] = levelsData[level].rock[row];
     soil[row] = levelsData[level].soil[row];
@@ -22,34 +21,33 @@ void Level::init(uint8_t level) {
 
 void Level::onInput(Direction dir) {
   if ((!is.moving) && (!is.falling)) {
-
     Cell newHead = worm.getHead();
 
     switch (dir) {
-    case Direction::up:
-      if (newHead.x == 0) {
-        return;
-      };
-      newHead.x--;
-      break;
-    case Direction::down:
-      if (newHead.x == 7) {
-        return;
-      };
-      newHead.x++;
-      break;
-    case Direction::left:
-      if (newHead.y == 0) {
-        return;
-      };
-      newHead.y--;
-      break;
-    case Direction::right:
-      if (newHead.y == 15) {
-        return;
-      };
-      newHead.y++;
-      break;
+      case Direction::up:
+        if (newHead.x == 0) {
+          return;
+        };
+        newHead.x--;
+        break;
+      case Direction::down:
+        if (newHead.x == 7) {
+          return;
+        };
+        newHead.x++;
+        break;
+      case Direction::left:
+        if (newHead.y == 0) {
+          return;
+        };
+        newHead.y--;
+        break;
+      case Direction::right:
+        if (newHead.y == 15) {
+          return;
+        };
+        newHead.y++;
+        break;
     }
 
     updateWorm(newHead);
@@ -114,8 +112,7 @@ void Level::update() {
               (row > 0 && (stable[row - 1] & (1 << (15 - col)))) ||
               (col < 15 && (stable[row] & (1 << (15 - col + 1)))) ||
               (col > 0 && (stable[row] & (1 << (15 - col - 1)))) ||
-              (row == 7 || row == 0 || col == 15 ||
-               col == 0) /* Borders are safe. */
+              (row == 7 || row == 0 || col == 15 || col == 0) /* Borders are safe. */
           ) {
             stable[row] |= (1 << (15 - col));
             newStable++;
@@ -127,8 +124,7 @@ void Level::update() {
 
   for (uint8_t row = 6; row != 0; row--) {
     for (uint8_t col = 0; col < 16; col++) {
-      if ((soil[row] & (1 << (15 - col))) &&
-          !(stable[row] & (1 << (15 - col)))) {
+      if ((soil[row] & (1 << (15 - col))) && !(stable[row] & (1 << (15 - col)))) {
         soil[row] &= ~(1 << (15 - col));
         soil[row + 1] |= (1 << (15 - col));
       }
