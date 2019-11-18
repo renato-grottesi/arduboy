@@ -1,7 +1,7 @@
 #pragma once
 
-#include "utility.h"
-#include "worm.h"
+#include "Utility.hpp"
+#include "Worm.hpp"
 
 class Level {
 public:

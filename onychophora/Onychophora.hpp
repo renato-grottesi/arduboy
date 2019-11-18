@@ -1,7 +1,7 @@
 #pragma once
 
-#include "level.h"
-#include "utility.h"
+#include "Level.hpp"
+#include "Utility.hpp"
 
 class Onychophora {
 public:

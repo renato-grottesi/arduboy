@@ -1,6 +1,6 @@
 #pragma once
 
-#include "utility.h"
+#include "Utility.hpp"
 
 /* Class that implements the worm. */
 class Worm {

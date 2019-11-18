@@ -1,5 +1,5 @@
 #pragma once
-#include "utility.h"
+#include "Utility.hpp"
 
 static const uint8_t levelsCount = 7;
 

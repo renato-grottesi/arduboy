@@ -1,4 +1,4 @@
-#include "onychophora.h"
+#include "Onychophora.hpp"
 
 Onychophora game;
 

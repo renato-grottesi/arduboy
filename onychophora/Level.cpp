@@ -1,6 +1,6 @@
-#include "level.h"
-#include "bitmaps.h"
-#include "levels.h"
+#include "Level.hpp"
+#include "Bitmaps.hpp"
+#include "Levels.hpp"
 
 void Level::init(uint8_t level) {
   for (uint8_t row = 0; row < 8; row++) {
@@ -142,16 +142,16 @@ void Level::render() {
   for (uint8_t row = 0; row < 8; row++) {
     for (uint8_t col = 0; col < 16; col++) {
       if (rock[row] & (1 << (15 - col))) {
-        arduboy.drawBitmap(col * 8, row * 8, bmp_rock, 8, 8);
+        arduboy.drawBitmap(col * 8, row * 8, bmpRock, 8, 8);
       }
       if (soil[row] & (1 << (15 - col))) {
-        arduboy.drawBitmap(col * 8, row * 8, bmp_soil, 8, 8);
+        arduboy.drawBitmap(col * 8, row * 8, bmpSoil, 8, 8);
       }
       if (food[row] & (1 << (15 - col))) {
-        arduboy.drawBitmap(col * 8, row * 8, bmp_food, 8, 8);
+        arduboy.drawBitmap(col * 8, row * 8, bmpFood, 8, 8);
       }
       if (poop[row] & (1 << (15 - col))) {
-        arduboy.drawBitmap(col * 8, row * 8, bmp_poop, 8, 8);
+        arduboy.drawBitmap(col * 8, row * 8, bmpPoop, 8, 8);
       }
     }
   }
@@ -160,5 +160,5 @@ void Level::render() {
   arduboy.drawLine(127, 0, 127, 63);
   arduboy.drawLine(127, 63, 0, 63);
   arduboy.drawLine(0, 63, 0, 0);
-  arduboy.drawBitmap(goal.y * 8, goal.x * 8, bmp_goal, 8, 8);
+  arduboy.drawBitmap(goal.y * 8, goal.x * 8, bmpGoal, 8, 8);
 }

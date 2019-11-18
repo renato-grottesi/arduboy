@@ -1,5 +1,5 @@
-#include "worm.h"
-#include "bitmaps.h"
+#include "Worm.hpp"
+#include "Bitmaps.hpp"
 
 bool Worm::moveTo(Cell newHead, bool enlarge, bool shorten) {
   if (enlarge) {
@@ -83,19 +83,19 @@ uint8_t Worm::joinRotation(uint8_t j) {
 }
 
 void Worm::render() {
-  arduboy.drawBitmap(cells[0].y * 8, cells[0].x * 8, &bmp_worm_head[extrRotation(1, 0)], 8, 8);
+  arduboy.drawBitmap(cells[0].y * 8, cells[0].x * 8, &bmpWormHead[extrRotation(1, 0)], 8, 8);
   for (uint8_t i = 1; i < count - 1; i++) {
     if (cells[i - 1].x == cells[i].x && cells[i + 1].x == cells[i].x) {
-      arduboy.drawBitmap(cells[i].y * 8, cells[i].x * 8, &bmp_worm_body[R], 8, 8);
+      arduboy.drawBitmap(cells[i].y * 8, cells[i].x * 8, &bmpWormBody[R], 8, 8);
     } else if (cells[i - 1].y == cells[i].y && cells[i + 1].y == cells[i].y) {
-      arduboy.drawBitmap(cells[i].y * 8, cells[i].x * 8, &bmp_worm_body[U], 8, 8);
+      arduboy.drawBitmap(cells[i].y * 8, cells[i].x * 8, &bmpWormBody[U], 8, 8);
     } else {
-      arduboy.drawBitmap(cells[i].y * 8, cells[i].x * 8, &bmp_worm_join[Worm::joinRotation(i)],
+      arduboy.drawBitmap(cells[i].y * 8, cells[i].x * 8, &bmpWormJoin[Worm::joinRotation(i)],
                          8, 8);
     }
   }
   arduboy.drawBitmap(cells[count - 1].y * 8, cells[count - 1].x * 8,
-                     &bmp_worm_tail[extrRotation(count - 1, count - 2)], 8, 8);
+                     &bmpWormTail[extrRotation(count - 1, count - 2)], 8, 8);
 }
 
 void Worm::reset(Cell c) {

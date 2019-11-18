@@ -1,6 +1,6 @@
 #pragma once
 
-const unsigned char PROGMEM bmp_rock[] = {
+const unsigned char PROGMEM bmpRock[] = {
     0b11111111, /**/
     0b11111111, /**/
     0b11111111, /**/
@@ -11,7 +11,7 @@ const unsigned char PROGMEM bmp_rock[] = {
     0b11111111, /**/
 };
 
-const unsigned char PROGMEM bmp_soil[] = {
+const unsigned char PROGMEM bmpSoil[] = {
     0b01010101, /**/
     0b10101010, /**/
     0b01010101, /**/
@@ -22,7 +22,7 @@ const unsigned char PROGMEM bmp_soil[] = {
     0b10101010, /**/
 };
 
-const unsigned char PROGMEM bmp_food[] = {
+const unsigned char PROGMEM bmpFood[] = {
     0b00011000, /**/
     0b00111100, /**/
     0b01111110, /**/
@@ -33,7 +33,7 @@ const unsigned char PROGMEM bmp_food[] = {
     0b00011000, /**/
 };
 
-const unsigned char PROGMEM bmp_goal[] = {
+const unsigned char PROGMEM bmpGoal[] = {
     0b00000000, /**/
     0b11111000, /**/
     0b00000100, /**/
@@ -44,7 +44,7 @@ const unsigned char PROGMEM bmp_goal[] = {
     0b00000000, /**/
 };
 
-const unsigned char PROGMEM bmp_poop[] = {
+const unsigned char PROGMEM bmpPoop[] = {
     0b10000000, /**/
     0b11000000, /**/
     0b11110000, /**/
@@ -55,7 +55,7 @@ const unsigned char PROGMEM bmp_poop[] = {
     0b10000000, /**/
 };
 
-const unsigned char PROGMEM bmp_worm_head[] = {
+const unsigned char PROGMEM bmpWormHead[] = {
     /* 0 degrees */
     0b01111110, /**/
     0b01111110, /**/
@@ -94,7 +94,7 @@ const unsigned char PROGMEM bmp_worm_head[] = {
     0b00000000, /**/
 };
 
-const unsigned char PROGMEM bmp_worm_body[] = {
+const unsigned char PROGMEM bmpWormBody[] = {
     /* 0 degrees */
     0b01111110, /**/
     0b01111110, /**/
@@ -115,7 +115,7 @@ const unsigned char PROGMEM bmp_worm_body[] = {
     0b00000000, /**/
 };
 
-const unsigned char PROGMEM bmp_worm_tail[] = {
+const unsigned char PROGMEM bmpWormTail[] = {
     /* 0 degrees */
     0b00000000, /**/
     0b00111000, /**/
@@ -154,7 +154,7 @@ const unsigned char PROGMEM bmp_worm_tail[] = {
     0b00000000, /**/
 };
 
-const unsigned char PROGMEM bmp_worm_join[] = {
+const unsigned char PROGMEM bmpWormJoin[] = {
     /* 0 degrees */
     0b01111110, /**/
     0b01111111, /**/
@@ -193,7 +193,7 @@ const unsigned char PROGMEM bmp_worm_join[] = {
     0b01111110, /**/
 };
 
-const unsigned char PROGMEM bmp_arrow[] = {
+const unsigned char PROGMEM bmpArrow[] = {
     0b00000000, /**/
     0b00011100, /**/
     0b00011100, /**/
