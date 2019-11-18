@@ -3,19 +3,15 @@
 #include "Levels.hpp"
 
 void Level::init(uint8_t level) {
-  for (uint8_t row = 0; row < 8; row++) {
-    rock[row] = levelsData[level].rock[row];
-    soil[row] = levelsData[level].soil[row];
-    food[row] = levelsData[level].food[row];
-    poop[row] = levelsData[level].poop[row];
-  }
+  Cell head, body, tail;
+  Levels::setupCells(&goal, &head, &body, &tail, level);
+  worm.reset(head);
+  worm.addPiece(body);
+  worm.addPiece(tail);
 
-  worm.reset(levelsData[level].head);
-  worm.addPiece(levelsData[level].body);
-  worm.addPiece(levelsData[level].tail);
+  Levels::setupTiles(rock, soil, food, poop, level);
 
-  goal = levelsData[level].goal;
-  tutorial = levelsData[level].tutorial;
+  tutorial = Levels::tutorial(level);
   currentLevel = level;
 }
 
@@ -89,7 +85,7 @@ void Level::update() {
   }
   if (worm.getHead().intersects(goal)) {
     currentLevel++;
-    if (currentLevel >= levelsCount)
+    if (currentLevel >= Levels::levelsCount)
       currentLevel = 0;
     init(currentLevel);
   }
@@ -138,7 +134,7 @@ void Level::update() {
 
 void Level::render() {
   tinyfont.setCursor(2, 2);
-  tinyfont.print(tutorial);
+  tinyfont.print((reinterpret_cast<const __FlashStringHelper*>(tutorial)));
   for (uint8_t row = 0; row < 8; row++) {
     for (uint8_t col = 0; col < 16; col++) {
       if (rock[row] & (1 << (15 - col))) {

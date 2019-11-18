@@ -90,8 +90,8 @@ void Worm::render() {
     } else if (cells[i - 1].y == cells[i].y && cells[i + 1].y == cells[i].y) {
       arduboy.drawBitmap(cells[i].y * 8, cells[i].x * 8, &bmpWormBody[U], 8, 8);
     } else {
-      arduboy.drawBitmap(cells[i].y * 8, cells[i].x * 8, &bmpWormJoin[Worm::joinRotation(i)],
-                         8, 8);
+      arduboy.drawBitmap(cells[i].y * 8, cells[i].x * 8, &bmpWormJoin[Worm::joinRotation(i)], 8,
+                         8);
     }
   }
   arduboy.drawBitmap(cells[count - 1].y * 8, cells[count - 1].x * 8,

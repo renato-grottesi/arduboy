@@ -127,13 +127,13 @@ void Onychophora::render() {
       tinyfont.print(F("HELP"));
       switch (currentMainSelection) {
         case MainSelections::play:
-          arduboy.drawBitmap(10, 15-2, bmpArrow, 8, 8);
+          arduboy.drawBitmap(10, 15 - 2, bmpArrow, 8, 8);
           break;
         case MainSelections::credits:
-          arduboy.drawBitmap(10, 30-2, bmpArrow, 8, 8);
+          arduboy.drawBitmap(10, 30 - 2, bmpArrow, 8, 8);
           break;
         case MainSelections::help:
-          arduboy.drawBitmap(10, 45-2, bmpArrow, 8, 8);
+          arduboy.drawBitmap(10, 45 - 2, bmpArrow, 8, 8);
           break;
       }
       break;

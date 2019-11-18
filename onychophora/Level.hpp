@@ -4,8 +4,8 @@
 #include "Worm.hpp"
 
 class Level {
-public:
-  Level(Arduboy2 &arduboy, Tinyfont &tinyfont)
+ public:
+  Level(Arduboy2& arduboy, Tinyfont& tinyfont)
       : arduboy(arduboy), tinyfont(tinyfont), worm(arduboy) {}
 
   void init(uint8_t level);
@@ -15,11 +15,11 @@ public:
   void render();
   uint8_t getCurrentLevel() { return currentLevel; }
 
-private:
+ private:
   void updateWorm(Cell newHead);
 
-  Arduboy2 &arduboy;
-  Tinyfont &tinyfont;
+  Arduboy2& arduboy;
+  Tinyfont& tinyfont;
   Worm worm;
 
   // 8 rows of 16 elements each
@@ -29,7 +29,7 @@ private:
   uint16_t poop[8];
 
   Cell goal;
-  const char *tutorial;
+  const char* tutorial;
   uint8_t currentLevel = 0;
 
   struct {
