@@ -133,8 +133,6 @@ void Level::update() {
 }
 
 void Level::render() {
-  tinyfont.setCursor(2, 2);
-  tinyfont.print((reinterpret_cast<const __FlashStringHelper*>(tutorial)));
   for (uint8_t row = 0; row < 8; row++) {
     for (uint8_t col = 0; col < 16; col++) {
       if (rock[row] & (1 << (15 - col))) {
@@ -157,4 +155,8 @@ void Level::render() {
   arduboy.drawLine(127, 63, 0, 63);
   arduboy.drawLine(0, 63, 0, 0);
   arduboy.drawBitmap(goal.y * 8, goal.x * 8, bmpGoal, 8, 8);
+  tinyfont.setCursor(2, 2);
+  tinyfont.setTextColor(BLACK);
+  tinyfont.print((reinterpret_cast<const __FlashStringHelper*>(tutorial)));
+  tinyfont.setTextColor(WHITE);
 }

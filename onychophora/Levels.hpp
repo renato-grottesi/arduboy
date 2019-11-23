@@ -42,5 +42,5 @@ class Levels {
   const uint16_t _food[8];
   const uint16_t _poop[8];
 
-  static const uint8_t levelsCount = 7;
+  static const uint8_t levelsCount = 8;
 };
