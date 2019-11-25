@@ -31,6 +31,7 @@ class Level {
   Cell goal;
   const char* tutorial;
   uint8_t currentLevel = 0;
+  uint8_t skips = 0;
 
   struct {
     bool moving : 1;

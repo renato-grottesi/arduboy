@@ -83,20 +83,15 @@ void Onychophora::update() {
       level.update();
       if (arduboy.justPressed(UP_BUTTON)) {
         level.onInput(Direction::up);
-      }
-      if (arduboy.justPressed(DOWN_BUTTON)) {
+      } else if (arduboy.justPressed(DOWN_BUTTON)) {
         level.onInput(Direction::down);
-      }
-      if (arduboy.justPressed(RIGHT_BUTTON)) {
+      } else if (arduboy.justPressed(RIGHT_BUTTON)) {
         level.onInput(Direction::right);
-      }
-      if (arduboy.justPressed(LEFT_BUTTON)) {
+      } else if (arduboy.justPressed(LEFT_BUTTON)) {
         level.onInput(Direction::left);
-      }
-      if (arduboy.justPressed(A_BUTTON)) {
+      } else if (arduboy.justPressed(A_BUTTON)) {
         level.init(level.getCurrentLevel());
-      }
-      if (arduboy.justPressed(B_BUTTON)) {
+      } else if (arduboy.justPressed(B_BUTTON)) {
         currentMenu = Menus::main;
       }
       break;

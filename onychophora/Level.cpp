@@ -76,12 +76,21 @@ void Level::updateWorm(Cell newHead) {
 }
 
 void Level::update() {
+  if (skips > 0) {
+    skips--;
+    return;
+  }
+
   uint16_t solids[8];
   for (uint8_t row = 0; row < 8; row++) {
     solids[row] = rock[row] | soil[row] | food[row] | poop[row];
   }
   if (worm.fall(solids)) {
+    is.falling = true;
+    skips = 2;
     updateWorm(worm.getHead());
+  } else {
+    is.falling = false;
   }
   if (worm.getHead().intersects(goal)) {
     currentLevel++;
