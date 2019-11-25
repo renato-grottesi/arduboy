@@ -16,7 +16,7 @@ void Level::init(uint8_t level) {
 }
 
 void Level::onInput(Direction dir) {
-  if ((!is.moving) && (!is.falling)) {
+  if (skips == 0) {
     Cell newHead = worm.getHead();
 
     switch (dir) {
@@ -85,13 +85,13 @@ void Level::update() {
   for (uint8_t row = 0; row < 8; row++) {
     solids[row] = rock[row] | soil[row] | food[row] | poop[row];
   }
+
   if (worm.fall(solids)) {
-    is.falling = true;
     skips = 2;
     updateWorm(worm.getHead());
-  } else {
-    is.falling = false;
+    return;
   }
+
   if (worm.getHead().intersects(goal)) {
     currentLevel++;
     if (currentLevel >= Levels::levelsCount)
@@ -132,11 +132,16 @@ void Level::update() {
       if ((soil[row] & (1 << (15 - col))) && !(stable[row] & (1 << (15 - col)))) {
         soil[row] &= ~(1 << (15 - col));
         soil[row + 1] |= (1 << (15 - col));
+        skips = 2;
       }
     }
   }
 
-  if (worm.intersects(soil)) {
+  if (skips == 2 && worm.intersects(soil)) {
+    skips = 8;
+  }
+
+  if (skips == 0 && worm.intersects(soil)) {
     init(currentLevel);
   }
 }

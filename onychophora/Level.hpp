@@ -32,12 +32,4 @@ class Level {
   const char* tutorial;
   uint8_t currentLevel = 0;
   uint8_t skips = 0;
-
-  struct {
-    bool moving : 1;
-    bool falling : 1;
-  } is = {
-      false, /* the worm is not moving */
-      false  /* nothing is falling */
-  };
 };
