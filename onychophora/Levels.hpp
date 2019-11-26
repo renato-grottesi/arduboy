@@ -13,6 +13,7 @@ class Levels {
   const void soil(uint16_t* res) const;
   const void food(uint16_t* res) const;
   const void poop(uint16_t* res) const;
+  const void nail(uint16_t* res) const;
 
   static const char* tutorial(const uint8_t id);
   static const void setupCells(Cell* rGoal,
@@ -24,6 +25,7 @@ class Levels {
                                uint16_t* rSoil,
                                uint16_t* rFood,
                                uint16_t* rPoop,
+                               uint16_t* rNail,
                                const uint8_t id);
 
   static const uint8_t count() { return levelsCount; }
@@ -41,6 +43,7 @@ class Levels {
   const uint16_t _soil[8];
   const uint16_t _food[8];
   const uint16_t _poop[8];
+  const uint16_t _nail[8];
 
-  static const uint8_t levelsCount = 9;
+  static const uint8_t levelsCount = 10;
 };

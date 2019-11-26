@@ -55,6 +55,17 @@ const unsigned char PROGMEM bmpPoop[] = {
     0b10000000, /**/
 };
 
+const unsigned char PROGMEM bmpNail[] = {
+    0b00000000, /**/
+    0b00000000, /**/
+    0b10000000, /**/
+    0b11100000, /**/
+    0b11111110, /**/
+    0b11100000, /**/
+    0b10000000, /**/
+    0b00000000, /**/
+};
+
 const unsigned char PROGMEM bmpWormHead[] = {
     /* 0 degrees */
     0b01111110, /**/

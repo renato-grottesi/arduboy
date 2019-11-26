@@ -27,6 +27,7 @@ class Level {
   uint16_t soil[8];
   uint16_t food[8];
   uint16_t poop[8];
+  uint16_t nail[8];
 
   Cell goal;
   const char* tutorial;

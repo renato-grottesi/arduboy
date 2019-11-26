@@ -9,7 +9,7 @@ void Level::init(uint8_t level) {
   worm.addPiece(body);
   worm.addPiece(tail);
 
-  Levels::setupTiles(rock, soil, food, poop, level);
+  Levels::setupTiles(rock, soil, food, poop, nail, level);
 
   tutorial = Levels::tutorial(level);
   currentLevel = level;
@@ -144,6 +144,10 @@ void Level::update() {
   if (skips == 0 && worm.intersects(soil)) {
     init(currentLevel);
   }
+
+  if (worm.intersects(nail)) {
+    init(currentLevel);
+  }
 }
 
 void Level::render() {
@@ -160,6 +164,9 @@ void Level::render() {
       }
       if (poop[row] & (1 << (15 - col))) {
         arduboy.drawBitmap(col * 8, row * 8, bmpPoop, 8, 8);
+      }
+      if (nail[row] & (1 << (15 - col))) {
+        arduboy.drawBitmap(col * 8, row * 8, bmpNail, 8, 8);
       }
     }
   }
