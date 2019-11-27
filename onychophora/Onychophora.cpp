@@ -1,5 +1,6 @@
 #include "Onychophora.hpp"
 #include "Bitmaps.hpp"
+#include "Levels.hpp"
 
 void Onychophora::init() {
   // initiate arduboy instance
@@ -81,7 +82,11 @@ void Onychophora::update() {
       break;
     case Menus::game:
       level.update();
-      if (arduboy.justPressed(UP_BUTTON)) {
+      if (level.getCurrentLevel() >= Levels::levelsCount) {
+        currentMenu = Menus::over;
+        lastLevel = 0;
+        level.init(lastLevel);
+      } else if (arduboy.justPressed(UP_BUTTON)) {
         level.onInput(Direction::up);
       } else if (arduboy.justPressed(DOWN_BUTTON)) {
         level.onInput(Direction::down);
@@ -92,6 +97,12 @@ void Onychophora::update() {
       } else if (arduboy.justPressed(A_BUTTON)) {
         level.init(level.getCurrentLevel());
       } else if (arduboy.justPressed(B_BUTTON)) {
+        currentMenu = Menus::main;
+      }
+      break;
+    case Menus::over:
+      if (arduboy.justPressed(A_BUTTON) || arduboy.justPressed(B_BUTTON)) {
+        lastLevel = 0;
         currentMenu = Menus::main;
       }
       break;
@@ -134,6 +145,10 @@ void Onychophora::render() {
       break;
     case Menus::game:
       level.render();
+      break;
+    case Menus::over:
+      tinyfont.setCursor(2, 10);
+      tinyfont.print(F("CONGRATULATIONS!\nYOU COMPLETED ALL THE\nLEVELS IN THE GAME!"));
       break;
     case Menus::credits:
       tinyfont.setCursor(2, 10);

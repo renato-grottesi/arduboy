@@ -94,9 +94,9 @@ void Level::update() {
 
   if (worm.getHead().intersects(goal)) {
     currentLevel++;
-    if (currentLevel >= Levels::levelsCount)
-      currentLevel = 0;
-    init(currentLevel);
+    if (currentLevel < Levels::levelsCount) {
+      init(currentLevel);
+    }
   }
 
   uint16_t stable[8];
