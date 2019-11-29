@@ -17,10 +17,10 @@ void Onychophora::init() {
   } else {
     lastLevel = 0;
 
-    EEPROM.write(EEPROM_STORAGE_SPACE_START + 0, 'o');
-    EEPROM.write(EEPROM_STORAGE_SPACE_START + 1, 'n');
-    EEPROM.write(EEPROM_STORAGE_SPACE_START + 2, 'y');
-    EEPROM.write(EEPROM_STORAGE_SPACE_START + 3, 0);
+    EEPROM.update(EEPROM_STORAGE_SPACE_START + 0, 'o');
+    EEPROM.update(EEPROM_STORAGE_SPACE_START + 1, 'n');
+    EEPROM.update(EEPROM_STORAGE_SPACE_START + 2, 'y');
+    EEPROM.update(EEPROM_STORAGE_SPACE_START + 3, 0);
   }
 }
 
@@ -98,7 +98,11 @@ void Onychophora::update() {
         level.init(level.getCurrentLevel());
       } else if (arduboy.justPressed(B_BUTTON)) {
         currentMenu = Menus::main;
+      } else if (level.getCurrentLevel() > lastLevel) {
+        lastLevel = level.getCurrentLevel();
+        EEPROM.update(EEPROM_STORAGE_SPACE_START + 3, lastLevel);
       }
+
       break;
     case Menus::over:
       if (arduboy.justPressed(A_BUTTON) || arduboy.justPressed(B_BUTTON)) {
