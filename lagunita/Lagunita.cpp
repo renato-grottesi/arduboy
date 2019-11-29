@@ -1,4 +1,4 @@
-#include "lagunita.hpp"
+#include "Lagunita.hpp"
 
 union high_score_union {
   struct {

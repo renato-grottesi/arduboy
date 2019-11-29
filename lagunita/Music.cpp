@@ -1,4 +1,4 @@
-#include "music.hpp"
+#include "Music.hpp"
 
 /* MIDI score converted in bytes stored in PROGMEM. */
 const byte western[] PROGMEM = {

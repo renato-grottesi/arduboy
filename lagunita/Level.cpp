@@ -1,5 +1,5 @@
-#include "level.hpp"
-#include "lagunita.hpp"
+#include "Level.hpp"
+#include "Lagunita.hpp"
 
 static const uint16_t minute = Lagunita::frame_rate * 64;
 

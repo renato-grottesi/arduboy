@@ -1,5 +1,5 @@
-#include "buildings.hpp"
-#include "bitmaps.hpp"
+#include "Buildings.hpp"
+#include "Bitmaps.hpp"
 
 const Building buildings[static_cast<uint8_t>(Building::IDs::count)] PROGMEM = {
     /* clang-format off */

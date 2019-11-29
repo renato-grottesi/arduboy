@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 #include "ArduboyTones.hpp"
-#include "utility.hpp"
+#include "Utility.hpp"
 
 /* Class that plays the game music. */
 class Music {

@@ -2,7 +2,7 @@
 
 #include <avr/pgmspace.h>
 #include <stdint.h>
-#include "utility.hpp"
+#include "Utility.hpp"
 
 /* Type of building that can be constructed by the player. */
 class Building {

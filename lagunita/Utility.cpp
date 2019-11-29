@@ -1,4 +1,4 @@
-#include "utility.hpp"
+#include "Utility.hpp"
 
 /* This code comes from the arduboy2 library. */
 void Drawing::drawBitmapPlain(int16_t x,

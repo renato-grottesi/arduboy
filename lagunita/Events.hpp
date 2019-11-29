@@ -1,6 +1,6 @@
 #pragma once
 
-#include "buildings.hpp"
+#include "Buildings.hpp"
 
 /* Represents the state of an event. */
 enum class EventState : uint8_t { untriggered, justTriggered, triggered };
