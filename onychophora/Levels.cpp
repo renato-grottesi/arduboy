@@ -132,7 +132,7 @@ const Levels levelsData[Levels::levelsCount] PROGMEM = {
   },
   {
     /* Tutorial, Goal,    Head,   Body,   Tail     */
-    tutorial3,   6, 14,   3, 1,   2, 1,   1, 1,
+    tutorial3,   6, 14,   6, 2,   6, 1,   6, 0,
     /* Rock */
     {
       0b1111111111111111, /**/
@@ -140,8 +140,8 @@ const Levels levelsData[Levels::levelsCount] PROGMEM = {
       0b0000000000000000, /**/
       0b0000000000000000, /**/
       0b0000000000000000, /**/
-      0b0000001000110000, /**/
-      0b0000011100010000, /**/
+      0b0000100000110000, /**/
+      0b0001110000010000, /**/
       0b1111111111111111, /**/
     },
     /* Soil */

@@ -2,6 +2,16 @@
 #include "Bitmaps.hpp"
 
 bool Worm::moveTo(Cell newHead, bool enlarge, bool shorten) {
+  if (newHead.x > 7) {
+    return false;
+  }
+
+  for (uint8_t i = 0; i < count; i++) {
+    if (cells[i].intersects(newHead)) {
+      return false;
+    }
+  }
+
   if (enlarge) {
     count++;
   }
@@ -13,15 +23,6 @@ bool Worm::moveTo(Cell newHead, bool enlarge, bool shorten) {
   }
   if (count > 16) {
     count = 16;
-  }
-  if (newHead.x > 7) {
-    return false;
-  }
-
-  for (uint8_t i = 0; i < count; i++) {
-    if (cells[i].intersects(newHead)) {
-      return false;
-    }
   }
 
   for (uint8_t i = count - 1; i > 0; i--) {
