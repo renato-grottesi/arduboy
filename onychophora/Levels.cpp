@@ -5,8 +5,8 @@ const char tutorial1[] PROGMEM =
     "\tUSE THE D-PAD TO MOVE\n\tON THE SOLID ROCK\n\tAND REACH THE EXIT";
 const char tutorial2[] PROGMEM = "BORDERS ARE SOLID ROCK";
 const char tutorial3[] PROGMEM = "CLIMB AND DON'T GET STUCK";
-const char tutorial4[] PROGMEM = "EAT FOOD TO GROW";
-const char tutorial5[] PROGMEM = "TOUCH POOP TO SHRINK";
+const char tutorial4[] PROGMEM = "EAT ROOTS TO GROW";
+const char tutorial5[] PROGMEM = "EAT GARBAGE TO SHRINK";
 const char tutorial6[] PROGMEM = "DIG AND DON'T GET BURIED";
 const char tutorial7[] PROGMEM = "BEWARE OF SPIKES!";
 
@@ -14,7 +14,7 @@ const Levels levelsData[Levels::levelsCount] PROGMEM = {
     /* clang-format off */
   {
     /* Tutorial, Goal,    Head,   Body,   Tail     */
-    tutorial1,   6, 14,   6, 1,   5, 1,   4, 1,
+    tutorial1,   6, 14,   6, 3,   6, 2,   6, 1,
     /* Rock */
     {
       0b1111111111111111, /**/
@@ -73,7 +73,7 @@ const Levels levelsData[Levels::levelsCount] PROGMEM = {
   },
   {
     /* Tutorial, Goal,    Head,   Body,   Tail     */
-    tutorial2,   7, 14,   3, 1,   2, 1,   1, 1,
+    tutorial2,   7, 0,    5, 13,  5, 14,  5, 15,
     /* Rock */
     {
       0b1111111111111111, /**/
@@ -82,8 +82,8 @@ const Levels levelsData[Levels::levelsCount] PROGMEM = {
       0b0000000000000000, /**/
       0b0000000000000000, /**/
       0b0000000000000000, /**/
-      0b0000000000000000, /**/
-      0b0000000000000000, /**/
+      0b0000000000011111, /**/
+      0b0000011111111111, /**/
     },
     /* Soil */
     {
@@ -132,7 +132,7 @@ const Levels levelsData[Levels::levelsCount] PROGMEM = {
   },
   {
     /* Tutorial, Goal,    Head,   Body,   Tail     */
-    tutorial3,   6, 14,   6, 2,   6, 1,   6, 0,
+    tutorial3,   6, 15,   6, 2,   6, 1,   6, 0,
     /* Rock */
     {
       0b1111111111111111, /**/
@@ -191,7 +191,7 @@ const Levels levelsData[Levels::levelsCount] PROGMEM = {
   },
   {
     /* Tutorial, Goal,    Head,   Body,   Tail     */
-    tutorial4,   6, 11,   3, 1,   2, 1,   1, 1,
+    tutorial4,   6, 11,   6, 2,   6, 1,   6, 0,
     /* Rock */
     {
       0b1111111111111111, /**/
@@ -250,7 +250,7 @@ const Levels levelsData[Levels::levelsCount] PROGMEM = {
   },
   {
     /* Tutorial, Goal,    Head,   Body,   Tail     */
-    tutorial5,   6, 11,   3, 1,   2, 1,   1, 1,
+    tutorial5,   6, 11,   6, 2,   6, 1,   6, 0,
     /* Rock */
     {
       0b1111111111111111, /**/
@@ -309,28 +309,28 @@ const Levels levelsData[Levels::levelsCount] PROGMEM = {
   },
   {
     /* Tutorial, Goal,    Head,   Body,   Tail     */
-    tutorial6,   1, 15,   3, 1,   2, 1,   1, 1,
+    tutorial6,   1, 15,   7, 2,   7, 1,   7, 0,
     /* Rock */
     {
       0b1111111111111111, /**/
       0b0000000000000000, /**/
       0b0000000000000001, /**/
-      0b0000000000000001, /**/
-      0b0000000000000001, /**/
-      0b0000000000000001, /**/
-      0b0000000000000001, /**/
-      0b0000000000000001, /**/
+      0b0000000000000000, /**/
+      0b0000000000000000, /**/
+      0b0000000000000000, /**/
+      0b0000000000000000, /**/
+      0b0000000000000000, /**/
     },
     /* Soil */
     {
       0b0000000000000000, /**/
       0b0000000000000000, /**/
-      0b0011100000111111, /**/
-      0b0011100000111111, /**/
-      0b0011111111111111, /**/
-      0b0011111111111111, /**/
-      0b0011111111111111, /**/
-      0b0011111111111111, /**/
+      0b0011100000111110, /**/
+      0b0011100000111110, /**/
+      0b0011111111111110, /**/
+      0b0011111111111110, /**/
+      0b0011111111111110, /**/
+      0b0000000000000000, /**/
     },
     /* Food */
     {
@@ -718,6 +718,65 @@ const Levels levelsData[Levels::levelsCount] PROGMEM = {
       0b0000000000000000, /**/
       0b0000000000000000, /**/
       0b0011000000001100, /**/
+    }
+  },
+  {
+    /* Tutorial, Goal,    Head,   Body,   Tail     */
+    tutorial0,    3,0,    4, 5,   4, 6,   4, 7,
+    /* Rock */
+    {
+      0b1000000000000000, /**/
+      0b1000000000000000, /**/
+      0b1111000000000000, /**/
+      0b0100000000000000, /**/
+      0b0100100000000000, /**/
+      0b0100111111111110, /**/
+      0b0111111111111110, /**/
+      0b0000000000000000, /**/
+    },
+    /* Soil */
+    {
+      0b0000110000000000, /**/
+      0b0000111111000010, /**/
+      0b0000111111000010, /**/
+      0b0000100000000010, /**/
+      0b1000000000000010, /**/
+      0b1011000000000000, /**/
+      0b1000000000000000, /**/
+      0b1000000000000000, /**/
+    },
+    /* Food */
+    {
+      0b0100000000000000, /**/
+      0b0000000000000000, /**/
+      0b0000000000000000, /**/
+      0b0000000000000000, /**/
+      0b0011000000000000, /**/
+      0b0000000000000000, /**/
+      0b0000000000000000, /**/
+      0b0000000000000000, /**/
+    },
+    /* Poop */
+    {
+      0b0000000000000010, /**/
+      0b0000000000000000, /**/
+      0b0000000000000000, /**/
+      0b0000000000000000, /**/
+      0b0000000000000000, /**/
+      0b0000000000000000, /**/
+      0b0000000000000000, /**/
+      0b0000000000000010, /**/
+    },
+    /* Nail */
+    {
+      0b0000000000000000, /**/
+      0b0000000000000000, /**/
+      0b0000000000000000, /**/
+      0b0000000000000000, /**/
+      0b0000000011111100, /**/
+      0b0000000000000000, /**/
+      0b0000000000000000, /**/
+      0b0000000000000000, /**/
     }
   },
     /* clang-format on */
