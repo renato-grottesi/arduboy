@@ -129,21 +129,24 @@ void Onychophora::render() {
 
   switch (currentMenu) {
     case Menus::main:
-      tinyfont.setCursor(20, 15);
-      tinyfont.print(F("PLAY"));
-      tinyfont.setCursor(20, 30);
+
+      arduboy.drawBitmap(0, 0, bmpLogo, 128, 16);
+
+      tinyfont.setCursor(44, 25);
+      tinyfont.print(F(" PLAY"));
+      tinyfont.setCursor(44, 35);
       tinyfont.print(F("CREDITS"));
-      tinyfont.setCursor(20, 45);
-      tinyfont.print(F("HELP"));
+      tinyfont.setCursor(44, 45);
+      tinyfont.print(F(" HELP"));
       switch (currentMainSelection) {
         case MainSelections::play:
-          arduboy.drawBitmap(10, 15 - 2, bmpArrow, 8, 8);
+          arduboy.drawBitmap(30, 25 - 2, bmpArrow, 8, 8);
           break;
         case MainSelections::credits:
-          arduboy.drawBitmap(10, 30 - 2, bmpArrow, 8, 8);
+          arduboy.drawBitmap(30, 35 - 2, bmpArrow, 8, 8);
           break;
         case MainSelections::help:
-          arduboy.drawBitmap(10, 45 - 2, bmpArrow, 8, 8);
+          arduboy.drawBitmap(30, 45 - 2, bmpArrow, 8, 8);
           break;
       }
       break;
@@ -151,22 +154,22 @@ void Onychophora::render() {
       level.render();
       break;
     case Menus::over:
-      tinyfont.setCursor(2, 10);
+      tinyfont.setCursor(10, 10);
       tinyfont.print(F("CONGRATULATIONS!\nYOU COMPLETED ALL THE\nLEVELS IN THE GAME!"));
       break;
     case Menus::credits:
       tinyfont.setCursor(2, 10);
-      tinyfont.print(F("ONYCHOPHORA WAS MADE"));
+      tinyfont.print(F("ONYCHOPHORA WAS MADE BY"));
       tinyfont.setCursor(2, 20);
-      tinyfont.print(F("BY RENATO GROTTESI"));
+      tinyfont.print(F("\t\tRENATO GROTTESI"));
       break;
     case Menus::help:
       tinyfont.setCursor(2, 0);
       tinyfont.print(
           F("USE THE D-PAD TO MOVE THE\n" /**/
             "WORM TO REACH THE EXIT.\n"   /**/
-            "EAT FOOD TO GET LONGER.\n"   /**/
-            "POOP MAKES YOU SHORTER.\n"   /**/
+            "EAT ROOTS TO GET LONGER.\n"  /**/
+            "JUNK MAKES YOU SHORTER.\n"   /**/
             "ROCKS CAN'T BE EATEN.\n"     /**/
             "YOU CAN DIG SOIL.\n"         /**/
             "SOIL NOT CONNECTED TO\n"     /**/
