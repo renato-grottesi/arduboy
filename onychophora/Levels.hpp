@@ -45,5 +45,5 @@ class Levels {
   const uint16_t _poop[8];
   const uint16_t _nail[8];
 
-  static const uint8_t levelsCount = 14;
+  static const uint8_t levelsCount = 15;
 };
