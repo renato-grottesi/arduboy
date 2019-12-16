@@ -456,7 +456,7 @@ void Level::update() {
             break;
           }
         }
-        for (uint16_t i = (obj + size - 8); i < (obj + size + 16); i++) {
+        for (uint16_t i = (obj + size - 8); i < (obj + size + 8); i++) {
           Building::IDs bld = tiles[i % size].building;
           if (bld == Building::IDs::tree || bld == Building::IDs::cactus ||
               bld == Building::IDs::weed) {
@@ -464,7 +464,7 @@ void Level::update() {
             break;
           }
         }
-        for (uint16_t i = (obj + size - 7); i < (obj + size + 16); i++) {
+        for (uint16_t i = (obj + size - 8); i < (obj + size + 8); i++) {
           if (tiles[i % size].building == Building::IDs::totem) {
             house_housing += 16;
             break;
@@ -522,13 +522,13 @@ void Level::update() {
         earnings += Building::profit(tiles[obj].building);
         unemployed -= Building::jobs(tiles[obj].building);
         /* If a water tower is close increase food production. */
-        for (uint16_t i = (obj + size - 6); i < (obj + size + 16); i++) {
+        for (uint16_t i = (obj + size - 16); i < (obj + size + 16); i++) {
           if (tiles[i % size].building == Building::IDs::water) {
             food += 22;
             break;
           }
         }
-        for (uint16_t i = (obj + size - 7); i < (obj + size + 16); i++) {
+        for (uint16_t i = (obj + size - 8); i < (obj + size + 8); i++) {
           if (tiles[i % size].building == Building::IDs::totem) {
             food += 66;
             break;
@@ -539,13 +539,13 @@ void Level::update() {
         earnings += Building::profit(tiles[obj].building);
         unemployed -= Building::jobs(tiles[obj].building);
         /* If a farm is close increase food production. */
-        for (uint16_t i = (obj + size - 6); i < (obj + size + 16); i++) {
+        for (uint16_t i = (obj + size - 10); i < (obj + size + 10); i++) {
           if (tiles[i % size].building == Building::IDs::farm) {
             food += 11;
             break;
           }
         }
-        for (uint16_t i = (obj + size - 7); i < (obj + size + 16); i++) {
+        for (uint16_t i = (obj + size - 8); i < (obj + size + 8); i++) {
           if (tiles[i % size].building == Building::IDs::totem) {
             food += 33;
             break;
@@ -588,7 +588,7 @@ void Level::update() {
         }
       } else if (tiles[obj].building == Building::IDs::mine && unemployed > 0) {
         earnings += Building::profit(tiles[obj].building);
-        for (uint16_t i = (obj + size - 8); i < (obj + size + 16); i++) {
+        for (uint16_t i = (obj + size - 8); i < (obj + size + 8); i++) {
           if (tiles[i % size].building == Building::IDs::totem) {
             earnings += 55;
             break;

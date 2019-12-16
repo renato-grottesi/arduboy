@@ -24,7 +24,7 @@ class Lagunita {
  private:
   void updateHighScore();
 
-  enum class Menus : uint8_t { main, game, credits, help, lost, exit };
+  enum class Menus : uint8_t { main, game, credits, help, lost, exit, saved };
   enum class MainSelections : uint8_t { play, load, save, credits, help, audio };
   uint8_t help_page = 0;
   int16_t weed = 0;

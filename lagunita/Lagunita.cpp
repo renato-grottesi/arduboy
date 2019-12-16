@@ -263,6 +263,11 @@ void Lagunita::update() {
         currentMenu = Menus::main;
       }
       break;
+    case Menus::saved:
+      if (arduboy.justPressed(A_BUTTON) || arduboy.justPressed(B_BUTTON)) {
+        currentMenu = Menus::main;
+      }
+      break;
   }
 }
 
@@ -382,6 +387,10 @@ void Lagunita::render() {
                        "TRY AGAIN!\n"     /**/
                        ));
       break;
+    case Menus::saved:
+      tinyfont.setCursor(36, 28);
+      tinyfont.print(F("GAME SAVED!"));
+      break;
     case Menus::exit:
       tinyfont.setCursor(32, 0);
       tinyfont.print(F(                  /**/
@@ -436,6 +445,24 @@ void Lagunita::render() {
           break;
         case 1:
           tinyfont.print(F(                              /**/
+                           "THE GOAL OF THE GAME IS\n"   /**/
+                           "TO REACH THE MAXIMUM\n"      /**/
+                           "POPULATION WITH THE GIVEN\n" /**/
+                           "SPACE.\n"                    /**/
+                           "\n"                          /**/
+                           "POPULATION CAN'T GROW IF\n"  /**/
+                           "STATS ARE LOW: CHECK THEM\n" /**/
+                           "PRESSING B WHILE PLAYING\n"  /**/
+                           "AND KEEP THEM UNDER\n"       /**/
+                           "CONTROL.\n"                  /**/
+                           ));
+          tinyfont.setCursor(118, 58);
+          tinyfont.print(F("->"));
+          tinyfont.setCursor(2, 58);
+          tinyfont.print(F("<-"));
+          break;
+        case 2:
+          tinyfont.print(F(                              /**/
                            "YOU CAN MOVE AROUND THE\n"   /**/
                            "LEVEL WITH THE LEFT AND\n"   /**/
                            "RIGHT ARROWS. LONG PRESS\n"  /**/
@@ -452,7 +479,21 @@ void Lagunita::render() {
           tinyfont.setCursor(2, 58);
           tinyfont.print(F("<-"));
           break;
-        case 2:
+        case 3:
+          tinyfont.print(F(                            /**/
+                           "SOME OF THE BUILDINGS\n"   /**/
+                           "HAVE A RANGE OF ACTION.\n" /**/
+                           "WATER TOWERS: 16 TILES.\n" /**/
+                           "VEGETATION: 8 TILES.\n"    /**/
+                           "TOTEMS: 8 TILES.\n"        /**/
+                           "MILL: 10 TILES.\n"         /**/
+                           ));
+          tinyfont.setCursor(118, 58);
+          tinyfont.print(F("->"));
+          tinyfont.setCursor(2, 58);
+          tinyfont.print(F("<-"));
+          break;
+        case 4:
           tinyfont.print(F(                              /**/
                            "PRESS THE UP AND DOWN\n"     /**/
                            "ARROWS TO CHANGE THE\n"      /**/
@@ -528,6 +569,8 @@ void Lagunita::save() {
   EEPROM.update(loc + 4, '1');
 
   level.save(loc + 8);
+
+  currentMenu = Menus::saved;
 }
 
 bool Lagunita::canSave() {
